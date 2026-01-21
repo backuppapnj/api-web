@@ -15,6 +15,9 @@ $app = new Laravel\Lumen\Application(
 $app->withFacades();
 $app->withEloquent();
 
+// SECURITY: Configure database (dari .env)
+$app->configure('database');
+
 // SECURITY: Global middleware yang berlaku untuk semua request
 $app->middleware([
     App\Http\Middleware\CorsMiddleware::class,
