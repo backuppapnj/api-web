@@ -37,7 +37,3 @@ Options -Indexes
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
-# SECURITY: Prevent PHP execution in uploads folder (if any)
-<IfModule mod_php.c>
-    php_flag engine off
-</IfModule>
