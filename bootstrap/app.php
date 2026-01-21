@@ -38,6 +38,12 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+// Register Console Kernel for artisan commands
+$app->singleton(
+    Illuminate\Contracts\Console\Kernel::class,
+    App\Console\Kernel::class
+);
+
 // Load Routes
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
