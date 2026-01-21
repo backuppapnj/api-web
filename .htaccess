@@ -1,0 +1,19 @@
+.htaccess protection for Lumen public folder
+Upload file ini ke folder root lumen-api (BUKAN di public)
+
+<IfModule mod_rewrite.c>
+    # Redirect semua request ke public folder
+    RewriteEngine On
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# SECURITY: Block akses ke file sensitif
+<FilesMatch "(^\.|\.env|\.htaccess|composer\.(json|lock))$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# SECURITY: Block akses ke folder sensitif
+<IfModule mod_rewrite.c>
+    RewriteRule ^(app|bootstrap|config|database|routes|storage|vendor)/ - [F,L]
+</IfModule>

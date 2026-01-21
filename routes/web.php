@@ -6,21 +6,21 @@
 $router->get('/', function () {
     return response()->json([
         'status' => 'ok',
-        'message' => 'API Panggilan Ghaib PA Penajam',
-        'version' => '1.0.0'
+        'message' => 'API Panggilan Ghaib PA Penajam'
+        // SECURITY: Tidak expose versi di production
     ]);
 });
 
-// Public routes (untuk Joomla - hanya GET)
-$router->group(['prefix' => 'api'], function () use ($router) {
+// SECURITY: Public routes dengan rate limiting (100 request/menit)
+$router->group(['prefix' => 'api', 'middleware' => 'throttle:100,1'], function () use ($router) {
     $router->get('panggilan', 'PanggilanController@index');
-    $router->get('panggilan/{id}', 'PanggilanController@show');
-    $router->get('panggilan/tahun/{tahun}', 'PanggilanController@byYear');
+    $router->get('panggilan/{id:[0-9]+}', 'PanggilanController@show');
+    $router->get('panggilan/tahun/{tahun:[0-9]+}', 'PanggilanController@byYear');
 });
 
-// Protected routes (untuk Admin - butuh API Key)
-$router->group(['prefix' => 'api', 'middleware' => 'api.key'], function () use ($router) {
+// SECURITY: Protected routes dengan API Key + rate limiting ketat (30 request/menit)
+$router->group(['prefix' => 'api', 'middleware' => ['api.key', 'throttle:30,1']], function () use ($router) {
     $router->post('panggilan', 'PanggilanController@store');
-    $router->put('panggilan/{id}', 'PanggilanController@update');
-    $router->delete('panggilan/{id}', 'PanggilanController@destroy');
+    $router->put('panggilan/{id:[0-9]+}', 'PanggilanController@update');
+    $router->delete('panggilan/{id:[0-9]+}', 'PanggilanController@destroy');
 });

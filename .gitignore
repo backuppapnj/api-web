@@ -2,3 +2,13 @@
 vendor/
 .phpunit.cache/
 storage/*.log
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
+pentest.sh
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store

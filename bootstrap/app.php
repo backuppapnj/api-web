@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
     dirname(__DIR__)
@@ -15,23 +15,31 @@ $app = new Laravel\Lumen\Application(
 $app->withFacades();
 $app->withEloquent();
 
-// Register middleware
+// SECURITY: Global middleware yang berlaku untuk semua request
 $app->middleware([
-    App\Http\Middleware\CorsMiddleware::class
+    App\Http\Middleware\CorsMiddleware::class,
 ]);
 
+// SECURITY: Route-specific middleware
 $app->routeMiddleware([
     'api.key' => App\Http\Middleware\ApiKeyMiddleware::class,
+    'throttle' => App\Http\Middleware\RateLimitMiddleware::class,
 ]);
 
 // Register Service Providers
 $app->register(App\Providers\AppServiceProvider::class);
 
+// SECURITY: Register Exception Handler for security headers on errors
+$app->singleton(
+    Illuminate\Contracts\Debug\ExceptionHandler::class,
+    App\Exceptions\Handler::class
+);
+
 // Load Routes
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {
-    require __DIR__.'/../routes/web.php';
+    require __DIR__ . '/../routes/web.php';
 });
 
 return $app;
