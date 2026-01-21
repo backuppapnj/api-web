@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -17,9 +19,9 @@ class PanggilanSeeder extends Seeder
         if (file_exists($sqlPath)) {
             $sql = file_get_contents($sqlPath);
             DB::unprepared($sql);
-            $this->command->info('Data panggilan ghaib berhasil di-import!');
+            $this->command->info('Data panggilan ghaib berhasil di-import! (193 records)');
         } else {
-            $this->command->warn('File data.sql tidak ditemukan. Jalankan: php artisan db:seed setelah membuat file.');
+            $this->command->warn('File data.sql tidak ditemukan di: ' . $sqlPath);
         }
     }
 }
