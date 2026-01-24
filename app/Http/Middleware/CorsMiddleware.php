@@ -15,6 +15,14 @@ class CorsMiddleware
     {
         $allowedOriginsRaw = env('CORS_ALLOWED_ORIGINS', '');
         $allowedOrigins = array_filter(array_map('trim', explode(',', $allowedOriginsRaw)));
+
+        // ALWAYS allow these domains (safety net)
+        $trustedDomains = [
+            'https://pa-penajam.go.id',
+            'https://www.pa-penajam.go.id',
+            'http://localhost:3000'
+        ];
+        $allowedOrigins = array_merge($allowedOrigins, $trustedDomains);
         $origin = $request->header('Origin');
 
         $headers = [
