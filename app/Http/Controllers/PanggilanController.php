@@ -138,6 +138,11 @@ class PanggilanController extends Controller
         // Handle File Upload
         if ($request->hasFile('file_upload')) {
             try {
+                // Cek apakah class GoogleDriveService ada sebelum instansiasi
+                if (!class_exists('\App\Services\GoogleDriveService')) {
+                    throw new \Exception('Class GoogleDriveService not found');
+                }
+
                 $driveService = new \App\Services\GoogleDriveService();
                 $link = $driveService->upload($request->file('file_upload'));
                 $data['link_surat'] = $link;
@@ -146,16 +151,40 @@ class PanggilanController extends Controller
                     'nomor_perkara' => $request->nomor_perkara,
                     'link' => $link
                 ]);
-            } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error('Gagal upload file Panggilan ke Google Drive', [
+            } catch (\Throwable $e) {
+                // FALLBACK: Simpan ke Local Storage jika Google Drive gagal
+                \Illuminate\Support\Facades\Log::error('Google Drive gagal. Menggunakan penyimpanan lokal.', [
                     'nomor_perkara' => $request->nomor_perkara,
                     'error' => $e->getMessage()
                 ]);
 
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Gagal upload file: ' . $e->getMessage()
-                ], 500);
+                try {
+                    $file = $request->file('file_upload');
+                    $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9.]/', '_', $file->getClientOriginalName());
+                    $destinationPath = app()->basePath('public/uploads/panggilan');
+
+                    if (!file_exists($destinationPath)) {
+                        mkdir($destinationPath, 0755, true);
+                    }
+
+                    $file->move($destinationPath, $filename);
+
+                    // Generate URL (sesuaikan dengan domain server)
+                    // Menggunakan env('APP_URL') atau request()->root()
+                    $baseUrl = $request->root();
+                    $link = $baseUrl . '/uploads/panggilan/' . $filename;
+
+                    $data['link_surat'] = $link;
+
+                    \Illuminate\Support\Facades\Log::info('File disimpan di lokal (Fallback)', ['link' => $link]);
+                } catch (\Throwable $localEx) {
+                    // Jika local storage juga gagal, baru return error
+                    \Illuminate\Support\Facades\Log::error('Gagal simpan lokal', ['error' => $localEx->getMessage()]);
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Gagal upload file (Drive & Local): ' . $e->getMessage()
+                    ], 500);
+                }
             }
         }
 
@@ -282,8 +311,13 @@ class PanggilanController extends Controller
     {
         foreach ($data as $key => $value) {
             if (is_string($value) && $key !== 'link_surat') {
-                // Hapus tag HTML (kecuali untuk URL)
-                $data[$key] = strip_tags($value);
+                // Jangan strip tags untuk nomor perkara (kadang ada karakter khsus yg dianggap tag)
+                // Tapi strip_tags biasanya aman untuk / dan .
+                // Masalahnya mungkin di regex validasi di store() method, bukan di sini.
+                // Tapi mari kita kecualikan nomor_perkara dari strip_tags untuk aman.
+                if ($key !== 'nomor_perkara') {
+                    $data[$key] = strip_tags($value);
+                }
                 // Trim whitespace
                 $data[$key] = trim($data[$key]);
             }

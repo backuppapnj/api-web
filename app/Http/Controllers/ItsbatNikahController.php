@@ -57,6 +57,10 @@ class ItsbatNikahController extends Controller
         // Handle File Upload
         if ($request->hasFile('file_upload')) {
             try {
+                if (!class_exists('\App\Services\GoogleDriveService')) {
+                    throw new \Exception('Class GoogleDriveService not found');
+                }
+
                 $driveService = new \App\Services\GoogleDriveService();
                 $link = $driveService->upload($request->file('file_upload'));
                 $dataInput['link_detail'] = $link;
@@ -65,16 +69,34 @@ class ItsbatNikahController extends Controller
                     'nomor_perkara' => $request->nomor_perkara,
                     'link' => $link
                 ]);
-            } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error('Gagal upload file ke Google Drive', [
+            } catch (\Throwable $e) {
+                // FALLBACK: Simpan ke Local Storage
+                \Illuminate\Support\Facades\Log::error('Google Drive gagal. Menggunakan penyimpanan lokal.', [
                     'nomor_perkara' => $request->nomor_perkara,
                     'error' => $e->getMessage()
                 ]);
 
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Gagal upload file: ' . $e->getMessage()
-                ], 500);
+                try {
+                    $file = $request->file('file_upload');
+                    $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9.]/', '_', $file->getClientOriginalName());
+                    $destinationPath = app()->basePath('public/uploads/itsbat');
+
+                    if (!file_exists($destinationPath)) {
+                        mkdir($destinationPath, 0755, true);
+                    }
+
+                    $file->move($destinationPath, $filename);
+
+                    $baseUrl = $request->root();
+                    $link = $baseUrl . '/uploads/itsbat/' . $filename;
+
+                    $dataInput['link_detail'] = $link;
+                } catch (\Throwable $localEx) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Gagal upload file (Drive & Local): ' . $e->getMessage()
+                    ], 500);
+                }
             }
         }
 
