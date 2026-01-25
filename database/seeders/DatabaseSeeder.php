@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PanggilanSeeder::class,
             ItsbatSeeder::class,
+            PanggilanEcourtSeeder::class,
         ]);
     }
 }
