@@ -41,8 +41,9 @@ class PanggilanEcourtController extends Controller
             }
         }
 
-        // SECURITY: Limit hasil untuk mencegah memory exhaustion (default for pagination)
-        $limit = min((int) $request->get('limit', 10), 100);
+        // SECURITY: Limit hasil untuk mencegah memory exhaustion
+        // Default 500 query, Max 2000 (Cukup untuk load data tahunan)
+        $limit = min((int) $request->get('limit', 500), 2000);
 
         $data = $query->orderBy('created_at', 'desc')
             ->paginate($limit);
