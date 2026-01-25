@@ -29,9 +29,16 @@ class ItsbatNikahController extends Controller
         // Default Sort: Latest Sidang Date desc
         $query->orderBy('tanggal_sidang', 'desc');
 
+        $perPage = $request->input('limit', 10);
+        $data = $query->paginate($perPage);
+
         return response()->json([
             'success' => true,
-            'data' => $query->get()
+            'data' => $data->items(),
+            'current_page' => $data->currentPage(),
+            'last_page' => $data->lastPage(),
+            'per_page' => $data->perPage(),
+            'total' => $data->total(),
         ]);
     }
 
@@ -42,9 +49,36 @@ class ItsbatNikahController extends Controller
             'pemohon_1' => 'required',
             'tanggal_sidang' => 'required|date',
             'tahun_perkara' => 'required|integer',
+            'file_upload' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120' // Max 5MB
         ]);
 
-        $data = ItsbatNikah::create($request->all());
+        $dataInput = $request->all();
+
+        // Handle File Upload
+        if ($request->hasFile('file_upload')) {
+            try {
+                $driveService = new \App\Services\GoogleDriveService();
+                $link = $driveService->upload($request->file('file_upload'));
+                $dataInput['link_detail'] = $link;
+
+                \Illuminate\Support\Facades\Log::info('File berhasil diupload ke Google Drive', [
+                    'nomor_perkara' => $request->nomor_perkara,
+                    'link' => $link
+                ]);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Gagal upload file ke Google Drive', [
+                    'nomor_perkara' => $request->nomor_perkara,
+                    'error' => $e->getMessage()
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal upload file: ' . $e->getMessage()
+                ], 500);
+            }
+        }
+
+        $data = ItsbatNikah::create($dataInput);
 
         return response()->json([
             'success' => true,
@@ -76,9 +110,37 @@ class ItsbatNikahController extends Controller
             'nomor_perkara' => 'required|unique:itsbat_nikah,nomor_perkara,' . $id,
             'pemohon_1' => 'required',
             'tanggal_sidang' => 'required|date',
+            'file_upload' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120'
         ]);
 
-        $data->update($request->all());
+        $dataInput = $request->all();
+
+        // Handle File Upload
+        if ($request->hasFile('file_upload')) {
+            try {
+                $driveService = new \App\Services\GoogleDriveService();
+                $link = $driveService->upload($request->file('file_upload'));
+                $dataInput['link_detail'] = $link;
+
+                \Illuminate\Support\Facades\Log::info('File baru berhasil diupload ke Google Drive (Update)', [
+                    'id' => $id,
+                    'nomor_perkara' => $request->nomor_perkara,
+                    'link' => $link
+                ]);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Gagal upload file update ke Google Drive', [
+                    'id' => $id,
+                    'error' => $e->getMessage()
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal upload file: ' . $e->getMessage()
+                ], 500);
+            }
+        }
+
+        $data->update($dataInput);
 
         return response()->json([
             'success' => true,

@@ -40,17 +40,19 @@ class PanggilanController extends Controller
             }
         }
 
-        // SECURITY: Limit hasil untuk mencegah memory exhaustion
-        $limit = min((int) $request->get('limit', 500), 1000);
+        // SECURITY: Limit hasil untuk mencegah memory exhaustion (default for pagination)
+        $limit = min((int) $request->get('limit', 10), 100);
 
         $data = $query->orderBy('created_at', 'desc')
-            ->limit($limit)
-            ->get();
+            ->paginate($limit);
 
         return response()->json([
             'success' => true,
-            'data' => $data,
-            'total' => $data->count()
+            'data' => $data->items(),
+            'current_page' => $data->currentPage(),
+            'last_page' => $data->lastPage(),
+            'per_page' => $data->perPage(),
+            'total' => $data->total(),
         ]);
     }
 
@@ -123,7 +125,7 @@ class PanggilanController extends Controller
             'panggilan_ikrar' => 'nullable|date',
             'tanggal_sidang' => 'nullable|date',
             'pip' => 'nullable|string|max:100',
-            'link_surat' => 'nullable|url|max:500',
+            'file_upload' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120', // Max 5MB
             'keterangan' => 'nullable|string|max:1000',
         ]);
 
@@ -132,6 +134,30 @@ class PanggilanController extends Controller
 
         // SECURITY: Sanitasi input teks
         $data = $this->sanitizeInput($data);
+
+        // Handle File Upload
+        if ($request->hasFile('file_upload')) {
+            try {
+                $driveService = new \App\Services\GoogleDriveService();
+                $link = $driveService->upload($request->file('file_upload'));
+                $data['link_surat'] = $link;
+
+                \Illuminate\Support\Facades\Log::info('File Panggilan berhasil diupload ke Google Drive', [
+                    'nomor_perkara' => $request->nomor_perkara,
+                    'link' => $link
+                ]);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Gagal upload file Panggilan ke Google Drive', [
+                    'nomor_perkara' => $request->nomor_perkara,
+                    'error' => $e->getMessage()
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal upload file: ' . $e->getMessage()
+                ], 500);
+            }
+        }
 
         $panggilan = Panggilan::create($data);
 
@@ -175,7 +201,7 @@ class PanggilanController extends Controller
             'panggilan_ikrar' => 'nullable|date',
             'tanggal_sidang' => 'nullable|date',
             'pip' => 'nullable|string|max:100',
-            'link_surat' => 'nullable|url|max:500',
+            'file_upload' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120', // Max 5MB
             'keterangan' => 'nullable|string|max:1000',
         ]);
 
@@ -184,6 +210,31 @@ class PanggilanController extends Controller
 
         // SECURITY: Sanitasi input
         $data = $this->sanitizeInput($data);
+
+        // Handle File Upload
+        if ($request->hasFile('file_upload')) {
+            try {
+                $driveService = new \App\Services\GoogleDriveService();
+                $link = $driveService->upload($request->file('file_upload'));
+                $data['link_surat'] = $link;
+
+                \Illuminate\Support\Facades\Log::info('File Update Panggilan berhasil diupload ke Google Drive', [
+                    'id' => $id,
+                    'nomor_perkara' => $request->nomor_perkara ?? $panggilan->nomor_perkara,
+                    'link' => $link
+                ]);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Gagal upload file update Panggilan ke Google Drive', [
+                    'id' => $id,
+                    'error' => $e->getMessage()
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal upload file: ' . $e->getMessage()
+                ], 500);
+            }
+        }
 
         $panggilan->update($data);
 
