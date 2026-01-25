@@ -28,10 +28,29 @@ class GoogleDriveService
      * @param string|null $folderId
      * @return string|null Web View Link
      */
+    /**
+     * Upload a file to Google Drive
+     *
+     * @param \Illuminate\Http\UploadedFile $file
+     * @param string|null $folderId
+     * @return string|null Web View Link
+     */
     public function upload($file, $folderId = null)
     {
         if (!$folderId) {
             $folderId = env('GOOGLE_DRIVE_ROOT_FOLDER_ID');
+        }
+
+        // Feature: Upgrade organized by Date (YYYY-MM-DD)
+        // Automatically create/find subfolder for today's date
+        try {
+            $dateFolderId = $this->getOrCreateDailyFolder($folderId);
+            if ($dateFolderId) {
+                $folderId = $dateFolderId;
+            }
+        } catch (\Exception $e) {
+            // If checking/creating folder fails, fallback to root folder allowed
+            // Log if necessary, but keep proceeding with upload to root
         }
 
         $fileMetadata = new DriveFile([
@@ -60,5 +79,38 @@ class GoogleDriveService
         }
 
         return $uploadedFile->webViewLink;
+    }
+
+    /**
+     * Get or Create a folder for current date
+     */
+    private function getOrCreateDailyFolder($parentId)
+    {
+        $folderName = date('Y-m-d'); // Example: 2023-10-27
+
+        // 1. Check if folder exists
+        $query = "mimeType='application/vnd.google-apps.folder' and name='{$folderName}' and '{$parentId}' in parents and trashed=false";
+
+        $files = $this->service->files->listFiles([
+            'q' => $query,
+            'fields' => 'files(id, name)'
+        ]);
+
+        if (count($files->getFiles()) > 0) {
+            return $files->getFiles()[0]->getId();
+        }
+
+        // 2. Create if not exists
+        $folderMetadata = new DriveFile([
+            'name' => $folderName,
+            'mimeType' => 'application/vnd.google-apps.folder',
+            'parents' => [$parentId]
+        ]);
+
+        $folder = $this->service->files->create($folderMetadata, [
+            'fields' => 'id'
+        ]);
+
+        return $folder->id;
     }
 }
