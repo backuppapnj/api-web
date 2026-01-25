@@ -20,6 +20,11 @@ $router->group(['prefix' => 'api', 'middleware' => 'throttle:100,1'], function (
     // Itsbat Nikah Routes
     $router->get('itsbat', 'ItsbatNikahController@index');
     $router->get('itsbat/{id:[0-9]+}', 'ItsbatNikahController@show');
+
+    // Panggilan e-Court Routes
+    $router->get('panggilan-ecourt', 'PanggilanEcourtController@index');
+    $router->get('panggilan-ecourt/{id:[0-9]+}', 'PanggilanEcourtController@show');
+    $router->get('panggilan-ecourt/tahun/{tahun:[0-9]+}', 'PanggilanEcourtController@byYear');
 });
 
 // SECURITY: Protected routes dengan API Key + rate limiting ketat (30 request/menit)
@@ -32,4 +37,9 @@ $router->group(['prefix' => 'api', 'middleware' => ['api.key', 'throttle:30,1']]
     $router->post('itsbat', 'ItsbatNikahController@store');
     $router->put('itsbat/{id:[0-9]+}', 'ItsbatNikahController@update');
     $router->delete('itsbat/{id:[0-9]+}', 'ItsbatNikahController@destroy');
+
+    // Panggilan e-Court Routes
+    $router->post('panggilan-ecourt', 'PanggilanEcourtController@store');
+    $router->put('panggilan-ecourt/{id:[0-9]+}', 'PanggilanEcourtController@update');
+    $router->delete('panggilan-ecourt/{id:[0-9]+}', 'PanggilanEcourtController@destroy');
 });
