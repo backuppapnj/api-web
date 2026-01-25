@@ -88,7 +88,7 @@ class Handler extends ExceptionHandler
         if ($isProduction) {
             $response = response()->json([
                 'success' => false,
-                'message' => 'Internal server error'
+                'message' => 'Internal server error: ' . $exception->getMessage()
             ], 500);
         } else {
             // Development mode - tampilkan error details
