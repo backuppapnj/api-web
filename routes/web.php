@@ -25,6 +25,10 @@ $router->group(['prefix' => 'api', 'middleware' => 'throttle:100,1'], function (
     $router->get('panggilan-ecourt', 'PanggilanEcourtController@index');
     $router->get('panggilan-ecourt/{id:[0-9]+}', 'PanggilanEcourtController@show');
     $router->get('panggilan-ecourt/tahun/{tahun:[0-9]+}', 'PanggilanEcourtController@byYear');
+
+    // Agenda Pimpinan Routes
+    $router->get('agenda', 'AgendaPimpinanController@index');
+    $router->get('agenda/{id:[0-9]+}', 'AgendaPimpinanController@show');
 });
 
 // SECURITY: Protected routes dengan API Key + rate limiting ketat (30 request/menit)
@@ -42,4 +46,9 @@ $router->group(['prefix' => 'api', 'middleware' => ['api.key', 'throttle:30,1']]
     $router->post('panggilan-ecourt', 'PanggilanEcourtController@store');
     $router->put('panggilan-ecourt/{id:[0-9]+}', 'PanggilanEcourtController@update');
     $router->delete('panggilan-ecourt/{id:[0-9]+}', 'PanggilanEcourtController@destroy');
+
+    // Agenda Pimpinan Routes
+    $router->post('agenda', 'AgendaPimpinanController@store');
+    $router->put('agenda/{id:[0-9]+}', 'AgendaPimpinanController@update');
+    $router->delete('agenda/{id:[0-9]+}', 'AgendaPimpinanController@destroy');
 });
