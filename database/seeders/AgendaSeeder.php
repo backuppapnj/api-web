@@ -4,9 +4,62 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 class AgendaSeeder extends Seeder
 {
+    private function normalizeWhitespace($value): string
+    {
+        if ($value === null) {
+            return '';
+        }
+
+        $value = preg_replace('/\s+/', ' ', trim((string) $value));
+        return $value === null ? '' : $value;
+    }
+
+    private function parseTanggalAgenda($raw): ?string
+    {
+        if (!$raw) {
+            return null;
+        }
+
+        $s = $this->normalizeWhitespace($raw);
+        if ($s === '') {
+            return null;
+        }
+
+        $months = [
+            'januari' => '01',
+            'februari' => '02',
+            'maret' => '03',
+            'april' => '04',
+            'mei' => '05',
+            'juni' => '06',
+            'juli' => '07',
+            'agustus' => '08',
+            'september' => '09',
+            'oktober' => '10',
+            'november' => '11',
+            'desember' => '12',
+        ];
+
+        // Expected: "22 Oktober 2025" (can contain newlines/spaces in source)
+        if (!preg_match('/\b(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})\b/', $s, $m)) {
+            return null;
+        }
+
+        $day = str_pad($m[1], 2, '0', STR_PAD_LEFT);
+        $monthName = strtolower($m[2]);
+        $year = $m[3];
+
+        if (!isset($months[$monthName])) {
+            return null;
+        }
+
+        return $year . '-' . $months[$monthName] . '-' . $day;
+    }
+
     public function run()
     {
         $data = [
@@ -788,6 +841,46 @@ class AgendaSeeder extends Seeder
             ],
         ];
 
-        DB::table('agenda_pimpinan')->insert($data);
+        $now = Carbon::now()->toDateTimeString();
+        $inserted = 0;
+        $updated = 0;
+        $skipped = 0;
+
+        foreach ($data as $row) {
+            $tanggal = $this->parseTanggalAgenda($row['tanggal_agenda'] ?? null);
+            $isi = $this->normalizeWhitespace($row['isi_agenda'] ?? null);
+
+            if (!$tanggal) {
+                $skipped++;
+                $this->command?->warn('Skipped invalid tanggal_agenda: ' . $this->normalizeWhitespace($row['tanggal_agenda'] ?? ''));
+                continue;
+            }
+
+            if ($isi === '') {
+                $skipped++;
+                $this->command?->warn('Skipped empty isi_agenda for tanggal_agenda: ' . $tanggal);
+                continue;
+            }
+
+            $query = DB::table('agenda_pimpinan')
+                ->where('tanggal_agenda', $tanggal)
+                ->where('isi_agenda', $isi);
+
+            if ($query->exists()) {
+                $query->update(['updated_at' => $now]);
+                $updated++;
+                continue;
+            }
+
+            DB::table('agenda_pimpinan')->insert([
+                'tanggal_agenda' => $tanggal,
+                'isi_agenda' => $isi,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+            $inserted++;
+        }
+
+        $this->command?->info("AgendaSeeder: inserted {$inserted}, updated {$updated}, skipped {$skipped}.");
     }
 }
