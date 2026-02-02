@@ -18,7 +18,7 @@ class LhkpnSeeder extends Seeder
     public function run()
     {
         // 1. Load Data Pegawai for NIP matching
-        $jsonPath = base_path('../data_pegawai.json');
+        $jsonPath = base_path('database/data/data_pegawai.json');
         if (!file_exists($jsonPath)) {
             $this->command->error("File data_pegawai.json not found at: $jsonPath");
             return;
@@ -33,7 +33,7 @@ class LhkpnSeeder extends Seeder
         }
 
         // 2. Load HTML File
-        $htmlPath = base_path('../lhkpn.html');
+        $htmlPath = base_path('database/data/lhkpn.html');
         if (!file_exists($htmlPath)) {
             $this->command->error("File lhkpn.html not found at: $htmlPath");
             return;
