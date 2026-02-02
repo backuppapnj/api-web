@@ -37,7 +37,10 @@ class LhkpnController extends Controller
         // Default sorting
         $query->orderBy('tahun', 'desc')->orderBy('nama', 'asc');
 
-        return response()->json($query->get());
+        return response()->json([
+            'success' => true,
+            'data' => $query->get()
+        ]);
     }
 
     /**
@@ -61,7 +64,10 @@ class LhkpnController extends Controller
 
         $report = LhkpnReport::create($request->all());
 
-        return response()->json($report, 201);
+        return response()->json([
+            'success' => true,
+            'data' => $report
+        ], 201);
     }
 
     /**
@@ -75,10 +81,13 @@ class LhkpnController extends Controller
         $report = LhkpnReport::find($id);
 
         if (!$report) {
-            return response()->json(['message' => 'Data not found'], 404);
+            return response()->json(['success' => false, 'message' => 'Data not found'], 404);
         }
 
-        return response()->json($report);
+        return response()->json([
+            'success' => true,
+            'data' => $report
+        ]);
     }
 
     /**
@@ -93,7 +102,7 @@ class LhkpnController extends Controller
         $report = LhkpnReport::find($id);
 
         if (!$report) {
-            return response()->json(['message' => 'Data not found'], 404);
+            return response()->json(['success' => false, 'message' => 'Data not found'], 404);
         }
 
         $this->validate($request, [
@@ -109,7 +118,10 @@ class LhkpnController extends Controller
 
         $report->update($request->all());
 
-        return response()->json($report);
+        return response()->json([
+            'success' => true,
+            'data' => $report
+        ]);
     }
 
     /**
@@ -123,11 +135,14 @@ class LhkpnController extends Controller
         $report = LhkpnReport::find($id);
 
         if (!$report) {
-            return response()->json(['message' => 'Data not found'], 404);
+            return response()->json(['success' => false, 'message' => 'Data not found'], 404);
         }
 
         $report->delete();
 
-        return response()->json(['message' => 'Deleted successfully']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Deleted successfully'
+        ]);
     }
 }
