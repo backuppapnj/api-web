@@ -1,0 +1,312 @@
+<!--
+=====================================================
+CODE UNTUK JOOMLA 3 - LHKPN & SPT
+Copy code ini ke artikel Joomla atau Custom HTML Module
+=====================================================
+-->
+
+<!-- CSS DataTables -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<style>
+    .lhkpn-wrapper {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    .lhkpn-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        padding: 2rem 1rem;
+        background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+        color: white;
+        border-radius: 8px;
+    }
+
+    .lhkpn-header h2 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.8rem;
+        color: white !important;
+    }
+
+    .lhkpn-header p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 0.95rem;
+    }
+
+    /* Tabs Styling */
+    .lhkpn-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #e2e8f0;
+        overflow-x: auto;
+        padding-bottom: 2px;
+    }
+
+    .tab-btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        background: none;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s;
+        white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+        color: #d97706;
+        background-color: #fef3c7;
+        border-radius: 4px 4px 0 0;
+    }
+
+    .tab-btn.active {
+        color: #d97706;
+        border-bottom-color: #d97706;
+    }
+
+    /* Table Styling */
+    #tabelLhkpn {
+        width: 100% !important;
+        font-size: 0.9rem;
+    }
+
+    #tabelLhkpn thead th {
+        background: #d97706;
+        color: white;
+        padding: 12px 10px;
+        text-align: left;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    #tabelLhkpn tbody td {
+        padding: 12px 10px;
+        vertical-align: top;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    #tabelLhkpn tbody tr:hover {
+        background-color: #fffbeb;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .badge-lhkpn {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .badge-spt {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .btn-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        text-decoration: none;
+        color: #2563eb;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-right: 8px;
+        transition: color 0.2s;
+    }
+
+    .btn-link:hover {
+        color: #1d4ed8;
+        text-decoration: underline;
+    }
+
+    .btn-link i {
+        font-size: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        #tabelLhkpn {
+            font-size: 0.8rem;
+        }
+
+        /* Force responsive table */
+        .dataTables_wrapper {
+            overflow-x: auto;
+        }
+    }
+</style>
+
+<div class="lhkpn-wrapper">
+    <div class="lhkpn-header">
+        <h2>Transparansi Pelaporan</h2>
+        <p>Laporan Harta Kekayaan (LHKPN) & SPT Tahunan Aparatur Sipil Negara</p>
+    </div>
+
+    <!-- Dynamic Tabs will be injected here -->
+    <div class="lhkpn-tabs" id="yearTabs">
+        <!-- Default tabs -->
+        <button class="tab-btn active" data-year="2025">2025</button>
+        <button class="tab-btn" data-year="2024">2024</button>
+        <button class="tab-btn" data-year="2023">2023</button>
+    </div>
+
+    <div style="overflow-x:auto; margin-top: 1rem;">
+        <table id="tabelLhkpn" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th style="width: 5%">No</th>
+                    <th style="width: 30%">Nama Pegawai</th>
+                    <th style="width: 25%">Jabatan</th>
+                    <th style="width: 15%">Jenis</th>
+                    <th style="width: 15%">Tanggal Lapor</th>
+                    <th style="width: 10%">Bukti</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="6" style="text-align:center;">Memuat data...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<!-- FontAwesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script>
+    (function () {
+        // KONFIGURASI API
+        const API_URL = 'https://web-api.pa-penajam.go.id/api/lhkpn';
+
+        let table;
+        let currentYear = '2025';
+
+        // Format tanggal ke Indonesia
+        function formatTanggal(dateStr) {
+            if (!dateStr) return '-';
+            try {
+                const date = new Date(dateStr);
+                if (isNaN(date.getTime())) return dateStr;
+                return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            } catch (e) {
+                return dateStr;
+            }
+        }
+
+        // Initialize DataTable
+        function initDataTable(year) {
+            if (table) {
+                table.destroy();
+            }
+
+            // Url with year filter
+            const url = `${API_URL}?tahun=${year}`;
+
+            table = $('#tabelLhkpn').DataTable({
+                ajax: {
+                    url: url,
+                    dataSrc: function (json) {
+                        return json.data || json || []; // Handle various response formats
+                    },
+                    error: function (xhr, error, thrown) {
+                        console.error('Error loading data:', error);
+                        $('#tabelLhkpn tbody').html('<tr><td colspan="6" class="text-center">Gagal memuat data. Silakan coba lagi.</td></tr>');
+                    }
+                },
+                columns: [
+                    {
+                        data: null,
+                        searchable: false,
+                        orderable: false,
+                        render: function (data, type, row, meta) {
+                            return meta.row + 1;
+                        }
+                    },
+                    {
+                        data: 'nama',
+                        render: function (data, type, row) {
+                            return `<div style="font-weight:600; color:#334155;">${data}</div>
+                                    <div style="font-size:0.8rem; color:#64748b;">NIP. ${row.nip}</div>`;
+                        }
+                    },
+                    { data: 'jabatan' },
+                    {
+                        data: 'jenis_laporan',
+                        render: function (data) {
+                            const badgeClass = data === 'LHKPN' ? 'badge-lhkpn' : 'badge-spt';
+                            return `<span class="badge ${badgeClass}">${data}</span>`;
+                        }
+                    },
+                    {
+                        data: 'tanggal_lapor',
+                        render: function (data) {
+                            return formatTanggal(data);
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row) {
+                            let links = '';
+                            if (row.link_tanda_terima) {
+                                links += `<a href="${row.link_tanda_terima}" target="_blank" class="btn-link" title="Lihat Tanda Terima">
+                                            <i class="fa-solid fa-file-circle-check" style="color:#16a34a;"></i>
+                                          </a>`;
+                            }
+                            if (row.link_dokumen_pendukung) {
+                                links += `<a href="${row.link_dokumen_pendukung}" target="_blank" class="btn-link" title="Lihat Dokumen">
+                                            <i class="fa-solid fa-file-lines" style="color:#2563eb;"></i>
+                                          </a>`;
+                            }
+                            return links || '-';
+                        }
+                    }
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json',
+                    emptyTable: 'Belum ada data pelaporan untuk tahun ini',
+                    zeroRecords: 'Tidak ada data yang cocok'
+                },
+                pageLength: 25, // Show more rows by default
+                order: [[1, 'asc']], // Sort by Name
+                dom: '<"top"lf>rt<"bottom"ip><"clear">',
+            });
+        }
+
+        // Handle Tab Click
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                // Remove active class from all
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                // Add active to clicked
+                this.classList.add('active');
+                // Reload table
+                currentYear = this.getAttribute('data-year');
+                initDataTable(currentYear);
+            });
+        });
+
+        // Generate Tabs (Optional: Could fetch available years from API)
+        // For now, we stick to static tabs 2023-2025 as starting point. 
+        // In future, we can make `generateYearTabs()` function.
+
+        // Init
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => initDataTable(currentYear));
+        } else {
+            initDataTable(currentYear);
+        }
+
+    })();
+</script>

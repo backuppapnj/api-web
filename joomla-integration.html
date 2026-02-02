@@ -1,0 +1,397 @@
+<!--
+=====================================================
+CODE UNTUK JOOMLA 3 - PANGGILAN GHAIB
+Copy code ini ke artikel Joomla atau Custom HTML Module
+PENTING: Ganti API_URL dengan URL API Lumen Anda
+=====================================================
+-->
+
+<!-- CSS DataTables -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+
+<style>
+.panggilan-container {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.panggilan-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+    color: white;
+    border-radius: 8px;
+}
+
+.panggilan-header h2 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+}
+
+.panggilan-header p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 0.9rem;
+}
+
+.filter-section {
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.filter-section label {
+    font-weight: 600;
+    color: #334155;
+}
+
+.filter-section select {
+    padding: 0.5rem 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background: white;
+    cursor: pointer;
+    min-width: 150px;
+}
+
+.filter-section select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.filter-info {
+    margin-left: auto;
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+#tabelPanggilan {
+    width: 100% !important;
+    font-size: 0.85rem;
+}
+
+#tabelPanggilan thead th {
+    background: #3b82f6;
+    color: white;
+    padding: 12px 8px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+#tabelPanggilan tbody td {
+    padding: 10px 8px;
+    vertical-align: top;
+}
+
+#tabelPanggilan tbody tr:hover {
+    background-color: #f0f9ff;
+    cursor: pointer;
+}
+
+.link-surat {
+    display: inline-block;
+    padding: 4px 10px;
+    background: #22c55e;
+    color: white !important;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+.link-surat:hover {
+    background: #16a34a;
+}
+
+.loading-message {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
+.error-message {
+    text-align: center;
+    padding: 2rem;
+    color: #dc2626;
+    background: #fee2e2;
+    border-radius: 8px;
+}
+
+.badge-tahun {
+    display: inline-block;
+    padding: 2px 8px;
+    background: #e0e7ff;
+    color: #3730a3;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    #tabelPanggilan {
+        font-size: 0.75rem;
+    }
+    
+    .filter-section {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .filter-info {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+    .filter-info {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+}
+
+/* Fix CSS untuk mencegah overflow */
+.table-responsive-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Pastikan tabel tidak memaksa lebar parent */
+#tabelPanggilan {
+    width: 100% !important;
+    margin: 0 !important;
+}
+</style>
+
+<div class="panggilan-container">
+    <div class="panggilan-header">
+        <h2>Panggilan / Pemberitahuan Sidang</h2>
+        <p>Kepada Pihak Yang Sekarang Tidak Diketahui Tempat Tinggalnya Dengan Jelas Di Wilayah Republik Indonesia</p>
+    </div>
+
+    <div class="filter-section">
+        <label for="filterTahun">📅 Tahun Perkara:</label>
+        <select id="filterTahun">
+            <option value="">Semua Tahun</option>
+            <option value="2025" selected>2025</option>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="2021">2021</option>
+            <option value="2020">2020</option>
+        </select>
+        <span class="filter-info" id="dataInfo">Memuat...</span>
+    </div>
+
+    <div class="table-responsive-wrapper">
+        <table id="tabelPanggilan" class="display responsive nowrap" style="width:100%">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nomor Perkara</th>
+                    <th>Nama Yang Dipanggil</th>
+                    <th>Alamat Asal</th>
+                    <th>Panggilan I</th>
+                    <th>Panggilan II</th>
+                    <th>Panggilan Ikrar</th>
+                    <th>Tanggal Sidang</th>
+                    <th>PIP</th>
+                    <th>Ket</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="10" class="loading-message">Memuat data...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- jQuery (mungkin sudah ada di Joomla) -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
+<script>
+(function() {
+    // ============================================
+    // KONFIGURASI - GANTI URL INI DENGAN API ANDA
+    // ============================================
+    const API_URL = 'https://yoursite.com/api/panggilan';
+    // ============================================
+
+    // Format tanggal ke Indonesia
+    function formatTanggal(dateStr) {
+        if (!dateStr) return '-';
+        try {
+            const date = new Date(dateStr);
+            if (isNaN(date.getTime())) return dateStr; // Return as-is if invalid
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            return date.toLocaleDateString('id-ID', options);
+        } catch (e) {
+            return dateStr;
+        }
+    }
+
+    // Inisialisasi DataTable
+    let table;
+    let totalData = 0;
+
+    function updateDataInfo(count, tahun) {
+        const info = document.getElementById('dataInfo');
+        if (tahun) {
+            info.textContent = `Menampilkan ${count} data tahun ${tahun}`;
+        } else {
+            info.textContent = `Menampilkan ${count} data (semua tahun)`;
+        }
+    }
+
+    function initDataTable() {
+        if (table) {
+            table.destroy();
+        }
+
+        const tahun = document.getElementById('filterTahun').value;
+        const url = tahun ? `${API_URL}?tahun=${tahun}` : API_URL;
+        
+        document.getElementById('dataInfo').textContent = 'Memuat...';
+
+        table = $('#tabelPanggilan').DataTable({
+            ajax: {
+                url: url,
+                dataSrc: function(json) {
+                    totalData = json.data ? json.data.length : 0;
+                    updateDataInfo(totalData, tahun);
+                    return json.data || [];
+                },
+                error: function(xhr, error, thrown) {
+                    console.error('Error loading data:', error);
+                    document.getElementById('dataInfo').textContent = 'Error memuat data';
+                    $('#tabelPanggilan tbody').html(
+                        '<tr><td colspan="10" class="error-message">Gagal memuat data. Pastikan API terhubung.</td></tr>'
+                    );
+                }
+            },
+            columns: [
+                { 
+                    data: null, 
+                    searchable: false,
+                    orderable: false,
+                    width: '40px',
+                    targets: 0
+                },
+                { 
+                    data: 'nomor_perkara',
+                    render: function(data, type, row) {
+                        return data || '-';
+                    }
+                },
+                { 
+                    data: 'nama_dipanggil',
+                    render: function(data) {
+                        return data || '-';
+                    }
+                },
+                { 
+                    data: 'alamat_asal',
+                    render: function(data) {
+                        if (!data) return '-';
+                        // Batasi panjang untuk tampilan
+                        if (data.length > 80) {
+                            return '<span title="' + data.replace(/"/g, '&quot;') + '">' + data.substring(0, 80) + '...</span>';
+                        }
+                        return data;
+                    }
+                },
+                { 
+                    data: 'panggilan_1',
+                    render: function(data) {
+                        return formatTanggal(data);
+                    }
+                },
+                { 
+                    data: 'panggilan_2',
+                    render: function(data) {
+                        return formatTanggal(data);
+                    }
+                },
+                { 
+                    data: 'panggilan_ikrar',
+                    render: function(data) {
+                        return formatTanggal(data);
+                    }
+                },
+                { 
+                    data: 'tanggal_sidang',
+                    render: function(data) {
+                        return formatTanggal(data);
+                    }
+                },
+                { 
+                    data: 'pip',
+                    render: function(data) {
+                        return data || '-';
+                    }
+                },
+                { 
+                    data: 'link_surat',
+                    render: function(data) {
+                        if (data && data !== '#') {
+                            return '<a href="' + data + '" target="_blank" class="link-surat">📄 Lihat</a>';
+                        }
+                        return '-';
+                    }
+                }
+            ],
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: 'tr'
+                }
+            },
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json',
+                emptyTable: 'Tidak ada data untuk ditampilkan',
+                zeroRecords: 'Tidak ada data yang cocok dengan pencarian'
+            },
+            pageLength: 25,
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Semua"]],
+            order: [[1, 'asc']], // Order by nomor perkara
+            dom: '<"top"lf>rt<"bottom"ip><"clear">'
+        });
+
+        // Add event listener for dynamic numbering
+        table.on('order.dt search.dt', function () {
+            table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+                cell.innerHTML = i + 1 + '.';
+            });
+        }).draw();
+    }
+
+    // Event listener untuk filter tahun
+    document.getElementById('filterTahun').addEventListener('change', function() {
+        initDataTable();
+    });
+
+    // Inisialisasi saat halaman siap
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initDataTable);
+    } else {
+        initDataTable();
+    }
+})();
+</script>

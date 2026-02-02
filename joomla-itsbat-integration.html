@@ -1,0 +1,306 @@
+<!--
+=====================================================
+CODE UNTUK JOOMLA - PENGUMUMAN ITSBAT NIKAH
+Copy code ini ke artikel Joomla atau Custom HTML Module
+PENTING: Ganti API_URL dengan URL API Lumen Anda
+=====================================================
+-->
+
+<!-- CSS DataTables -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+
+<style>
+    .itsbat-container {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    .itsbat-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: linear-gradient(135deg, #166534 0%, #15803d 100%);
+        /* Green theme for Itsbat */
+        color: white;
+        border-radius: 8px;
+    }
+
+    .itsbat-header h2 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.5rem;
+        color: white !important;
+    }
+
+    .itsbat-header p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .filter-section {
+        margin-bottom: 1rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        background: #f8fafc;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .filter-section label {
+        font-weight: 600;
+        color: #334155;
+    }
+
+    .filter-section select {
+        padding: 0.5rem 1rem;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        background: white;
+        cursor: pointer;
+        min-width: 150px;
+    }
+
+    /* Fix CSS untuk mencegah overflow */
+    .table-responsive-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Pastikan tabel tidak memaksa lebar parent */
+    #tabelItsbat {
+        width: 100% !important;
+        margin: 0 !important;
+        font-size: 0.85rem;
+    }
+
+    #tabelItsbat thead th {
+        background: #15803d;
+        /* Green header */
+        color: white;
+        padding: 12px 8px;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    #tabelItsbat tbody td {
+        padding: 10px 8px;
+        vertical-align: top;
+    }
+
+    #tabelItsbat tbody tr:hover {
+        background-color: #f0fdf4;
+        /* Light green hover */
+        cursor: pointer;
+    }
+
+    .link-detail {
+        display: inline-block;
+        padding: 4px 10px;
+        background: #ca8a04;
+        /* Yellow/Gold for detail */
+        color: white !important;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        white-space: nowrap;
+    }
+
+    .link-detail:hover {
+        background: #a16207;
+    }
+
+    .loading-message {
+        text-align: center;
+        padding: 2rem;
+        color: #666;
+    }
+
+    @media (max-width: 768px) {
+        #tabelItsbat {
+            font-size: 0.75rem;
+        }
+
+        .filter-section {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+
+<div class="itsbat-container">
+    <div class="itsbat-header">
+        <h2>Pengumuman Itsbat Nikah</h2>
+        <p>
+            Diumumkan kepada masyarakat bahwa perkara dibawah ini telah diajukan permohonan Pengesahan Perkawinan/Istbat
+            Nikah.
+            Bagi pihak yang merasa dirugikan dapat mengajukan keberatan dalam tenggang waktu 14 hari sejak pengumuman
+            ini.
+        </p>
+    </div>
+
+    <div class="filter-section">
+        <label for="filterTahun">📅 Tahun Perkara:</label>
+        <select id="filterTahun">
+            <option value="">Semua Tahun</option>
+            <option value="2025" selected>2025</option>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="2021">2021</option>
+            <option value="2020">2020</option>
+        </select>
+        <span style="margin-left: auto; font-size: 0.85rem; color: #64748b;" id="dataInfo">Memuat...</span>
+    </div>
+
+    <div class="table-responsive-wrapper">
+        <table id="tabelItsbat" class="display responsive nowrap" style="width:100%">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nomor Perkara</th>
+                    <th>Pemohon I (Suami)</th>
+                    <th>Pemohon II (Istri)</th>
+                    <th>Tgl Pengumuman</th>
+                    <th>Tgl Sidang</th>
+                    <th>Detil</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="7" class="loading-message">Memuat data...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
+<script>
+    (function () {
+        // ============================================
+        // KONFIGURASI - GANTI URL INI DENGAN API ANDA
+        // ============================================
+        const API_URL = 'https://web-api.pa-penajam.go.id/api/itsbat';
+        // ============================================
+
+        // Format tanggal ke Indonesia
+        function formatTanggal(dateStr) {
+            if (!dateStr) return '-';
+            try {
+                const date = new Date(dateStr);
+                if (isNaN(date.getTime())) return dateStr;
+                const options = { day: 'numeric', month: 'long', year: 'numeric' };
+                return date.toLocaleDateString('id-ID', options);
+            } catch (e) {
+                return dateStr;
+            }
+        }
+
+        let table;
+
+        function updateDataInfo(count, tahun) {
+            const info = document.getElementById('dataInfo');
+            if (tahun) {
+                info.textContent = `Menampilkan ${count} data tahun ${tahun}`;
+            } else {
+                info.textContent = `Menampilkan ${count} data (semua tahun)`;
+            }
+        }
+
+        function initDataTable() {
+            if (table) {
+                table.destroy();
+            }
+
+            const tahun = document.getElementById('filterTahun').value;
+            const url = tahun ? `${API_URL}?tahun=${tahun}` : API_URL;
+
+            document.getElementById('dataInfo').textContent = 'Memuat...';
+
+            table = $('#tabelItsbat').DataTable({
+                ajax: {
+                    url: url,
+                    dataSrc: function (json) {
+                        const data = json.data || [];
+                        updateDataInfo(data.length, tahun);
+                        return data;
+                    },
+                    error: function (xhr, error, thrown) {
+                        console.error('Error loading data:', error);
+                        document.getElementById('dataInfo').textContent = 'Error memuat data';
+                        $('#tabelItsbat tbody').html(
+                            '<tr><td colspan="7" class="loading-message" style="color:red">Gagal memuat data API.</td></tr>'
+                        );
+                    }
+                },
+                columns: [
+                    {
+                        data: null,
+                        searchable: false,
+                        orderable: false,
+                        width: '40px',
+                        targets: 0
+                    },
+                    { data: 'nomor_perkara', render: d => d || '-' },
+                    { data: 'pemohon_1', render: d => d || '-' },
+                    { data: 'pemohon_2', render: d => d || '-' },
+                    { data: 'tanggal_pengumuman', render: d => formatTanggal(d) },
+                    { data: 'tanggal_sidang', render: d => formatTanggal(d) },
+                    {
+                        data: 'link_detail',
+                        render: function (data) {
+                            if (data && data !== '#') {
+                                return '<a href="' + data + '" target="_blank" class="link-detail">📄 Lihat</a>';
+                            }
+                            return '-';
+                        }
+                    }
+                ],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                },
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
+                },
+                pageLength: 25,
+                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Semua"]],
+                order: [[5, 'desc']], // Sort by Tanggal Sidang Descending
+                dom: '<"top"lf>rt<"bottom"ip><"clear">'
+            });
+
+            // Dynamic numbering 1, 2, 3...
+            table.on('order.dt search.dt', function () {
+                table.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1 + '.';
+                });
+            }).draw();
+        }
+
+        document.getElementById('filterTahun').addEventListener('change', initDataTable);
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initDataTable);
+        } else {
+            initDataTable();
+        }
+    })();
+</script>

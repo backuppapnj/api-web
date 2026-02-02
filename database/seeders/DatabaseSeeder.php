@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             PanggilanSeeder::class,
             ItsbatSeeder::class,
             PanggilanEcourtSeeder::class,
+            LhkpnSeeder::class,
         ]);
     }
 }

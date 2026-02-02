@@ -1,0 +1,293 @@
+<!--
+=====================================================
+CODE UNTUK JOOMLA 3 - AGENDA PIMPINAN
+Copy code ini ke artikel Joomla atau Custom HTML Module
+=====================================================
+-->
+
+<!-- CSS DataTables -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+
+<style>
+    .agenda-wrapper {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    .agenda-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        padding: 2rem 1rem;
+        background: linear-gradient(135deg, #991b1b 0%, #ef4444 100%);
+        color: white;
+        border-radius: 8px;
+    }
+
+    .agenda-header h2 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.8rem;
+        color: white !important;
+    }
+
+    .agenda-header p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 0.95rem;
+    }
+
+    .filter-section {
+        margin-bottom: 1rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        background: #f8fafc;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .filter-section label {
+        font-weight: 600;
+        color: #334155;
+    }
+
+    .filter-section select {
+        padding: 0.5rem 1rem;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        background: white;
+        cursor: pointer;
+        min-width: 150px;
+    }
+
+    .filter-section select:focus {
+        outline: none;
+        border-color: #991b1b;
+        box-shadow: 0 0 0 3px rgba(153, 27, 27, 0.1);
+    }
+
+    .filter-info {
+        margin-left: auto;
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+
+    /* Standard Table Styling */
+    #tabelAgenda {
+        width: 100% !important;
+        font-size: 0.9rem;
+    }
+
+    #tabelAgenda thead th {
+        background: #991b1b;
+        color: white;
+        padding: 12px 10px;
+        text-align: left;
+        font-weight: 600;
+    }
+
+    #tabelAgenda tbody td {
+        padding: 12px 10px;
+        vertical-align: top;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    #tabelAgenda tbody tr:hover {
+        background-color: #fef2f2;
+    }
+
+    /* Day badge */
+    .day-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        background: #fee2e2;
+        color: #991b1b;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+    }
+
+    @media (max-width: 768px) {
+        #tabelAgenda {
+            font-size: 0.8rem;
+        }
+
+        .filter-section {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .filter-info {
+            margin-left: 0;
+            margin-top: 0.5rem;
+        }
+    }
+</style>
+
+<div class="agenda-wrapper">
+    <div class="agenda-header">
+        <h2>Agenda Pimpinan</h2>
+        <p>Jadwal Kegiatan Ketua dan Pimpinan Pengadilan Agama Penajam Tahun 2025</p>
+    </div>
+
+    <div class="filter-section">
+        <label for="filterBulan">Pilih Bulan:</label>
+        <select id="filterBulan">
+            <option value="">Semua Bulan</option>
+            <option value="01">Januari</option>
+            <option value="02">Februari</option>
+            <option value="03">Maret</option>
+            <option value="04">April</option>
+            <option value="05">Mei</option>
+            <option value="06">Juni</option>
+            <option value="07">Juli</option>
+            <option value="08">Agustus</option>
+            <option value="09">September</option>
+            <option value="10">Oktober</option>
+            <option value="11">November</option>
+            <option value="12">Desember</option>
+        </select>
+        <span class="filter-info" id="dataInfo">Memuat...</span>
+    </div>
+
+    <div style="overflow-x:auto;">
+        <table id="tabelAgenda" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Tanggal</th>
+                    <th>Isi Agenda</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="3" style="text-align:center;">Memuat data...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+<script>
+    (function () {
+        // KONFIGURASI API
+        const API_URL = 'https://web-api.pa-penajam.go.id/api/agenda';
+
+        // Format tanggal ke Indonesia
+        function formatTanggal(dateStr) {
+            if (!dateStr) return '-';
+            try {
+                const date = new Date(dateStr);
+                if (isNaN(date.getTime())) return dateStr;
+
+                const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                const dayName = days[date.getDay()];
+
+                const options = { day: 'numeric', month: 'long', year: 'numeric' };
+                const formattedDate = date.toLocaleDateString('id-ID', options);
+
+                return '<span class="day-badge">' + dayName + '</span><br>' + formattedDate;
+            } catch (e) {
+                return dateStr;
+            }
+        }
+
+        let table;
+        let totalData = 0;
+
+        function updateDataInfo(count, bulan) {
+            const info = document.getElementById('dataInfo');
+            const bulanNames = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            if (bulan) {
+                info.textContent = `Menampilkan ${count} data bulan ${bulanNames[parseInt(bulan)]}`;
+            } else {
+                info.textContent = `Menampilkan ${count} data (semua bulan)`;
+            }
+        }
+
+        function initDataTable() {
+            if (table) {
+                table.destroy();
+            }
+
+            const bulan = document.getElementById('filterBulan').value;
+            const url = bulan ? `${API_URL}?bulan=${bulan}` : API_URL;
+
+            document.getElementById('dataInfo').textContent = 'Memuat...';
+
+            table = $('#tabelAgenda').DataTable({
+                ajax: {
+                    url: url,
+                    dataSrc: function (json) {
+                        totalData = json.data ? json.data.length : 0;
+                        updateDataInfo(totalData, bulan);
+                        return json.data || [];
+                    },
+                    error: function (xhr, error, thrown) {
+                        console.error('Error loading data:', error);
+                        document.getElementById('dataInfo').textContent = 'Error memuat data';
+                    }
+                },
+                columns: [
+                    {
+                        data: null,
+                        searchable: false,
+                        orderable: false,
+                        width: '40px',
+                        defaultContent: ''
+                    },
+                    {
+                        data: 'tanggal_agenda',
+                        width: '150px',
+                        render: function (data) {
+                            return formatTanggal(data);
+                        }
+                    },
+                    {
+                        data: 'isi_agenda',
+                        render: function (data) {
+                            return data || '-';
+                        }
+                    }
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json',
+                    emptyTable: 'Tidak ada agenda untuk ditampilkan',
+                    zeroRecords: 'Tidak ada data yang cocok dengan pencarian'
+                },
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Semua"]],
+                order: [[1, 'desc']],
+                dom: '<"top"lf>rt<"bottom"ip><"clear">',
+                drawCallback: function (settings) {
+                    var api = this.api();
+                    var start = api.page.info().start;
+                    api.column(0, { page: 'current' }).nodes().each(function (cell, i) {
+                        cell.innerHTML = (start + i + 1) + '.';
+                    });
+                }
+            });
+        }
+
+        // Event listener untuk filter bulan
+        document.getElementById('filterBulan').addEventListener('change', function () {
+            initDataTable();
+        });
+
+        // Inisialisasi saat halaman siap
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initDataTable);
+        } else {
+            initDataTable();
+        }
+    })();
+</script>

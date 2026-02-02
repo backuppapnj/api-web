@@ -29,6 +29,13 @@ $router->group(['prefix' => 'api', 'middleware' => 'throttle:100,1'], function (
     // Agenda Pimpinan Routes
     $router->get('agenda', 'AgendaPimpinanController@index');
     $router->get('agenda/{id:[0-9]+}', 'AgendaPimpinanController@show');
+
+    // LHKPN Routes
+    $router->get('lhkpn', 'LhkpnController@index');
+    $router->post('lhkpn', 'LhkpnController@store');
+    $router->get('lhkpn/{id:[0-9]+}', 'LhkpnController@show');
+    $router->put('lhkpn/{id:[0-9]+}', 'LhkpnController@update');
+    $router->delete('lhkpn/{id:[0-9]+}', 'LhkpnController@destroy');
 });
 
 // SECURITY: Protected routes dengan API Key + rate limiting ketat (30 request/menit)
