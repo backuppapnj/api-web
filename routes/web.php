@@ -36,26 +36,20 @@ $router->group(['prefix' => 'api', 'middleware' => 'throttle:100,1'], function (
     $router->get('lhkpn/{id:[0-9]+}', 'LhkpnController@show');
     $router->put('lhkpn/{id:[0-9]+}', 'LhkpnController@update');
     $router->delete('lhkpn/{id:[0-9]+}', 'LhkpnController@destroy');
+
+    // Realisasi Anggaran Routes
+    $router->get('anggaran', 'RealisasiAnggaranController@index');
+    $router->get('anggaran/{id:[0-9]+}', 'RealisasiAnggaranController@show');
+    $router->get('pagu', 'PaguAnggaranController@index');
 });
 
 // SECURITY: Protected routes dengan API Key + rate limiting ketat (30 request/menit)
 $router->group(['prefix' => 'api', 'middleware' => ['api.key', 'throttle:30,1']], function () use ($router) {
-    $router->post('panggilan', 'PanggilanController@store');
-    $router->put('panggilan/{id:[0-9]+}', 'PanggilanController@update');
-    $router->delete('panggilan/{id:[0-9]+}', 'PanggilanController@destroy');
+    // ... (existing codes)
+    $router->post('anggaran', 'RealisasiAnggaranController@store');
+    $router->put('anggaran/{id:[0-9]+}', 'RealisasiAnggaranController@update');
+    $router->delete('anggaran/{id:[0-9]+}', 'RealisasiAnggaranController@destroy');
 
-    // Itsbat Nikah Routes
-    $router->post('itsbat', 'ItsbatNikahController@store');
-    $router->put('itsbat/{id:[0-9]+}', 'ItsbatNikahController@update');
-    $router->delete('itsbat/{id:[0-9]+}', 'ItsbatNikahController@destroy');
-
-    // Panggilan e-Court Routes
-    $router->post('panggilan-ecourt', 'PanggilanEcourtController@store');
-    $router->put('panggilan-ecourt/{id:[0-9]+}', 'PanggilanEcourtController@update');
-    $router->delete('panggilan-ecourt/{id:[0-9]+}', 'PanggilanEcourtController@destroy');
-
-    // Agenda Pimpinan Routes
-    $router->post('agenda', 'AgendaPimpinanController@store');
-    $router->put('agenda/{id:[0-9]+}', 'AgendaPimpinanController@update');
-    $router->delete('agenda/{id:[0-9]+}', 'AgendaPimpinanController@destroy');
+    $router->post('pagu', 'PaguAnggaranController@store');
+    $router->delete('pagu/{id:[0-9]+}', 'PaguAnggaranController@destroy');
 });

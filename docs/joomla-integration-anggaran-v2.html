@@ -1,0 +1,224 @@
+<style>
+    .anggaran-v2-container {
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        color: #333;
+        overflow-x: auto;
+    }
+
+    .anggaran-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        min-width: 900px;
+    }
+
+    .anggaran-table th, .anggaran-table td {
+        border: 1px solid #000;
+        padding: 4px 6px;
+        text-align: right;
+    }
+
+    .anggaran-table th {
+        background-color: #f3f4f6;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .header-dipa {
+        background-color: #e0f2fe !important;
+        color: #0369a1;
+        font-size: 14px;
+        text-align: center !important;
+        padding: 8px !important;
+    }
+
+    .col-month { text-align: center !important; font-weight: bold; background-color: #f9fafb; width: 100px; }
+    .col-label { text-align: left !important; font-weight: bold; }
+    .col-jumlah { background-color: #f3f4f6; font-weight: bold; }
+    .col-doc { text-align: center !important; }
+
+    .btn-doc {
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .btn-doc:hover { text-decoration: underline; }
+
+    .loading-overlay {
+        text-align: center;
+        padding: 20px;
+        font-style: italic;
+        color: #666;
+    }
+
+    .tabs-tahun {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 15px;
+    }
+
+    .tab-item {
+        padding: 6px 15px;
+        background: #eee;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        border-radius: 4px 4px 0 0;
+    }
+
+    .tab-item.active {
+        background: #fff;
+        border-bottom: 1px solid #fff;
+        font-weight: bold;
+        color: #0369a1;
+    }
+</style>
+
+<div class="anggaran-v2-container">
+    <div class="tabs-tahun" id="yearTabs">
+        <div class="tab-item active" data-year="2025">TAHUN 2025</div>
+        <div class="tab-item" data-year="2024">TAHUN 2024</div>
+    </div>
+
+    <div id="contentAnggaran">
+        <!-- Content will be injected here -->
+        <div class="loading-overlay">Memuat data anggaran...</div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const API_URL = 'https://web-api.pa-penajam.go.id/api/anggaran';
+        const MONTHS = ["", "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
+        
+        async function fetchData(year) {
+            try {
+                const response = await fetch(`${API_URL}?tahun=${year}`);
+                const result = await response.json();
+                renderTables(result.data, year);
+            } catch (e) {
+                document.getElementById('contentAnggaran').innerHTML = "Gagal memuat data.";
+            }
+        }
+
+        function formatRp(val) {
+            if (!val || val == 0) return "-";
+            return "Rp " + new Intl.NumberFormat('id-ID').format(val);
+        }
+
+        function renderTables(data, year) {
+            let html = "";
+            
+            // Filter per DIPA
+            const dipa01 = data.filter(d => d.dipa === 'DIPA 01');
+            const dipa04 = data.filter(d => d.dipa === 'DIPA 04');
+
+            // Render DIPA 01 Table
+            html += generateDipaTable('DIPA 01 (BADAN URUSAN ADMINISTRASI)', 'DIPA 01', ['Belanja Pegawai', 'Belanja Barang', 'Belanja Modal'], dipa01, year);
+            html += "<div style='height: 30px;'></div>";
+            // Render DIPA 04 Table
+            html += generateDipaTable('DIPA 04 (DIRJEN BADAN PERADILAN AGAMA)', 'DIPA 04', ['POSBAKUM', 'Pembebasan Biaya Perkara', 'Sidang Di Luar Gedung'], dipa04, year);
+
+            document.getElementById('contentAnggaran').innerHTML = html;
+        }
+
+        function generateDipaTable(title, dipaCode, categories, data, year) {
+            // Calculate Pagunya (ambil dari data bulan manapun yang punya kategori tersebut, biasanya sama)
+            const pagus = {};
+            categories.forEach(cat => {
+                const item = data.find(d => d.kategori === cat);
+                pagus[cat] = item ? item.pagu : 0;
+            });
+            const totalPagu = Object.values(pagus).reduce((a, b) => a + b, 0);
+
+            let tableHtml = `<table class="anggaran-table">
+                <thead>
+                    <tr><th colspan="8" class="header-dipa">${title}</th></tr>
+                    <tr>
+                        <th style="width:100px">${dipaCode}</th>
+                        ${categories.map(cat => `<th>${formatRp(pagus[cat])}</th>`).join('')}
+                        <th class="col-jumlah">${formatRp(totalPagu)}</th>
+                        <th rowspan="2">Persentase Realisasi Anggaran</th>
+                        <th rowspan="2">Realisasi Anggaran Belanja</th>
+                        <th rowspan="2">Realisasi Anggaran</th>
+                    </tr>
+                    <tr>
+                        <th>TAHUN ${year}</th>
+                        ${categories.map(cat => `<th>${cat}</th>`).join('')}
+                        <th class="col-jumlah">Jumlah</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+            let totalPerCategory = {};
+            categories.forEach(c => totalPerCategory[c] = 0);
+
+            // Monthly rows
+            for (let m = 1; m <= 12; m++) {
+                let monthlyData = data.filter(d => d.bulan === m);
+                let rowSum = 0;
+                let docLink = "";
+
+                tableHtml += `<tr><td class="col-month">${MONTHS[m]}</td>`;
+                
+                categories.forEach(cat => {
+                    const entry = monthlyData.find(d => d.kategori === cat);
+                    const val = entry ? entry.realisasi : 0;
+                    if (entry && entry.link_dokumen) docLink = entry.link_dokumen;
+                    
+                    tableHtml += `<td>${formatRp(val)}</td>`;
+                    rowSum += val;
+                    totalPerCategory[cat] += val;
+                });
+
+                tableHtml += `<td class="col-jumlah">${formatRp(rowSum)}</td>`;
+                
+                // Extra columns for first month (span 12)
+                if (m === 1) {
+                    tableHtml += `<td rowspan="12"></td><td rowspan="12" class="col-doc">${docLink ? `<a href="${docLink}" target="_blank" class="btn-doc">doc</a>` : '-'}</td>`;
+                    tableHtml += `<td rowspan="6" style="text-align:center">Semester 1</td>`;
+                } else if (m === 7) {
+                    tableHtml += `<td rowspan="6" style="text-align:center">Semester 2</td>`;
+                }
+
+                tableHtml += `</tr>`;
+            }
+
+            // JUMLAH row
+            const grandTotal = Object.values(totalPerCategory).reduce((a, b) => a + b, 0);
+            const totalPercentage = totalPagu > 0 ? (grandTotal / totalPagu * 100).toFixed(2) : 0;
+
+            tableHtml += `<tr style="background:#f9fafb; font-weight:bold;">
+                <td class="col-month">JUMLAH</td>
+                ${categories.map(cat => `<td>${formatRp(totalPerCategory[cat])}</td>`).join('')}
+                <td class="col-jumlah">${formatRp(grandTotal)}</td>
+                <td style="text-align:center">${totalPercentage}%</td>
+                <td></td><td></td>
+            </tr>`;
+
+            // SISA row
+            tableHtml += `<tr style="background:#fff; font-weight:bold;">
+                <td class="col-month">SISA</td>
+                ${categories.map(cat => `<td>${formatRp(pagus[cat] - totalPerCategory[cat])}</td>`).join('')}
+                <td class="col-jumlah">${formatRp(totalPagu - grandTotal)}</td>
+                <td style="text-align:center">${(100 - totalPercentage).toFixed(2)}%</td>
+                <td></td><td></td>
+            </tr>`;
+
+            tableHtml += `</tbody></table>`;
+            return tableHtml;
+        }
+
+        // Tab events
+        document.querySelectorAll('.tab-item').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                fetchData(this.dataset.year);
+            });
+        });
+
+        fetchData('2025');
+    })();
+</script>

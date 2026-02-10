@@ -1,0 +1,264 @@
+<!-- CSS DataTables -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<style>
+    .anggaran-wrapper {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    .anggaran-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        padding: 2rem 1rem;
+        background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        color: white;
+        border-radius: 8px;
+    }
+
+    .anggaran-header h2 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.8rem;
+        color: white !important;
+    }
+
+    .anggaran-header p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 0.95rem;
+    }
+
+    /* Tabs Styling */
+    .anggaran-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #e2e8f0;
+        overflow-x: auto;
+        padding-bottom: 2px;
+    }
+
+    .tab-btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        background: none;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s;
+        white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+        color: #059669;
+        background-color: #ecfdf5;
+        border-radius: 4px 4px 0 0;
+    }
+
+    .tab-btn.active {
+        color: #059669;
+        border-bottom-color: #059669;
+    }
+
+    /* Table Styling */
+    #tabelAnggaran {
+        width: 100% !important;
+        font-size: 0.9rem;
+    }
+
+    #tabelAnggaran thead th {
+        background: #059669;
+        color: white;
+        padding: 12px 10px;
+        text-align: left;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    #tabelAnggaran tbody td {
+        padding: 12px 10px;
+        vertical-align: middle;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    #tabelAnggaran tbody tr:hover {
+        background-color: #f0fdf4;
+    }
+
+    /* Progress Bar */
+    .progress-container {
+        width: 100%;
+        background-color: #e2e8f0;
+        border-radius: 10px;
+        height: 12px;
+        overflow: hidden;
+        margin-top: 4px;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background-color: #10b981;
+        transition: width 0.5s ease-in-out;
+    }
+
+    .percentage-text {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #065f46;
+    }
+
+    .currency {
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .badge-dipa {
+        background: #f1f5f9;
+        color: #475569;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        border: 1px solid #e2e8f0;
+    }
+
+    @media (max-width: 768px) {
+        #tabelAnggaran {
+            font-size: 0.8rem;
+        }
+        .currency {
+            font-size: 0.8rem;
+        }
+    }
+</style>
+
+<div class="anggaran-wrapper">
+    <div class="anggaran-header">
+        <h2>Realisasi Anggaran</h2>
+        <p>Transparansi Penggunaan Anggaran DIPA 01 & DIPA 04 - PA Penajam</p>
+    </div>
+
+    <div class="anggaran-tabs" id="yearTabs">
+        <button class="tab-btn active" data-year="2025">2025</button>
+        <button class="tab-btn" data-year="2024">2024</button>
+    </div>
+
+    <div style="overflow-x:auto; margin-top: 1rem;">
+        <table id="tabelAnggaran" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th style="width: 5%">No</th>
+                    <th style="width: 10%">DIPA</th>
+                    <th style="width: 25%">Jenis Belanja</th>
+                    <th style="width: 20%">Pagu</th>
+                    <th style="width: 20%">Realisasi</th>
+                    <th style="width: 20%">Persentase</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="6" style="text-align:center;">Memuat data...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+<script>
+    (function () {
+        const API_URL = 'https://web-api.pa-penajam.go.id/api/anggaran';
+
+        let table;
+        let currentYear = '2025';
+
+        function formatRupiah(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
+
+        function initDataTable(year) {
+            if (table) {
+                table.destroy();
+            }
+
+            const url = `${API_URL}?tahun=${year}`;
+
+            table = $('#tabelAnggaran').DataTable({
+                ajax: {
+                    url: url,
+                    dataSrc: function (json) {
+                        return json.data || [];
+                    },
+                    error: function () {
+                        $('#tabelAnggaran tbody').html('<tr><td colspan="6" class="text-center">Gagal memuat data.</td></tr>');
+                    }
+                },
+                columns: [
+                    {
+                        data: null,
+                        render: function (data, type, row, meta) {
+                            return meta.row + 1;
+                        }
+                    },
+                    { 
+                        data: 'dipa',
+                        render: function(data) {
+                            return '<span class="badge-dipa">' + data + '</span>';
+                        }
+                    },
+                    { 
+                        data: 'kategori',
+                        render: function(data) {
+                            return '<strong>' + data + '</strong>';
+                        }
+                    },
+                    { 
+                        data: 'pagu',
+                        render: function(data) {
+                            return '<span class="currency">' + formatRupiah(data) + '</span>';
+                        }
+                    },
+                    { 
+                        data: 'realisasi',
+                        render: function(data) {
+                            return '<span class="currency" style="color:#059669;">' + formatRupiah(data) + '</span>';
+                        }
+                    },
+                    {
+                        data: 'persentase',
+                        render: function (data) {
+                            const val = parseFloat(data) || 0;
+                            return '<div class="percentage-text">' + val.toFixed(2) + '%</div>' +
+                                '<div class="progress-container">' +
+                                '<div class="progress-bar" style="width: ' + val + '%"></div>' +
+                                '</div>';
+                        }
+                    }
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
+                },
+                pageLength: 25,
+                ordering: true,
+                dom: 'rt',
+            });
+        }
+
+        $('.tab-btn').on('click', function () {
+            $('.tab-btn').removeClass('active');
+            $(this).addClass('active');
+            currentYear = $(this).data('year');
+            initDataTable(currentYear);
+        });
+
+        $(document).ready(() => initDataTable(currentYear));
+    })();
+</script>

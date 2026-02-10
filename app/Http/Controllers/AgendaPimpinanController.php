@@ -28,17 +28,20 @@ class AgendaPimpinanController extends Controller
             $query->whereYear('tanggal_agenda', $request->tahun);
         }
 
-        // Limit results if requested (e.g. for module/sidebar)
-        if ($request->has('limit')) {
-            $query->limit((int) $request->limit);
-        }
-
         // Default sort: Latest date first
-        $data = $query->orderBy('tanggal_agenda', 'desc')->get();
+        $query->orderBy('tanggal_agenda', 'desc');
+
+        // Check if pagination is requested (default yes for admin)
+        $perPage = $request->input('per_page', 10);
+        $paginated = $query->paginate($perPage);
 
         return response()->json([
             'status' => 'success',
-            'data' => $data
+            'data' => $paginated->items(),
+            'total' => $paginated->total(),
+            'current_page' => $paginated->currentPage(),
+            'last_page' => $paginated->lastPage(),
+            'per_page' => $paginated->perPage(),
         ]);
     }
 
