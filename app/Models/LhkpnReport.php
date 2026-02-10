@@ -16,6 +16,8 @@ class LhkpnReport extends Model
         'jenis_laporan',
         'tanggal_lapor',
         'link_tanda_terima',
+        'link_pengumuman',
+        'link_spt',
         'link_dokumen_pendukung',
     ];
 

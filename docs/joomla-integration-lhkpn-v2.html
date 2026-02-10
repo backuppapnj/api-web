@@ -1,0 +1,118 @@
+<style>
+    .lhkpn-container { font-family: 'Segoe UI', Arial, sans-serif; color: #334155; }
+    .lhkpn-header { text-align: center; padding: 20px; background: linear-gradient(to right, #d97706, #f59e0b); color: white; border-radius: 10px; margin-bottom: 20px; }
+    .lhkpn-section-title { font-size: 1.2rem; font-weight: bold; margin: 25px 0 10px 0; padding-bottom: 5px; border-bottom: 2px solid #f59e0b; color: #92400e; }
+    
+    .lhkpn-table { width: 100%; border-collapse: collapse; background: white; font-size: 0.85rem; margin-bottom: 30px; }
+    .lhkpn-table th { background: #fff7ed; color: #92400e; padding: 12px; border: 1px solid #fed7aa; text-align: left; }
+    .lhkpn-table td { padding: 10px; border: 1px solid #fed7aa; vertical-align: middle; }
+    .lhkpn-table tr:hover { background: #fffaf0; }
+    
+    .text-center { text-align: center !important; }
+    .btn-check { color: #16a34a; font-weight: bold; text-decoration: none; font-size: 1.1rem; }
+    .btn-check:hover { transform: scale(1.2); }
+    
+    .tabs-tahun { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+    .tab-item { padding: 8px 20px; background: #f1f5f9; border-radius: 20px; cursor: pointer; font-weight: 600; white-space: nowrap; transition: 0.3s; }
+    .tab-item.active { background: #d97706; color: white; }
+</style>
+
+<div class="lhkpn-container">
+    <div class="lhkpn-header">
+        <h2 style="color:white !important; margin:0;">Transparansi LHKPN & SPT</h2>
+        <p style="margin:5px 0 0 0; opacity:0.9;">Kepatuhan Laporan Harta Kekayaan & Pajak Tahunan PA Penajam</p>
+    </div>
+
+    <div class="tabs-tahun" id="yearTabs">
+        <div class="tab-item active" data-year="2025">2025</div>
+        <div class="tab-item" data-year="2024">2024</div>
+        <div class="tab-item" data-year="2023">2023</div>
+        <div class="tab-item" data-year="2022">2022</div>
+        <div class="tab-item" data-year="2021">2021</div>
+    </div>
+
+    <div id="lhkpnContent">
+        <div class="lhkpn-section-title">Laporan Harta Kekayaan Pejabat Negara (LHKPN)</div>
+        <table class="lhkpn-table" id="tablePejabat">
+            <thead>
+                <tr>
+                    <th>Nama / Jabatan</th>
+                    <th class="text-center">Tanggal Lapor</th>
+                    <th class="text-center">Tanda Terima</th>
+                    <th class="text-center">Pengumuman</th>
+                    <th class="text-center">SPT</th>
+                </tr>
+            </thead>
+            <tbody><tr><td colspan="5" class="text-center">Memuat data...</td></tr></tbody>
+        </table>
+
+        <div class="lhkpn-section-title">Laporan SPT Tahunan / LHKASN</div>
+        <table class="lhkpn-table" id="tableASN">
+            <thead>
+                <tr>
+                    <th>Nama / Jabatan</th>
+                    <th class="text-center">Tanggal Lapor</th>
+                    <th class="text-center">Bukti Pelaporan</th>
+                    <th class="text-center">SPT</th>
+                </tr>
+            </thead>
+            <tbody><tr><td colspan="4" class="text-center">Memuat data...</td></tr></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const API_URL = 'https://web-api.pa-penajam.go.id/api/lhkpn';
+        
+        async function loadData(year) {
+            try {
+                const res = await fetch(`${API_URL}?tahun=${year}&per_page=100`);
+                const json = await res.json();
+                renderData(json.data);
+            } catch (e) { console.error(e); }
+        }
+
+        function renderData(data) {
+            const pejabat = data.filter(d => d.jenis_laporan === 'LHKPN');
+            const asn = data.filter(d => d.jenis_laporan === 'SPT Tahunan');
+
+            const pejabatBody = pejabat.map(d => `
+                <tr>
+                    <td><strong>${d.nama}</strong><br><small style="color:#64748b">${d.jabatan}</small></td>
+                    <td class="text-center">${formatDate(d.tanggal_lapor)}</td>
+                    <td class="text-center">${d.link_tanda_terima ? `<a href="${d.link_tanda_terima}" target="_blank" class="btn-check">√</a>` : '-'}</td>
+                    <td class="text-center">${d.link_pengumuman ? `<a href="${d.link_pengumuman}" target="_blank" class="btn-check">√</a>` : '-'}</td>
+                    <td class="text-center">${d.link_spt ? `<a href="${d.link_spt}" target="_blank" class="btn-check">√</a>` : '-'}</td>
+                </tr>
+            `).join('') || '<tr><td colspan="5" class="text-center">Tidak ada data</td></tr>';
+
+            const asnBody = asn.map(d => `
+                <tr>
+                    <td><strong>${d.nama}</strong><br><small style="color:#64748b">${d.jabatan}</small></td>
+                    <td class="text-center">${formatDate(d.tanggal_lapor)}</td>
+                    <td class="text-center">${d.link_tanda_terima || d.link_dokumen_pendukung ? `<a href="${d.link_tanda_terima || d.link_dokumen_pendukung}" target="_blank" class="btn-check">√</a>` : '-'}</td>
+                    <td class="text-center">${d.link_spt ? `<a href="${d.link_spt}" target="_blank" class="btn-check">√</a>` : '-'}</td>
+                </tr>
+            `).join('') || '<tr><td colspan="4" class="text-center">Tidak ada data</td></tr>';
+
+            document.querySelector('#tablePejabat tbody').innerHTML = pejabatBody;
+            document.querySelector('#tableASN tbody').innerHTML = asnBody;
+        }
+
+        function formatDate(str) {
+            if(!str) return '-';
+            return new Date(str).toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' });
+        }
+
+        document.querySelectorAll('.tab-item').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                loadData(this.dataset.year);
+            });
+        });
+
+        loadData('2025');
+    })();
+</script>
