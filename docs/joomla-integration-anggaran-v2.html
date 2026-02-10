@@ -1,9 +1,22 @@
+<!-- Load Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
     .anggaran-v2-container {
         font-family: Arial, sans-serif;
         font-size: 11px;
         color: #333;
         overflow-x: auto;
+    }
+
+    .chart-container {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 25px;
+        height: 300px;
+        position: relative;
     }
 
     .anggaran-table {
@@ -79,8 +92,12 @@
 </style>
 
 <div class="anggaran-v2-container">
-    <!-- Tab akan diisi otomatis oleh JavaScript -->
     <div class="tabs-tahun" id="yearTabs"></div>
+
+    <!-- Grafik Section -->
+    <div class="chart-container">
+        <canvas id="monthlyChart"></canvas>
+    </div>
 
     <div id="contentAnggaran">
         <div class="loading-overlay">Memuat data anggaran...</div>
@@ -90,25 +107,22 @@
 <script>
     (function() {
         const API_URL = 'https://web-api.pa-penajam.go.id/api/anggaran';
-        const MONTHS = ["", "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
+        const MONTHS = ["", "Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+        const FULL_MONTHS = ["", "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
         
-        // KONFIGURASI TAHUN
         const START_YEAR = 2023;
         const CURRENT_YEAR = new Date().getFullYear();
+        let myChart = null;
 
         function initTabs() {
             const tabsContainer = document.getElementById('yearTabs');
             let tabsHtml = "";
-            
-            // Loop dari tahun terbaru ke terlama
             for (let y = CURRENT_YEAR; y >= START_YEAR; y--) {
                 const activeClass = (y === CURRENT_YEAR) ? "active" : "";
                 tabsHtml += `<div class="tab-item ${activeClass}" data-year="${y}">TAHUN ${y}</div>`;
             }
-            
             tabsContainer.innerHTML = tabsHtml;
 
-            // Tambahkan event listener
             document.querySelectorAll('.tab-item').forEach(tab => {
                 tab.addEventListener('click', function() {
                     document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
@@ -121,12 +135,87 @@
         async function fetchData(year) {
             document.getElementById('contentAnggaran').innerHTML = '<div class="loading-overlay">Memuat data anggaran '+year+'...</div>';
             try {
-                const response = await fetch(`${API_URL}?tahun=${year}&per_page=200`);
+                const response = await fetch(`${API_URL}?tahun=${year}&per_page=300`);
                 const result = await response.json();
-                renderTables(result.data, year);
+                renderAll(result.data, year);
             } catch (e) {
                 document.getElementById('contentAnggaran').innerHTML = "Gagal memuat data.";
             }
+        }
+
+        function renderAll(data, year) {
+            updateChart(data, year);
+            renderTables(data, year);
+        }
+
+        function updateChart(data, year) {
+            const ctx = document.getElementById('monthlyChart').getContext('2d');
+            
+            // Proses data bulanan
+            const dipa01Monthly = new Array(12).fill(0);
+            const dipa04Monthly = new Array(12).fill(0);
+
+            data.forEach(item => {
+                if (item.bulan >= 1 && item.bulan <= 12) {
+                    if (item.dipa === 'DIPA 01') dipa01Monthly[item.bulan - 1] += item.realisasi;
+                    if (item.dipa === 'DIPA 04') dipa04Monthly[item.bulan - 1] += item.realisasi;
+                }
+            });
+
+            if (myChart) myChart.destroy();
+
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: MONTHS.slice(1),
+                    datasets: [
+                        {
+                            label: 'Realisasi DIPA 01',
+                            data: dipa01Monthly,
+                            backgroundColor: 'rgba(3, 105, 161, 0.7)',
+                            borderColor: 'rgb(3, 105, 161)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Realisasi DIPA 04',
+                            data: dipa04Monthly,
+                            backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                            borderColor: 'rgb(16, 185, 129)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Tren Penyerapan Anggaran Bulanan - Tahun ' + year,
+                            font: { size: 14 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(context.raw);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    if (value >= 1000000000) return (value / 1000000000).toFixed(1) + ' M';
+                                    if (value >= 1000000) return (value / 1000000).toFixed(0) + ' jt';
+                                    return value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         function formatRp(val) {
@@ -136,7 +225,6 @@
 
         function renderTables(data, year) {
             let html = "";
-            
             const dipa01 = data.filter(d => d.dipa === 'DIPA 01');
             const dipa04 = data.filter(d => d.dipa === 'DIPA 04');
 
@@ -185,7 +273,7 @@
                 const entryWithDoc = monthlyData.find(d => d.link_dokumen && d.link_dokumen !== "");
                 if (entryWithDoc) docLink = entryWithDoc.link_dokumen;
 
-                tableHtml += `<tr><td class="col-month">${MONTHS[m]}</td>`;
+                tableHtml += `<tr><td class="col-month">${FULL_MONTHS[m]}</td>`;
                 
                 categories.forEach(cat => {
                     const entry = monthlyData.find(d => d.kategori === cat);
@@ -197,17 +285,12 @@
 
                 tableHtml += `<td class="col-jumlah">${formatRp(rowSum)}</td>`;
                 
-                if (m === 1) {
-                    tableHtml += `<td rowspan="12" style="background:#fff"></td>`;
-                }
+                if (m === 1) tableHtml += `<td rowspan="12" style="background:#fff"></td>`;
                 
                 tableHtml += `<td class="col-doc">${docLink ? `<a href="${docLink}" target="_blank" class="btn-doc">doc</a>` : '-'}</td>`;
 
-                if (m === 1) {
-                    tableHtml += `<td rowspan="6" style="text-align:center; background:#f9fafb; font-weight:bold;">Semester 1</td>`;
-                } else if (m === 7) {
-                    tableHtml += `<td rowspan="6" style="text-align:center; background:#f9fafb; font-weight:bold;">Semester 2</td>`;
-                }
+                if (m === 1) tableHtml += `<td rowspan="6" style="text-align:center; background:#f9fafb; font-weight:bold;">Semester 1</td>`;
+                else if (m === 7) tableHtml += `<td rowspan="6" style="text-align:center; background:#f9fafb; font-weight:bold;">Semester 2</td>`;
 
                 tableHtml += `</tr>`;
             }
@@ -235,7 +318,6 @@
             return tableHtml;
         }
 
-        // Jalankan inisialisasi
         initTabs();
         fetchData(CURRENT_YEAR);
     })();
