@@ -32,7 +32,7 @@ class AgendaPimpinanController extends Controller
         $query->orderBy('tanggal_agenda', 'desc');
 
         // Check if pagination is requested (default yes for admin)
-        $perPage = $request->input('per_page', 10);
+        $perPage = $request->input('per_page', 5);
         $paginated = $query->paginate($perPage);
 
         return response()->json([
