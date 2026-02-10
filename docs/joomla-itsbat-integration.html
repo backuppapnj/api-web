@@ -212,6 +212,20 @@ PENTING: Ganti API_URL dengan URL API Lumen Anda
             }
         }
 
+        // Fungsi pembersihan URL untuk menangani double domain/protocol
+        function fixUrl(url) {
+            if (!url || typeof url !== 'string' || url === '#' || url === '-') return null;
+            
+            var lastHttps = url.lastIndexOf('https://');
+            var lastHttp = url.lastIndexOf('http://');
+            var lastIndex = Math.max(lastHttps, lastHttp);
+            
+            if (lastIndex > 0) {
+                return url.substring(lastIndex);
+            }
+            return url;
+        }
+
         let table;
 
         function updateDataInfo(count, tahun) {
@@ -265,8 +279,9 @@ PENTING: Ganti API_URL dengan URL API Lumen Anda
                     {
                         data: 'link_detail',
                         render: function (data) {
-                            if (data && data !== '#') {
-                                return '<a href="' + data + '" target="_blank" class="link-detail">📄 Lihat</a>';
+                            var cleanUrl = fixUrl(data);
+                            if (cleanUrl) {
+                                return '<a href="' + cleanUrl + '" target="_blank" class="link-detail">Lihat</a>';
                             }
                             return '-';
                         }

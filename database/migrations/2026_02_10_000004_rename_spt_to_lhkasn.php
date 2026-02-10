@@ -9,14 +9,15 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     * 
+     * Note: LHKASN sudah tidak berlaku lagi bagi ASN, diganti dengan SPT Tahunan
+     * untuk laporan kekayaan. Migration ini memastikan enum dan data menggunakan
+     * 'SPT Tahunan' bukan 'LHKASN'.
      */
     public function up(): void
     {
-        // Update data lama: 'SPT Tahunan' menjadi 'LHKASN'
-        DB::table('lhkpn_reports')->where('jenis_laporan', 'SPT Tahunan')->update(['jenis_laporan' => 'LHKASN']);
-
-        // Ubah definisi ENUM
-        DB::statement("ALTER TABLE lhkpn_reports MODIFY COLUMN jenis_laporan ENUM('LHKPN', 'LHKASN') NOT NULL");
+        DB::table('lhkpn_reports')->where('jenis_laporan', 'LHKASN')->update(['jenis_laporan' => 'SPT Tahunan']);
+        DB::statement("ALTER TABLE lhkpn_reports MODIFY COLUMN jenis_laporan ENUM('LHKPN', 'SPT Tahunan') NOT NULL");
     }
 
     /**
@@ -24,7 +25,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement("ALTER TABLE lhkpn_reports MODIFY COLUMN jenis_laporan ENUM('LHKPN', 'SPT Tahunan') NOT NULL");
-        DB::table('lhkpn_reports')->where('jenis_laporan', 'LHKASN')->update(['jenis_laporan' => 'SPT Tahunan']);
+        DB::statement("ALTER TABLE lhkpn_reports MODIFY COLUMN jenis_laporan ENUM('LHKPN', 'LHKASN') NOT NULL");
+        DB::table('lhkpn_reports')->where('jenis_laporan', 'SPT Tahunan')->update(['jenis_laporan' => 'LHKASN']);
     }
 };
