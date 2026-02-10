@@ -10,7 +10,7 @@
         width: 100%;
         border-collapse: collapse;
         margin-bottom: 20px;
-        min-width: 900px;
+        min-width: 1000px;
     }
 
     .anggaran-table th, .anggaran-table td {
@@ -34,9 +34,8 @@
     }
 
     .col-month { text-align: center !important; font-weight: bold; background-color: #f9fafb; width: 100px; }
-    .col-label { text-align: left !important; font-weight: bold; }
     .col-jumlah { background-color: #f3f4f6; font-weight: bold; }
-    .col-doc { text-align: center !important; }
+    .col-doc { text-align: center !important; width: 50px; }
 
     .btn-doc {
         color: #2563eb;
@@ -57,6 +56,8 @@
         display: flex;
         gap: 5px;
         margin-bottom: 15px;
+        overflow-x: auto;
+        padding-bottom: 5px;
     }
 
     .tab-item {
@@ -65,6 +66,8 @@
         border: 1px solid #ccc;
         cursor: pointer;
         border-radius: 4px 4px 0 0;
+        white-space: nowrap;
+        font-size: 12px;
     }
 
     .tab-item.active {
@@ -76,13 +79,10 @@
 </style>
 
 <div class="anggaran-v2-container">
-    <div class="tabs-tahun" id="yearTabs">
-        <div class="tab-item active" data-year="2025">TAHUN 2025</div>
-        <div class="tab-item" data-year="2024">TAHUN 2024</div>
-    </div>
+    <!-- Tab akan diisi otomatis oleh JavaScript -->
+    <div class="tabs-tahun" id="yearTabs"></div>
 
     <div id="contentAnggaran">
-        <!-- Content will be injected here -->
         <div class="loading-overlay">Memuat data anggaran...</div>
     </div>
 </div>
@@ -92,9 +92,36 @@
         const API_URL = 'https://web-api.pa-penajam.go.id/api/anggaran';
         const MONTHS = ["", "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
         
+        // KONFIGURASI TAHUN
+        const START_YEAR = 2023;
+        const CURRENT_YEAR = new Date().getFullYear();
+
+        function initTabs() {
+            const tabsContainer = document.getElementById('yearTabs');
+            let tabsHtml = "";
+            
+            // Loop dari tahun terbaru ke terlama
+            for (let y = CURRENT_YEAR; y >= START_YEAR; y--) {
+                const activeClass = (y === CURRENT_YEAR) ? "active" : "";
+                tabsHtml += `<div class="tab-item ${activeClass}" data-year="${y}">TAHUN ${y}</div>`;
+            }
+            
+            tabsContainer.innerHTML = tabsHtml;
+
+            // Tambahkan event listener
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    fetchData(this.dataset.year);
+                });
+            });
+        }
+        
         async function fetchData(year) {
+            document.getElementById('contentAnggaran').innerHTML = '<div class="loading-overlay">Memuat data anggaran '+year+'...</div>';
             try {
-                const response = await fetch(`${API_URL}?tahun=${year}`);
+                const response = await fetch(`${API_URL}?tahun=${year}&per_page=200`);
                 const result = await response.json();
                 renderTables(result.data, year);
             } catch (e) {
@@ -110,24 +137,20 @@
         function renderTables(data, year) {
             let html = "";
             
-            // Filter per DIPA
             const dipa01 = data.filter(d => d.dipa === 'DIPA 01');
             const dipa04 = data.filter(d => d.dipa === 'DIPA 04');
 
-            // Render DIPA 01 Table
             html += generateDipaTable('DIPA 01 (BADAN URUSAN ADMINISTRASI)', 'DIPA 01', ['Belanja Pegawai', 'Belanja Barang', 'Belanja Modal'], dipa01, year);
             html += "<div style='height: 30px;'></div>";
-            // Render DIPA 04 Table
             html += generateDipaTable('DIPA 04 (DIRJEN BADAN PERADILAN AGAMA)', 'DIPA 04', ['POSBAKUM', 'Pembebasan Biaya Perkara', 'Sidang Di Luar Gedung'], dipa04, year);
 
             document.getElementById('contentAnggaran').innerHTML = html;
         }
 
         function generateDipaTable(title, dipaCode, categories, data, year) {
-            // Calculate Pagunya (ambil dari data bulan manapun yang punya kategori tersebut, biasanya sama)
             const pagus = {};
             categories.forEach(cat => {
-                const item = data.find(d => d.kategori === cat);
+                const item = data.find(d => d.kategori === cat && d.pagu > 0);
                 pagus[cat] = item ? item.pagu : 0;
             });
             const totalPagu = Object.values(pagus).reduce((a, b) => a + b, 0);
@@ -138,10 +161,10 @@
                     <tr>
                         <th style="width:100px">${dipaCode}</th>
                         ${categories.map(cat => `<th>${formatRp(pagus[cat])}</th>`).join('')}
-                        <th class="col-jumlah">${formatRp(totalPagu)}</th>
-                        <th rowspan="2">Persentase Realisasi Anggaran</th>
-                        <th rowspan="2">Realisasi Anggaran Belanja</th>
-                        <th rowspan="2">Realisasi Anggaran</th>
+                        <th class="col-jumlah" style="width:150px">${formatRp(totalPagu)}</th>
+                        <th rowspan="2" style="width:100px">Persentase Realisasi Anggaran</th>
+                        <th rowspan="2" style="width:60px">Realisasi Anggaran Belanja</th>
+                        <th rowspan="2" style="width:100px">Realisasi Anggaran</th>
                     </tr>
                     <tr>
                         <th>TAHUN ${year}</th>
@@ -154,19 +177,19 @@
             let totalPerCategory = {};
             categories.forEach(c => totalPerCategory[c] = 0);
 
-            // Monthly rows
             for (let m = 1; m <= 12; m++) {
                 let monthlyData = data.filter(d => d.bulan === m);
                 let rowSum = 0;
                 let docLink = "";
+
+                const entryWithDoc = monthlyData.find(d => d.link_dokumen && d.link_dokumen !== "");
+                if (entryWithDoc) docLink = entryWithDoc.link_dokumen;
 
                 tableHtml += `<tr><td class="col-month">${MONTHS[m]}</td>`;
                 
                 categories.forEach(cat => {
                     const entry = monthlyData.find(d => d.kategori === cat);
                     const val = entry ? entry.realisasi : 0;
-                    if (entry && entry.link_dokumen) docLink = entry.link_dokumen;
-                    
                     tableHtml += `<td>${formatRp(val)}</td>`;
                     rowSum += val;
                     totalPerCategory[cat] += val;
@@ -174,35 +197,37 @@
 
                 tableHtml += `<td class="col-jumlah">${formatRp(rowSum)}</td>`;
                 
-                // Extra columns for first month (span 12)
                 if (m === 1) {
-                    tableHtml += `<td rowspan="12"></td><td rowspan="12" class="col-doc">${docLink ? `<a href="${docLink}" target="_blank" class="btn-doc">doc</a>` : '-'}</td>`;
-                    tableHtml += `<td rowspan="6" style="text-align:center">Semester 1</td>`;
+                    tableHtml += `<td rowspan="12" style="background:#fff"></td>`;
+                }
+                
+                tableHtml += `<td class="col-doc">${docLink ? `<a href="${docLink}" target="_blank" class="btn-doc">doc</a>` : '-'}</td>`;
+
+                if (m === 1) {
+                    tableHtml += `<td rowspan="6" style="text-align:center; background:#f9fafb; font-weight:bold;">Semester 1</td>`;
                 } else if (m === 7) {
-                    tableHtml += `<td rowspan="6" style="text-align:center">Semester 2</td>`;
+                    tableHtml += `<td rowspan="6" style="text-align:center; background:#f9fafb; font-weight:bold;">Semester 2</td>`;
                 }
 
                 tableHtml += `</tr>`;
             }
 
-            // JUMLAH row
             const grandTotal = Object.values(totalPerCategory).reduce((a, b) => a + b, 0);
             const totalPercentage = totalPagu > 0 ? (grandTotal / totalPagu * 100).toFixed(2) : 0;
 
-            tableHtml += `<tr style="background:#f9fafb; font-weight:bold;">
+            tableHtml += `<tr style="background:#f3f4f6; font-weight:bold;">
                 <td class="col-month">JUMLAH</td>
                 ${categories.map(cat => `<td>${formatRp(totalPerCategory[cat])}</td>`).join('')}
                 <td class="col-jumlah">${formatRp(grandTotal)}</td>
-                <td style="text-align:center">${totalPercentage}%</td>
+                <td style="text-align:center; font-size:14px; color:#059669;">${totalPercentage}%</td>
                 <td></td><td></td>
             </tr>`;
 
-            // SISA row
             tableHtml += `<tr style="background:#fff; font-weight:bold;">
                 <td class="col-month">SISA</td>
                 ${categories.map(cat => `<td>${formatRp(pagus[cat] - totalPerCategory[cat])}</td>`).join('')}
                 <td class="col-jumlah">${formatRp(totalPagu - grandTotal)}</td>
-                <td style="text-align:center">${(100 - totalPercentage).toFixed(2)}%</td>
+                <td style="text-align:center; font-size:14px; color:#dc2626;">${(100 - totalPercentage).toFixed(2)}%</td>
                 <td></td><td></td>
             </tr>`;
 
@@ -210,15 +235,8 @@
             return tableHtml;
         }
 
-        // Tab events
-        document.querySelectorAll('.tab-item').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                fetchData(this.dataset.year);
-            });
-        });
-
-        fetchData('2025');
+        // Jalankan inisialisasi
+        initTabs();
+        fetchData(CURRENT_YEAR);
     })();
 </script>
