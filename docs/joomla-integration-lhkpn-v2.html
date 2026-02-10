@@ -19,7 +19,7 @@
 
 <div class="lhkpn-container">
     <div class="lhkpn-header">
-        <h2 style="color:white !important; margin:0;">Transparansi LHKPN & SPT</h2>
+        <h2 style="color:white !important; margin:0;">Transparansi LHKPN & LHKASN</h2>
         <p style="margin:5px 0 0 0; opacity:0.9;">Kepatuhan Laporan Harta Kekayaan & Pajak Tahunan PA Penajam</p>
     </div>
 
@@ -32,7 +32,7 @@
     </div>
 
     <div id="lhkpnContent">
-        <div class="lhkpn-section-title">Laporan Harta Kekayaan Pejabat Negara (LHKPN)</div>
+        <div class="lhkpn-section-title">Laporan Harta Kekayaan Penyelenggara Negara (LHKPN)</div>
         <table class="lhkpn-table" id="tablePejabat">
             <thead>
                 <tr>
@@ -46,17 +46,16 @@
             <tbody><tr><td colspan="5" class="text-center">Memuat data...</td></tr></tbody>
         </table>
 
-        <div class="lhkpn-section-title">Laporan SPT Tahunan / LHKASN</div>
+        <div class="lhkpn-section-title">Laporan Harta Kekayaan Aparatur Sipil Negara (LHKASN)</div>
         <table class="lhkpn-table" id="tableASN">
             <thead>
                 <tr>
                     <th>Nama / Jabatan</th>
                     <th class="text-center">Tanggal Lapor</th>
-                    <th class="text-center">Bukti Pelaporan</th>
-                    <th class="text-center">SPT</th>
+                    <th class="text-center">Bukti Pelaporan (SPT)</th>
                 </tr>
             </thead>
-            <tbody><tr><td colspan="4" class="text-center">Memuat data...</td></tr></tbody>
+            <tbody><tr><td colspan="3" class="text-center">Memuat data...</td></tr></tbody>
         </table>
     </div>
 </div>
@@ -75,7 +74,7 @@
 
         function renderData(data) {
             const pejabat = data.filter(d => d.jenis_laporan === 'LHKPN');
-            const asn = data.filter(d => d.jenis_laporan === 'SPT Tahunan');
+            const asn = data.filter(d => d.jenis_laporan === 'LHKASN');
 
             const pejabatBody = pejabat.map(d => `
                 <tr>
@@ -91,10 +90,9 @@
                 <tr>
                     <td><strong>${d.nama}</strong><br><small style="color:#64748b">${d.jabatan}</small></td>
                     <td class="text-center">${formatDate(d.tanggal_lapor)}</td>
-                    <td class="text-center">${d.link_tanda_terima || d.link_dokumen_pendukung ? `<a href="${d.link_tanda_terima || d.link_dokumen_pendukung}" target="_blank" class="btn-check">√</a>` : '-'}</td>
                     <td class="text-center">${d.link_spt ? `<a href="${d.link_spt}" target="_blank" class="btn-check">√</a>` : '-'}</td>
                 </tr>
-            `).join('') || '<tr><td colspan="4" class="text-center">Tidak ada data</td></tr>';
+            `).join('') || '<tr><td colspan="3" class="text-center">Tidak ada data</td></tr>';
 
             document.querySelector('#tablePejabat tbody').innerHTML = pejabatBody;
             document.querySelector('#tableASN tbody').innerHTML = asnBody;
