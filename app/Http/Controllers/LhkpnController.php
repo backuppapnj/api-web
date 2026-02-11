@@ -94,6 +94,10 @@ class LhkpnController extends Controller
             'tahun' => 'required|integer',
             'jenis_laporan' => 'required|in:LHKPN,SPT Tahunan',
             'tanggal_lapor' => 'nullable|date',
+            'file_tanda_terima' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
+            'file_pengumuman' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
+            'file_spt' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
+            'file_dokumen_pendukung' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
         ]);
 
         $dataInput = $request->all();
