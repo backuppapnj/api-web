@@ -23,7 +23,21 @@ class LhkpnController extends Controller
             });
         }
 
-        $query->orderBy('tahun', 'desc')->orderBy('nama', 'asc');
+        // Urutan berdasarkan struktur organisasi (Perma 7 Tahun 2015)
+        $query->orderBy('tahun', 'desc')
+            ->orderByRaw("CASE 
+                WHEN jabatan LIKE '%Ketua%' AND jabatan NOT LIKE '%Wakil%' THEN 1
+                WHEN jabatan LIKE '%Wakil Ketua%' THEN 2
+                WHEN jabatan LIKE '%Hakim%' THEN 3
+                WHEN jabatan LIKE '%Panitera%' AND jabatan NOT LIKE '%Muda%' AND jabatan NOT LIKE '%Pengganti%' THEN 4
+                WHEN jabatan LIKE '%Sekretaris%' THEN 5
+                WHEN jabatan LIKE '%Panitera Muda%' THEN 6
+                WHEN jabatan LIKE '%Kepala Subbagian%' OR jabatan LIKE '%Kasubbag%' THEN 7
+                WHEN jabatan LIKE '%Panitera Pengganti%' THEN 8
+                WHEN jabatan LIKE '%Juru Sita%' THEN 9
+                ELSE 10 
+            END ASC")
+            ->orderBy('nama', 'asc');
 
         $perPage = $request->input('per_page', 15);
         $paginated = $query->paginate($perPage);
