@@ -3,131 +3,63 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\DipaPok;
 use Illuminate\Support\Facades\DB;
 
 class DipaPokSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DipaPok::truncate();
+        DB::table('dipapok')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $data = [
-            [
-                'thn_dipa' => 2026,
-                'revisi_dipa' => 'DIPA Awal',
-                'jns_dipa' => 'DIPA 01 - Belanja Pegawai',
-                'tgl_dipa' => '2026-01-02',
-                'alokasi_dipa' => 1500000000,
-                'doc_dipa' => null,
-                'doc_pok' => null,
-            ],
-            [
-                'thn_dipa' => 2026,
-                'revisi_dipa' => 'DIPA Awal',
-                'jns_dipa' => 'DIPA 04 - Belanja Persidangan',
-                'tgl_dipa' => '2026-01-02',
-                'alokasi_dipa' => 250000000,
-                'doc_dipa' => null,
-                'doc_pok' => null,
-            ],
-            [
-                'thn_dipa' => 2025,
-                'revisi_dipa' => 'DIPA Pertama',
-                'jns_dipa' => 'DIPA 01 - Belanja Pegawai',
-                'tgl_dipa' => '2025-01-03',
-                'alokasi_dipa' => 1450000000,
-                'doc_dipa' => null,
-                'doc_pok' => null,
-            ],
-            [
-                'thn_dipa' => 2025,
-                'revisi_dipa' => 'DIPA Pertama',
-                'jns_dipa' => 'DIPA 04 - Belanja Persidangan',
-                'tgl_dipa' => '2025-01-03',
-                'alokasi_dipa' => 230000000,
-                'doc_dipa' => null,
-                'doc_pok' => null,
-            ],
-            [
-                'thn_dipa' => 2025,
-                'revisi_dipa' => 'DIPA Kedua',
-                'jns_dipa' => 'DIPA 01 - Belanja Pegawai',
-                'tgl_dipa' => '2025-07-15',
-                'alokasi_dipa' => 1480000000,
-                'doc_dipa' => null,
-                'doc_pok' => null,
-            ],
-            [
-                'thn_dipa' => 2025,
-                'revisi_dipa' => 'DIPA Kedua',
-                'jns_dipa' => 'DIPA 04 - Belanja Persidangan',
-                'tgl_dipa' => '2025-07-15',
-                'alokasi_dipa' => 245000000,
-                'doc_dipa' => null,
-                'doc_pok' => null,
-            ],
-            [
-                'thn_dipa' => 2024,
-                'revisi_dipa' => 'DIPA Awal',
-                'jns_dipa' => 'DIPA 01 - Belanja Pegawai',
-                'tgl_dipa' => '2024-01-02',
-                'alokasi_dipa' => 1400000000,
-                'doc_dipa' => null,
-                'doc_pok' => null,
-            ],
-            [
-                'thn_dipa' => 2024,
-                'revisi_dipa' => 'DIPA Awal',
-                'jns_dipa' => 'DIPA 04 - Belanja Persidangan',
-                'tgl_dipa' => '2024-01-02',
-                'alokasi_dipa' => 220000000,
-                'doc_dipa' => null,
-                'doc_pok' => null,
-            ],
-            [
-                'thn_dipa' => 2024,
-                'revisi_dipa' => 'DIPA Ketiga',
-                'jns_dipa' => 'DIPA 01 - Belanja Pegawai',
-                'tgl_dipa' => '2024-10-20',
-                'alokasi_dipa' => 1420000000,
-                'doc_dipa' => null,
-                'doc_pok' => null,
-            ],
-            [
-                'thn_dipa' => 2024,
-                'revisi_dipa' => 'DIPA Ketiga',
-                'jns_dipa' => 'DIPA 04 - Belanja Persidangan',
-                'tgl_dipa' => '2024-10-20',
-                'alokasi_dipa' => 235000000,
-                'doc_dipa' => null,
-                'doc_pok' => null,
-            ],
-            [
-                'thn_dipa' => 2023,
-                'revisi_dipa' => 'DIPA Awal',
-                'jns_dipa' => 'DIPA 01 - Belanja Pegawai',
-                'tgl_dipa' => '2023-01-03',
-                'alokasi_dipa' => 1350000000,
-                'doc_dipa' => null,
-                'doc_pok' => null,
-            ],
-            [
-                'thn_dipa' => 2023,
-                'revisi_dipa' => 'DIPA Awal',
-                'jns_dipa' => 'DIPA 04 - Belanja Persidangan',
-                'tgl_dipa' => '2023-01-03',
-                'alokasi_dipa' => 200000000,
-                'doc_dipa' => null,
-                'doc_pok' => null,
-            ],
+            ['kode_dipa' => '20250400', 'jns_dipa' => 'Direktorat Jendral Badan Peradilan Agama', 'thn_dipa' => 2025, 'revisi_dipa' => 'Dipa Awal', 'tgl_dipa' => '2024-12-02', 'alokasi_dipa' => 85000000, 'doc_dipa' => 'https://drive.google.com/file/d/1sHALcIoWyLhdVf3v8OJZlUenT8YkES2h/view?usp=drive_link', 'doc_pok' => 'https://drive.google.com/file/d/1SFkQmSOhiPinyqJrYveI2ZnI01X_GJH7/view?usp=drive_link'],
+            ['kode_dipa' => '20250100', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2025, 'revisi_dipa' => 'Dipa Awal', 'tgl_dipa' => '2024-12-02', 'alokasi_dipa' => 3291366700, 'doc_dipa' => 'https://drive.google.com/file/d/1a7FIuKx95eXZj_XYUmcaKWLEBzvp0DKc/view?usp=drive_link', 'doc_pok' => 'https://drive.google.com/file/d/1jc6gdESICjE36ZEm-FtthTNTYKy26LeO/view?usp=drive_link'],
+            ['kode_dipa' => '20240400', 'jns_dipa' => 'Direktorat Jendral Badan Peradilan Agama', 'thn_dipa' => 2024, 'revisi_dipa' => 'Dipa Awal', 'tgl_dipa' => '2023-11-24', 'alokasi_dipa' => 88000000, 'doc_dipa' => 'https://drive.google.com/file/d/1anPlL1rNAc_gYw5ZK8FkR7ck-bpMZxK5/view?usp=drive_link', 'doc_pok' => 'https://drive.google.com/file/d/1SFkQmSOhiPinyqJrYveI2ZnI01X_GJH7/view?usp=drive_link'],
+            ['kode_dipa' => '20240100', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2024, 'revisi_dipa' => 'Dipa Awal', 'tgl_dipa' => '2023-11-24', 'alokasi_dipa' => 3200429000, 'doc_dipa' => 'https://drive.google.com/file/d/1jGHSce3nh1LABHtb925T5MLXy3rIDTIn/view?usp=drive_link', 'doc_pok' => 'https://drive.google.com/file/d/181te3uIM_7CUZSX_N6E5ubp8rruYoBOo/view?usp=drive_link'],
+            ['kode_dipa' => '20230400', 'jns_dipa' => 'Direktorat Jendral Badan Peradilan Agama', 'thn_dipa' => 2023, 'revisi_dipa' => 'Dipa Awal', 'tgl_dipa' => '2022-11-30', 'alokasi_dipa' => 88818000, 'doc_dipa' => 'https://drive.google.com/file/d/1hz5HcE9RXIQ_jzr4IhTu0ZrKQ9K8fjHL/view?usp=share_link', 'doc_pok' => 'https://drive.google.com/file/d/1_LwK7VvSSjP8HRSxTtjMqexRrz4lGMk2/view?usp=share_link'],
+            ['kode_dipa' => '20230100', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2023, 'revisi_dipa' => 'Dipa Awal', 'tgl_dipa' => '2022-11-30', 'alokasi_dipa' => 4114453000, 'doc_dipa' => 'https://drive.google.com/file/d/1RmgoqqM3rdYJ8WPEl75YXVxquS42OI75/view?usp=share_link', 'doc_pok' => 'https://drive.google.com/file/d/1dkVuP47421oI2SMClkI0NvpeL2qlpToJ/view?usp=share_link'],
+            ['kode_dipa' => '20220404', 'jns_dipa' => 'Direktorat Jendral Badan Peradilan Agama', 'thn_dipa' => 2022, 'revisi_dipa' => 'Revisi 4', 'tgl_dipa' => '2022-08-15', 'alokasi_dipa' => 85000000, 'doc_dipa' => 'https://drive.google.com/file/d/1DIQybZLXij7ZVn4r9i3odONrsegMPqw9/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1P8nht3A8P9aziUoPRCCVwswcomr8zjBq/view?usp=sharing'],
+            ['kode_dipa' => '20220403', 'jns_dipa' => 'Direktorat Jendral Badan Peradilan Agama', 'thn_dipa' => 2022, 'revisi_dipa' => 'Revisi 3', 'tgl_dipa' => '2022-07-07', 'alokasi_dipa' => 85000000, 'doc_dipa' => 'https://drive.google.com/file/d/1Un9VYKSVpE7TMGJHtTEjLAEcTLOIVRuG/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1xlHulJWhg_O9XusO-2E71yAnucJjGURn/view?usp=sharing'],
+            ['kode_dipa' => '20220402', 'jns_dipa' => 'Direktorat Jendral Badan Peradilan Agama', 'thn_dipa' => 2022, 'revisi_dipa' => 'Revisi 2', 'tgl_dipa' => '2022-03-14', 'alokasi_dipa' => 85000000, 'doc_dipa' => 'https://drive.google.com/file/d/1UpjVOOHOyl4HUi6DPYoMvJTqlUPuSwJH/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1WSrPXK_zPMyJYbp1pqT9gG8KrbzuZcsJ/view?usp=sharing'],
+            ['kode_dipa' => '20220401', 'jns_dipa' => 'Direktorat Jendral Badan Peradilan Agama', 'thn_dipa' => 2022, 'revisi_dipa' => 'Revisi 1', 'tgl_dipa' => '2022-02-15', 'alokasi_dipa' => 85000000, 'doc_dipa' => 'https://drive.google.com/file/d/1P9S-7KtGIG2REB1Zz9ukC8nO8raQmJu9/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1s-l-tDEJwBXKmxZ7x0myY4YQCIiRI0TD/view?usp=sharing'],
+            ['kode_dipa' => '20220400', 'jns_dipa' => 'Direktorat Jendral Badan Peradilan Agama', 'thn_dipa' => 2022, 'revisi_dipa' => 'Dipa Awal', 'tgl_dipa' => '2021-11-17', 'alokasi_dipa' => 85000000, 'doc_dipa' => 'https://drive.google.com/file/d/1lQNaU2CTL7Xj1tMqm81L_ccYEQ8rjkoV/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1s9KdbXn7joV42mUK_keHodQADJETElek/view?usp=sharing'],
+            ['kode_dipa' => '20220106', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2022, 'revisi_dipa' => 'Revisi 6', 'tgl_dipa' => '2022-08-30', 'alokasi_dipa' => 11722737000, 'doc_dipa' => 'https://drive.google.com/file/d/1LlQOc3r8xnK7_K3lNvzUW_5VJ1MxjTV1/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1JYCRuWfY8XeJh-FMEDjSZ1rB37fhchbp/view?usp=sharing'],
+            ['kode_dipa' => '20220105', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2022, 'revisi_dipa' => 'Revisi 5', 'tgl_dipa' => '2022-08-09', 'alokasi_dipa' => 11722737000, 'doc_dipa' => 'https://drive.google.com/file/d/18GGsNXe7oBZkLQQ3eIc3l1VF8GCyPEQ8/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1k1iQ2bvsH99KJP9e3WIPfVov8r3mkW_v/view?usp=sharing'],
+            ['kode_dipa' => '20220104', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2022, 'revisi_dipa' => 'Revisi 4', 'tgl_dipa' => '2022-07-08', 'alokasi_dipa' => 11122737000, 'doc_dipa' => 'https://drive.google.com/file/d/1I6eYtk4u1OMSefXEbQEHPypEzxxbFAr4/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1qGAfqLjnA4-Wk_qH-Se9cabt--UYfC-x/view?usp=sharing'],
+            ['kode_dipa' => '20220103', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2022, 'revisi_dipa' => 'Revisi 3', 'tgl_dipa' => '2022-05-13', 'alokasi_dipa' => 11122737000, 'doc_dipa' => 'https://drive.google.com/file/d/1N8DV04v7iX4uuyHPnIAUzw12826lWbj_/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1-r8A_eYtK0AI2u9pxB9v5K6PFrj3DkQS/view?usp=sharing'],
+            ['kode_dipa' => '20220102', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2022, 'revisi_dipa' => 'Revisi 2', 'tgl_dipa' => '2022-03-14', 'alokasi_dipa' => 11122737000, 'doc_dipa' => 'https://drive.google.com/file/d/1TUevko4-eWqg1QDQZt9rX_PlonGZyPjh/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1Ln8WiG5j_h37cHRiUzcx2Yp7sCDi8g_x/view?usp=sharing'],
+            ['kode_dipa' => '20220101', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2022, 'revisi_dipa' => 'Revisi 1', 'tgl_dipa' => '2022-02-15', 'alokasi_dipa' => 11122737000, 'doc_dipa' => 'https://drive.google.com/file/d/19reBL8wKt_f2K8M6GXhfDe4lvxyoxxpM/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1s-l-tDEJwBXKmxZ7x0myY4YQCIiRI0TD/view?usp=sharing'],
+            ['kode_dipa' => '20220100', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2022, 'revisi_dipa' => 'Dipa Awal', 'tgl_dipa' => '2021-11-17', 'alokasi_dipa' => 11122737000, 'doc_dipa' => 'https://drive.google.com/file/d/1XD1C_RmxYBfKUGDNiitD-dIuJDrygUKU/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1fBhA6DWn0tVP9X4ccd-2IUB7kHONw2CG/view?usp=sharing'],
+            ['kode_dipa' => '20210401', 'jns_dipa' => 'Direktorat Jendral Badan Peradilan Agama', 'thn_dipa' => 2021, 'revisi_dipa' => 'Revisi 1', 'tgl_dipa' => '2021-07-13', 'alokasi_dipa' => 10000000, 'doc_dipa' => 'https://drive.google.com/file/d/1akB535wTgxXnwwNHjpSsjMxMIQs8dzvt/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/17dZDYKeIDj3JjJHc-bqHwjhuy_iK09Uq/view?usp=sharing'],
+            ['kode_dipa' => '20210400', 'jns_dipa' => 'Direktorat Jendral Badan Peradilan Agama', 'thn_dipa' => 2021, 'revisi_dipa' => 'Dipa Awal', 'tgl_dipa' => '2020-11-23', 'alokasi_dipa' => 10000000, 'doc_dipa' => 'https://drive.google.com/file/d/1w_bMMVF-xCzPwhJhRJKSNYnYUtb1tVke/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1fjq3JKJobbJr2foiECM4Wz1ft4wUB4Sb/view?usp=sharing'],
+            ['kode_dipa' => '20210108', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2021, 'revisi_dipa' => 'Revisi 8', 'tgl_dipa' => '2021-12-15', 'alokasi_dipa' => 25417756000, 'doc_dipa' => 'https://drive.google.com/file/d/111zeoO53sKxrW8zm_Lnz74P54A8Rf3EV/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1s-l-tDEJwBXKmxZ7x0myY4YQCIiRI0TD/view?usp=sharing'],
+            ['kode_dipa' => '20210107', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2021, 'revisi_dipa' => 'Revisi 7', 'tgl_dipa' => '2021-11-30', 'alokasi_dipa' => 25417756000, 'doc_dipa' => 'https://drive.google.com/file/d/1FInOp28GGRZJC3Hw3CX66cDmPeKFJ9rw/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1MxY5NHWS5_twHirDDbqM3KzGFw6R_2ml/view?usp=sharing'],
+            ['kode_dipa' => '20210106', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2021, 'revisi_dipa' => 'Revisi 6', 'tgl_dipa' => '2021-11-16', 'alokasi_dipa' => 25417756000, 'doc_dipa' => 'https://drive.google.com/file/d/1IoBkSodltHFA0PR2aV1bDNmbLJOICUpG/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1vIwdTwnnri-NmgXo5hg6b0jj6oo5SWqo/view?usp=sharing'],
+            ['kode_dipa' => '20210105', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2021, 'revisi_dipa' => 'Revisi 5', 'tgl_dipa' => '2021-09-28', 'alokasi_dipa' => 25407610000, 'doc_dipa' => 'https://drive.google.com/file/d/1pqGbKGuFsKn4PLVu6W9WQSotYFEh0gx5/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1T7z3-dJU2yQMPiQ4SQV25XbMuyX_kllT/view?usp=sharing'],
+            ['kode_dipa' => '20210104', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2021, 'revisi_dipa' => 'Revisi 4', 'tgl_dipa' => '2021-08-25', 'alokasi_dipa' => 25515610000, 'doc_dipa' => 'https://drive.google.com/file/d/1r-pAonPzUnyyy6dL9PswXfDbwt0c3KF2/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1qSB0i2PLMLQuzEFH6CsRVJRkveZ_dSzi/view?usp=sharing'],
+            ['kode_dipa' => '20210103', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2021, 'revisi_dipa' => 'Revisi 3', 'tgl_dipa' => '2021-08-13', 'alokasi_dipa' => 25515610000, 'doc_dipa' => 'https://drive.google.com/file/d/1XmSh4K2Suobnqpx_V3cB-bwGGqMS0_Ov/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1cMIJESI9p5vL4FyBWIQtRh0Fe8W7AW_L/view?usp=sharing'],
+            ['kode_dipa' => '20210102', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2021, 'revisi_dipa' => 'Revisi 2', 'tgl_dipa' => '2021-07-13', 'alokasi_dipa' => 30703119000, 'doc_dipa' => 'https://drive.google.com/file/d/1t-zVvxv1zKuFYCH6C9qPmTjJ4HOf1gtG/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1gk0fy7qtUW5xXA79oxJOSDSom2kM2KUu/view?usp=sharing'],
+            ['kode_dipa' => '20210101', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2021, 'revisi_dipa' => 'Revisi 1', 'tgl_dipa' => '2021-02-04', 'alokasi_dipa' => 30703119000, 'doc_dipa' => 'https://drive.google.com/file/d/1VAL4jpL-yJQyHdeuki747Nd6Iib-z31l/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1HZYCm3_2OKTr0f6CmCOryEml_0bFG5Mt/view?usp=sharing'],
+            ['kode_dipa' => '20210100', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2021, 'revisi_dipa' => 'Dipa Awal', 'tgl_dipa' => '2020-11-23', 'alokasi_dipa' => 30703119000, 'doc_dipa' => 'https://drive.google.com/file/d/1lJD-0XsubPEHcOFyUsONG_oGLGYZbfTD/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1QfPh2PXemvFx3RopPn0lgX6n9wAMSHMh/view?usp=sharing'],
+            ['kode_dipa' => '20200400', 'jns_dipa' => 'Direktorat Jendral Badan Peradilan Agama', 'thn_dipa' => 2020, 'revisi_dipa' => 'Dipa Awal', 'tgl_dipa' => '2019-11-12', 'alokasi_dipa' => 2500000, 'doc_dipa' => 'https://drive.google.com/file/d/1uck9rPswR6OJpblurYs9_41KNqPXUq2b/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/open?id=1ICcce_DEkKoW4FzNyZ5Er0P9PC2FKF8e'],
+            ['kode_dipa' => '20200104', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2020, 'revisi_dipa' => 'Revisi 4', 'tgl_dipa' => '2020-12-01', 'alokasi_dipa' => 3799085000, 'doc_dipa' => 'https://drive.google.com/file/d/1jZjE7SRpmxQDP8UNcQO9RavU52F9R4Zh/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/14fNUN8oXcIOkgU6k9KSU7b87i02vAiU2/view?usp=sharing'],
+            ['kode_dipa' => '20200103', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2020, 'revisi_dipa' => 'Revisi 3', 'tgl_dipa' => '2020-10-26', 'alokasi_dipa' => 3139085000, 'doc_dipa' => 'https://drive.google.com/file/d/1hys3sHdiASdKbRAy8syOUYy7NwJxdCRf/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1A2-EwB4K2BFfGBaKT2QOkZFQYibd_gE2/view?usp=sharing'],
+            ['kode_dipa' => '20200102', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2020, 'revisi_dipa' => 'Revisi 2', 'tgl_dipa' => '2020-09-22', 'alokasi_dipa' => 3139085000, 'doc_dipa' => 'https://drive.google.com/file/d/1LhweBHG_W8BIC2pwoTuUnqqlD5utDSje/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1-z562vtpHA_nMBG99MBHfu0xVdFLgKfF/view?usp=sharing'],
+            ['kode_dipa' => '20200101', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2020, 'revisi_dipa' => 'Revisi 1', 'tgl_dipa' => '2020-07-02', 'alokasi_dipa' => 3139085000, 'doc_dipa' => 'https://drive.google.com/file/d/1o4_AHgSGILDbRBy5CkQmlgT6ZbFoNLMU/view?usp=sharing', 'doc_pok' => 'https://drive.google.com/file/d/1ZT5NA_xRW4-bOpkSRcjMBCvSCuVMZtEX/view?usp=sharing'],
+            ['kode_dipa' => '20200100', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2020, 'revisi_dipa' => 'Dipa Awal', 'tgl_dipa' => '2019-11-12', 'alokasi_dipa' => 3075725000, 'doc_dipa' => 'https://drive.google.com/open?id=1EVsxgwG49vevuhvVBlBd6fDOGBpe6Hhq', 'doc_pok' => 'https://drive.google.com/open?id=1yBUUmKh2lV1km37ENKTYVKyWvb7gcPn-'],
+            ['kode_dipa' => '20190400', 'jns_dipa' => 'Direktorat Jendral Badan Peradilan Agama', 'thn_dipa' => 2019, 'revisi_dipa' => 'Dipa Awal', 'tgl_dipa' => '2018-12-05', 'alokasi_dipa' => 2500000, 'doc_dipa' => 'https://pa-penajam.go.id/images/PDF/umumdankeuangan/dipa/dipa04-2019.pdf', 'doc_pok' => 'https://pa-penajam.go.id/images/PDF/POK/pok-04-2019.pdf'],
+            ['kode_dipa' => '20190106', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2019, 'revisi_dipa' => 'Revisi 6', 'tgl_dipa' => '2019-12-16', 'alokasi_dipa' => 2774869000, 'doc_dipa' => 'https://drive.google.com/open?id=16LG5FXOlpsJFUhmtuGEmCJOA61ekv0Xs', 'doc_pok' => 'https://drive.google.com/open?id=11cpos7v38AUkvXS_aYaVBnIk45VoXtpo'],
+            ['kode_dipa' => '20190105', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2019, 'revisi_dipa' => 'Revisi 5', 'tgl_dipa' => '2019-11-05', 'alokasi_dipa' => 2774869000, 'doc_dipa' => 'https://drive.google.com/open?id=1WBPF1bqBK7xDqUeWkOsN3XpoeUh1lU4K', 'doc_pok' => 'https://drive.google.com/open?id=1uqAB1wB8mGQix4wJNxawbIB4P7qsvN7O'],
+            ['kode_dipa' => '20190104', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2019, 'revisi_dipa' => 'Revisi 4', 'tgl_dipa' => '2019-09-30', 'alokasi_dipa' => 2948744000, 'doc_dipa' => 'https://drive.google.com/file/d/1AclBFDmP8GdgLso0v_kVdv1QAMwCJW3p/view', 'doc_pok' => 'https://drive.google.com/open?id=1vduQ6V7J4-2gG-D4LgZb3JlfwfTdq37j'],
+            ['kode_dipa' => '20190103', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2019, 'revisi_dipa' => 'Revisi 3', 'tgl_dipa' => '2019-08-19', 'alokasi_dipa' => 2948744000, 'doc_dipa' => 'https://pa-penajam.go.id/images/PDF/umumdankeuangan/dipa/dipa01-revisi3.pdf', 'doc_pok' => 'https://pa-penajam.go.id/images/PDF/POK/pok-01-2019-revisi3.pdf'],
+            ['kode_dipa' => '20190102', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2019, 'revisi_dipa' => 'Revisi 2', 'tgl_dipa' => '2019-07-25', 'alokasi_dipa' => 2924744000, 'doc_dipa' => 'https://pa-penajam.go.id/images/PDF/umumdankeuangan/dipa/dipa01-2019revisi2dja.pdf', 'doc_pok' => 'https://pa-penajam.go.id/images/PDF/POK/pok-01-2019-revisi2.pdf'],
+            ['kode_dipa' => '20190101', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2019, 'revisi_dipa' => 'Revisi 1', 'tgl_dipa' => '2019-05-24', 'alokasi_dipa' => 2723444000, 'doc_dipa' => 'https://pa-penajam.go.id/images/PDF/umumdankeuangan/dipa/dipa01-2019revisi1.pdf', 'doc_pok' => 'https://pa-penajam.go.id/images/PDF/POK/pok-01-2019-revisi1.pdf'],
+            ['kode_dipa' => '20190100', 'jns_dipa' => 'Badan Urusan Administrasi - MARI', 'thn_dipa' => 2019, 'revisi_dipa' => 'Dipa Awal', 'tgl_dipa' => '2018-12-05', 'alokasi_dipa' => 2723444000, 'doc_dipa' => 'https://pa-penajam.go.id/images/PDF/umumdankeuangan/dipa/dipa01-2019.pdf', 'doc_pok' => 'https://pa-penajam.go.id/images/PDF/POK/pok-01-2019.pdf'],
         ];
 
-        foreach ($data as $item) {
-            DipaPok::create($item);
-        }
+        DB::table('dipapok')->insert($data);
 
         $this->command->info('DipaPokSeeder: ' . count($data) . ' records inserted.');
     }

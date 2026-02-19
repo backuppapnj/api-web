@@ -7,23 +7,29 @@ use Illuminate\Database\Eloquent\Model;
 class DipaPok extends Model
 {
     protected $table = 'dipapok';
-    protected $primaryKey = 'kode_dipa';
+    protected $primaryKey = 'id_dipa';
     public $incrementing = true;
     protected $keyType = 'int';
+    public $timestamps = false;
 
     protected $fillable = [
+        'id_dipa',
+        'kode_dipa',
+        'jns_dipa',
         'thn_dipa',
         'revisi_dipa',
-        'jns_dipa',
         'tgl_dipa',
         'alokasi_dipa',
         'doc_dipa',
         'doc_pok',
+        'tgl_update',
     ];
 
     protected $casts = [
-        'thn_dipa' => 'integer',
-        'alokasi_dipa' => 'float',
-        'tgl_dipa' => 'date',
+        'id_dipa'      => 'integer',
+        'thn_dipa'     => 'integer',
+        'alokasi_dipa' => 'integer',
+        'tgl_dipa'     => 'date',
+        'tgl_update'   => 'datetime',
     ];
 }
