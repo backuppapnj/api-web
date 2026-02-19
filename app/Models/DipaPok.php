@@ -28,7 +28,7 @@ class DipaPok extends Model
     protected $casts = [
         'id_dipa'      => 'integer',
         'thn_dipa'     => 'integer',
-        'alokasi_dipa' => 'string',
+        'alokasi_dipa' => 'integer',
         'tgl_dipa'     => 'date',
         'tgl_update'   => 'datetime',
     ];
