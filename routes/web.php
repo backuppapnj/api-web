@@ -38,6 +38,10 @@ $router->group(['prefix' => 'api', 'middleware' => 'throttle:100,1'], function (
     $router->get('anggaran', 'RealisasiAnggaranController@index');
     $router->get('anggaran/{id:[0-9]+}', 'RealisasiAnggaranController@show');
     $router->get('pagu', 'PaguAnggaranController@index');
+
+    // DIPA POK Routes
+    $router->get('dipapok', 'DipaPokController@index');
+    $router->get('dipapok/{id:[0-9]+}', 'DipaPokController@show');
 });
 
 // SECURITY: Protected routes dengan API Key + rate limiting (100 request/menit)
@@ -75,4 +79,9 @@ $router->group(['prefix' => 'api', 'middleware' => ['api.key', 'throttle:100,1']
     // Pagu Anggaran
     $router->post('pagu', 'PaguAnggaranController@store');
     $router->delete('pagu/{id:[0-9]+}', 'PaguAnggaranController@destroy');
+
+    // DIPA POK
+    $router->post('dipapok', 'DipaPokController@store');
+    $router->put('dipapok/{id:[0-9]+}', 'DipaPokController@update');
+    $router->delete('dipapok/{id:[0-9]+}', 'DipaPokController@destroy');
 });
