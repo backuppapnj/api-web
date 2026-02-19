@@ -60,6 +60,16 @@ class DipaPokController extends Controller
             'doc_pok'
         ]);
 
+        // Generate kode_dipa otomatis
+        $jenisCode = $data['jns_dipa'] === 'Badan Urusan Administrasi - MARI' ? '01' : '04';
+        $revisiNumber = $data['revisi_dipa'] === 'Dipa Awal' ? '00' : str_pad(
+            (int) str_replace('Revisi ', '', $data['revisi_dipa']),
+            2,
+            '0',
+            STR_PAD_LEFT
+        );
+        $data['kode_dipa'] = $data['thn_dipa'] . $jenisCode . $revisiNumber;
+
         // Upload file DIPA
         if ($request->hasFile('file_doc_dipa')) {
             $link = $this->uploadFile($request->file('file_doc_dipa'), $request, 'dipa');
