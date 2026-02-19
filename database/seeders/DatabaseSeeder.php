@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             PanggilanEcourtSeeder::class,
             LhkpnSeeder::class,
             AnggaranSeeder::class,
+            DipaPokSeeder::class,
         ]);
     }
 }
