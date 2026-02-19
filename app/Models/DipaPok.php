@@ -32,4 +32,11 @@ class DipaPok extends Model
         'tgl_dipa'     => 'date',
         'tgl_update'   => 'datetime',
     ];
+
+    protected $appends = ['id'];
+
+    public function getIdAttribute(): int
+    {
+        return $this->id_dipa;
+    }
 }
