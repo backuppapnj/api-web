@@ -143,23 +143,5 @@ class LhkpnController extends Controller
         return response()->json(['success' => true, 'message' => 'Deleted successfully']);
     }
 
-    private function uploadFile($file, Request $request, $folder = 'lhkpn')
-    {
-        try {
-            if (class_exists('\App\Services\GoogleDriveService')) {
-                $driveService = new \App\Services\GoogleDriveService();
-                return $driveService->upload($file);
-            }
-        } catch (\Throwable $e) { }
-
-        try {
-            $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9.]/', '_', $file->getClientOriginalName());
-            $destinationPath = app()->basePath('public/uploads/' . $folder);
-            if (!file_exists($destinationPath)) mkdir($destinationPath, 0755, true);
-            $file->move($destinationPath, $filename);
-            return $request->root() . '/uploads/' . $folder . '/' . $filename;
-        } catch (\Throwable $e) {
-            return null;
-        }
-    }
+    // uploadFile() diwarisi dari base Controller
 }

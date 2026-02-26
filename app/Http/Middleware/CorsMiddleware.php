@@ -16,12 +16,16 @@ class CorsMiddleware
         $allowedOriginsRaw = env('CORS_ALLOWED_ORIGINS', '');
         $allowedOrigins = array_filter(array_map('trim', explode(',', $allowedOriginsRaw)));
 
-        // ALWAYS allow these domains (safety net)
+        // SECURITY: Trusted domains berdasarkan environment
+        // localhost hanya diizinkan di development
+        // Ref: https://medium.com/@developerawam/laravel-security-checklist
         $trustedDomains = [
             'https://pa-penajam.go.id',
             'https://www.pa-penajam.go.id',
-            'http://localhost:3000'
         ];
+        if (env('APP_ENV') === 'local') {
+            $trustedDomains[] = 'http://localhost:3000';
+        }
         $allowedOrigins = array_merge($allowedOrigins, $trustedDomains);
         $origin = $request->header('Origin');
 
@@ -35,12 +39,10 @@ class CorsMiddleware
         ];
 
         // SECURITY: Hanya allow origin yang ada di whitelist
+        // Tidak ada fallback ke wildcard '*' untuk mencegah akses lintas-domain
         if (!empty($origin) && in_array($origin, $allowedOrigins)) {
             $headers['Access-Control-Allow-Origin'] = $origin;
             $headers['Vary'] = 'Origin';
-        } elseif (empty($allowedOrigins) || in_array('*', $allowedOrigins)) {
-            // WARNING: Hanya gunakan ini untuk development
-            $headers['Access-Control-Allow-Origin'] = '*';
         }
         // Jika origin tidak diizinkan, tidak ada header CORS = browser akan blokir
 

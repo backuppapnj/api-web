@@ -49,7 +49,7 @@ class RealisasiAnggaranController extends Controller
         $data = $request->all();
         
         if ($request->hasFile('file_dokumen')) {
-            $link = $this->uploadFile($request->file('file_dokumen'), $request);
+            $link = $this->uploadFile($request->file('file_dokumen'), $request, 'anggaran');
             if ($link) $data['link_dokumen'] = $link;
         }
 
@@ -84,7 +84,7 @@ class RealisasiAnggaranController extends Controller
         $data = $request->all();
 
         if ($request->hasFile('file_dokumen')) {
-            $link = $this->uploadFile($request->file('file_dokumen'), $request);
+            $link = $this->uploadFile($request->file('file_dokumen'), $request, 'anggaran');
             if ($link) $data['link_dokumen'] = $link;
         }
         
@@ -112,19 +112,5 @@ class RealisasiAnggaranController extends Controller
         return response()->json(['success' => true]);
     }
 
-    private function uploadFile($file, Request $request)
-    {
-        try {
-            if (class_exists('\App\Services\GoogleDriveService')) {
-                $driveService = new \App\Services\GoogleDriveService();
-                return $driveService->upload($file);
-            }
-        } catch (\Throwable $e) { }
-
-        $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9.]/', '_', $file->getClientOriginalName());
-        $destinationPath = app()->basePath('public/uploads/anggaran');
-        if (!file_exists($destinationPath)) mkdir($destinationPath, 0755, true);
-        $file->move($destinationPath, $filename);
-        return $request->root() . '/uploads/anggaran/' . $filename;
-    }
+    // uploadFile() diwarisi dari base Controller
 }

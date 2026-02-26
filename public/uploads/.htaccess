@@ -1,0 +1,29 @@
+# SECURITY: Blokir eksekusi PHP di folder uploads
+# Mencegah penyerang mengupload dan menjalankan file PHP berbahaya
+# Ref: https://security.stackexchange.com/questions/80340/
+
+# Disable PHP engine di folder ini
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+
+# Block akses ke file PHP (ekstensi apapun)
+<FilesMatch "\.(ph(p[345s]?|tml|ar)|cgi|pl|py|sh|bash|exe|bat|cmd|com|asp|aspx|jsp)$">
+    Order deny,allow
+    Deny from all
+</FilesMatch>
+
+# Hanya izinkan file dengan tipe yang aman
+<FilesMatch "\.(pdf|doc|docx|xls|xlsx|jpg|jpeg|png|gif|webp)$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
+
+# Disable directory listing
+Options -Indexes -ExecCGI
+
+# Force download file (jangan execute di browser)
+<IfModule mod_headers.c>
+    Header set Content-Disposition "attachment"
+    Header set X-Content-Type-Options "nosniff"
+</IfModule>

@@ -1,4 +1,6 @@
 .env
+.env.backup
+.env.*
 vendor/
 .phpunit.cache/
 storage/*.log

@@ -72,7 +72,7 @@ class DipaPokController extends Controller
 
         // Upload file DIPA
         if ($request->hasFile('file_doc_dipa')) {
-            $link = $this->uploadFile($request->file('file_doc_dipa'), $request, 'dipa');
+            $link = $this->uploadFile($request->file('file_doc_dipa'), $request, 'dipapok');
             if ($link) {
                 $data['doc_dipa'] = $link;
             }
@@ -80,7 +80,7 @@ class DipaPokController extends Controller
 
         // Upload file POK
         if ($request->hasFile('file_doc_pok')) {
-            $link = $this->uploadFile($request->file('file_doc_pok'), $request, 'pok');
+            $link = $this->uploadFile($request->file('file_doc_pok'), $request, 'dipapok');
             if ($link) {
                 $data['doc_pok'] = $link;
             }
@@ -145,7 +145,7 @@ class DipaPokController extends Controller
 
         // Upload file DIPA baru jika ada
         if ($request->hasFile('file_doc_dipa')) {
-            $link = $this->uploadFile($request->file('file_doc_dipa'), $request, 'dipa');
+            $link = $this->uploadFile($request->file('file_doc_dipa'), $request, 'dipapok');
             if ($link) {
                 $data['doc_dipa'] = $link;
             }
@@ -153,7 +153,7 @@ class DipaPokController extends Controller
 
         // Upload file POK baru jika ada
         if ($request->hasFile('file_doc_pok')) {
-            $link = $this->uploadFile($request->file('file_doc_pok'), $request, 'pok');
+            $link = $this->uploadFile($request->file('file_doc_pok'), $request, 'dipapok');
             if ($link) {
                 $data['doc_pok'] = $link;
             }
@@ -187,28 +187,5 @@ class DipaPokController extends Controller
         ]);
     }
 
-    private function uploadFile($file, Request $request, $type = 'dipa')
-    {
-        try {
-            // Coba upload ke Google Drive jika service tersedia
-            if (class_exists('\App\Services\GoogleDriveService')) {
-                $driveService = new \App\Services\GoogleDriveService();
-                return $driveService->upload($file);
-            }
-        } catch (\Throwable $e) {
-            // Fallback ke local storage
-        }
-
-        // Upload ke local storage
-        $filename = time() . '_' . $type . '_' . preg_replace('/[^a-zA-Z0-9.]/', '_', $file->getClientOriginalName());
-        $destinationPath = app()->basePath('public/uploads/dipapok');
-
-        if (!file_exists($destinationPath)) {
-            mkdir($destinationPath, 0755, true);
-        }
-
-        $file->move($destinationPath, $filename);
-
-        return $request->root() . '/uploads/dipapok/' . $filename;
-    }
+    // uploadFile() diwarisi dari base Controller
 }

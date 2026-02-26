@@ -82,13 +82,24 @@ class Handler extends ExceptionHandler
             return $response;
         }
 
-        // SECURITY: Jangan expose stack trace di production
+        // SECURITY: Jangan expose stack trace atau pesan exception di production
+        // Ref: https://lumen.laravel.com/docs/11.x/errors
         $isProduction = env('APP_ENV') === 'production' || env('APP_DEBUG') === false;
 
+        // SECURITY: Log error untuk debugging internal
+        \Illuminate\Support\Facades\Log::error('Unhandled exception', [
+            'exception' => get_class($exception),
+            'message' => $exception->getMessage(),
+            'file' => $exception->getFile(),
+            'line' => $exception->getLine(),
+        ]);
+
         if ($isProduction) {
+            // SECURITY: Sembunyikan detail exception dari response
+            // Pesan asli hanya ada di log, bukan di response ke client
             $response = response()->json([
                 'success' => false,
-                'message' => 'Internal server error: ' . $exception->getMessage()
+                'message' => 'Terjadi kesalahan pada server'
             ], 500);
         } else {
             // Development mode - tampilkan error details

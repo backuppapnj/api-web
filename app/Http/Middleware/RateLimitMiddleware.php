@@ -40,10 +40,9 @@ class RateLimitMiddleware
 
     protected function resolveRequestSignature(Request $request): string
     {
-        // Gunakan IP + User Agent sebagai identifier
-        $ip = $request->ip();
-        $userAgent = $request->header('User-Agent', 'unknown');
-
-        return sha1($ip . '|' . $userAgent);
+        // SECURITY: Hanya gunakan IP sebagai identifier
+        // User-Agent bisa dimanipulasi untuk bypass rate limit
+        // Ref: https://benjamincrozat.com/laravel-security-best-practices
+        return sha1($request->ip());
     }
 }

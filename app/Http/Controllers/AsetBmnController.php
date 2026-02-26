@@ -40,8 +40,10 @@ class AsetBmnController extends Controller
             }
         }
 
+        // SECURITY: Gunakan parameter binding untuk orderByRaw
+        $placeholders = implode(',', array_fill(0, count(self::JENIS_LAPORAN), '?'));
         $data = $query->orderBy('tahun', 'desc')
-            ->orderByRaw("FIELD(jenis_laporan, '" . implode("','", self::JENIS_LAPORAN) . "')")
+            ->orderByRaw("FIELD(jenis_laporan, $placeholders)", self::JENIS_LAPORAN)
             ->get();
 
         return response()->json([
@@ -89,7 +91,7 @@ class AsetBmnController extends Controller
             ], 422);
         }
 
-        $data = $request->only($this->allowedFields);
+        $data = $this->sanitizeInput($request->only($this->allowedFields));
 
         // Handle file upload
         if ($request->hasFile('file_dokumen')) {
@@ -134,7 +136,7 @@ class AsetBmnController extends Controller
             ], 422);
         }
 
-        $data = $request->only($this->allowedFields);
+        $data = $this->sanitizeInput($request->only($this->allowedFields));
 
         // Handle file upload
         if ($request->hasFile('file_dokumen')) {
@@ -160,26 +162,5 @@ class AsetBmnController extends Controller
         return response()->json(['success' => true, 'message' => 'Data berhasil dihapus']);
     }
 
-    /**
-     * Upload file ke Google Drive atau lokal
-     */
-    private function uploadFile($file, Request $request, $folder = 'aset-bmn')
-    {
-        try {
-            if (class_exists('\App\Services\GoogleDriveService')) {
-                $driveService = new \App\Services\GoogleDriveService();
-                return $driveService->upload($file);
-            }
-        } catch (\Throwable $e) { }
-
-        try {
-            $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9.]/', '_', $file->getClientOriginalName());
-            $destinationPath = app()->basePath('public/uploads/' . $folder);
-            if (!file_exists($destinationPath)) mkdir($destinationPath, 0755, true);
-            $file->move($destinationPath, $filename);
-            return $request->root() . '/uploads/' . $folder . '/' . $filename;
-        } catch (\Throwable $e) {
-            return null;
-        }
-    }
+    // uploadFile() sekarang diwarisi dari base Controller
 }
