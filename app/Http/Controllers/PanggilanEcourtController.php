@@ -135,8 +135,8 @@ class PanggilanEcourtController extends Controller
         // SECURITY: Hanya ambil field yang diizinkan (prevent mass assignment)
         $data = $request->only($this->allowedFields);
 
-        // SECURITY: Sanitasi input teks
-        $data = $this->sanitizeInput($data);
+        // SECURITY: Sanitasi input teks (skip strip_tags untuk link_surat dan nomor_perkara)
+        $data = $this->sanitizeInput($data, ['link_surat', 'nomor_perkara']);
 
         // Handle File Upload
         if ($request->hasFile('file_upload')) {
@@ -241,8 +241,8 @@ class PanggilanEcourtController extends Controller
         // SECURITY: Hanya ambil field yang diizinkan
         $data = $request->only($this->allowedFields);
 
-        // SECURITY: Sanitasi input
-        $data = $this->sanitizeInput($data);
+        // SECURITY: Sanitasi input (skip strip_tags untuk link_surat dan nomor_perkara)
+        $data = $this->sanitizeInput($data, ['link_surat', 'nomor_perkara']);
 
         // Handle File Upload
         if ($request->hasFile('file_upload')) {
@@ -333,23 +333,4 @@ class PanggilanEcourtController extends Controller
         ]);
     }
 
-    /**
-     * SECURITY: Sanitasi input untuk mencegah XSS
-     */
-    private function sanitizeInput(array $data): array
-    {
-        foreach ($data as $key => $value) {
-            if (is_string($value) && $key !== 'link_surat') {
-                if ($key !== 'nomor_perkara') {
-                    $data[$key] = strip_tags($value);
-                }
-                $data[$key] = trim($data[$key]);
-
-                if ($data[$key] === '') {
-                    $data[$key] = null;
-                }
-            }
-        }
-        return $data;
-    }
 }

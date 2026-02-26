@@ -31,7 +31,7 @@ class Handler extends ExceptionHandler
 
     /**
      * Render an exception into an HTTP response.
-     * SECURITY: Always include security headers, even on error responses
+     * SECURITY: Always include security + CORS headers, even on error responses
      */
     public function render($request, Throwable $exception)
     {
@@ -41,6 +41,18 @@ class Handler extends ExceptionHandler
             'X-Frame-Options' => 'DENY',
             'X-XSS-Protection' => '1; mode=block',
         ];
+
+        // CORS headers untuk error responses
+        // Diperlukan karena FatalError/exception bisa bypass middleware pipeline
+        $origin = $request->header('Origin');
+        $trustedDomains = [
+            'https://pa-penajam.go.id',
+            'https://www.pa-penajam.go.id',
+        ];
+        if (!empty($origin) && in_array($origin, $trustedDomains)) {
+            $securityHeaders['Access-Control-Allow-Origin'] = $origin;
+            $securityHeaders['Vary'] = 'Origin';
+        }
 
         // Handle Validation Exception
         if ($exception instanceof ValidationException) {

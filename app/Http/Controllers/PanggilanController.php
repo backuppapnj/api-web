@@ -132,8 +132,8 @@ class PanggilanController extends Controller
         // SECURITY: Hanya ambil field yang diizinkan (prevent mass assignment)
         $data = $request->only($this->allowedFields);
 
-        // SECURITY: Sanitasi input teks
-        $data = $this->sanitizeInput($data);
+        // SECURITY: Sanitasi input teks (skip strip_tags untuk link_surat dan nomor_perkara)
+        $data = $this->sanitizeInput($data, ['link_surat', 'nomor_perkara']);
 
         // Handle File Upload
         if ($request->hasFile('file_upload')) {
@@ -237,8 +237,8 @@ class PanggilanController extends Controller
         // SECURITY: Hanya ambil field yang diizinkan
         $data = $request->only($this->allowedFields);
 
-        // SECURITY: Sanitasi input
-        $data = $this->sanitizeInput($data);
+        // SECURITY: Sanitasi input (skip strip_tags untuk link_surat dan nomor_perkara)
+        $data = $this->sanitizeInput($data, ['link_surat', 'nomor_perkara']);
 
         // Handle File Upload
         if ($request->hasFile('file_upload')) {
@@ -329,29 +329,4 @@ class PanggilanController extends Controller
         ]);
     }
 
-    /**
-     * SECURITY: Sanitasi input untuk mencegah XSS
-     */
-    private function sanitizeInput(array $data): array
-    {
-        foreach ($data as $key => $value) {
-            if (is_string($value) && $key !== 'link_surat') {
-                // Jangan strip tags untuk nomor perkara (kadang ada karakter khsus yg dianggap tag)
-                // Tapi strip_tags biasanya aman untuk / dan .
-                // Masalahnya mungkin di regex validasi di store() method, bukan di sini.
-                // Tapi mari kita kecualikan nomor_perkara dari strip_tags untuk aman.
-                if ($key !== 'nomor_perkara') {
-                    $data[$key] = strip_tags($value);
-                }
-                // Trim whitespace
-                $data[$key] = trim($data[$key]);
-
-                // FIX: Convert empty string to null for nullable fields (especially DATE/DATETIME)
-                if ($data[$key] === '') {
-                    $data[$key] = null;
-                }
-            }
-        }
-        return $data;
-    }
 }
