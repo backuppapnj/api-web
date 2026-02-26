@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             LhkpnSeeder::class,
             AnggaranSeeder::class,
             DipaPokSeeder::class,
+            AsetBmnSeeder::class,
         ]);
     }
 }

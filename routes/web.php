@@ -42,6 +42,10 @@ $router->group(['prefix' => 'api', 'middleware' => 'throttle:100,1'], function (
     // DIPA POK Routes
     $router->get('dipapok', 'DipaPokController@index');
     $router->get('dipapok/{id:[0-9]+}', 'DipaPokController@show');
+
+    // Aset BMN Routes
+    $router->get('aset-bmn', 'AsetBmnController@index');
+    $router->get('aset-bmn/{id:[0-9]+}', 'AsetBmnController@show');
 });
 
 // SECURITY: Protected routes dengan API Key + rate limiting (100 request/menit)
@@ -90,4 +94,9 @@ $router->group(['prefix' => 'api', 'middleware' => ['api.key', 'throttle:100,1']
     $router->put('dipapok/{id:[0-9]+}', 'DipaPokController@update');
     $router->post('dipapok/{id:[0-9]+}', 'DipaPokController@update');
     $router->delete('dipapok/{id:[0-9]+}', 'DipaPokController@destroy');
+
+    // Aset BMN
+    $router->post('aset-bmn', 'AsetBmnController@store');
+    $router->put('aset-bmn/{id:[0-9]+}', 'AsetBmnController@update');
+    $router->delete('aset-bmn/{id:[0-9]+}', 'AsetBmnController@destroy');
 });

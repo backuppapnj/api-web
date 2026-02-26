@@ -1,0 +1,291 @@
+<style>
+    .bmn-wrapper {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        max-width: 100%;
+        margin: 0 auto;
+        color: #1e3a3a;
+    }
+
+    .bmn-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        padding: 2rem 1rem;
+        background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+        color: white;
+        border-radius: 8px;
+    }
+
+    .bmn-header h2 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.6rem;
+        color: white !important;
+    }
+
+    .bmn-header p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 0.95rem;
+    }
+
+    .bmn-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #ccfbf1;
+        overflow-x: auto;
+        padding-bottom: 2px;
+    }
+
+    .tab-btn {
+        padding: 0.6rem 1.4rem;
+        border: none;
+        background: none;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s;
+        white-space: nowrap;
+        font-size: 0.95rem;
+    }
+
+    .tab-btn:hover {
+        color: #0f766e;
+        background-color: #f0fdfa;
+        border-radius: 4px 4px 0 0;
+    }
+
+    .tab-btn.active {
+        color: #0f766e;
+        border-bottom-color: #0f766e;
+    }
+
+    .bmn-section-title {
+        font-size: 1rem;
+        font-weight: 700;
+        margin: 1.5rem 0 0.75rem 0;
+        padding: 8px 12px;
+        background: #f0fdfa;
+        border-left: 4px solid #14b8a6;
+        border-radius: 0 4px 4px 0;
+        color: #0f766e;
+    }
+
+    .bmn-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+        margin-bottom: 1.5rem;
+        background: white;
+    }
+
+    .bmn-table thead th {
+        background: #0f766e;
+        color: white;
+        padding: 10px 12px;
+        text-align: left;
+        font-weight: 600;
+    }
+
+    .bmn-table thead th.text-center {
+        text-align: center;
+    }
+
+    .bmn-table tbody td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #e2e8f0;
+        vertical-align: middle;
+    }
+
+    .bmn-table tbody tr:hover {
+        background-color: #f0fdfa;
+    }
+
+    .bmn-table tbody td.text-center {
+        text-align: center;
+    }
+
+    .bmn-table tbody td.no-col {
+        text-align: center;
+        width: 45px;
+        color: #64748b;
+    }
+
+    .btn-doc {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        padding: 5px 14px;
+        background-color: #f0fdfa;
+        color: #0f766e;
+        border: 1px solid #99f6e4;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        white-space: nowrap;
+    }
+
+    .btn-doc:hover {
+        background-color: #0f766e;
+        color: white;
+        border-color: #0f766e;
+    }
+
+    .badge-empty {
+        color: #94a3b8;
+        font-size: 0.8rem;
+        font-style: italic;
+    }
+
+    .bmn-loading {
+        text-align: center;
+        padding: 3rem 0;
+        color: #64748b;
+        font-size: 0.95rem;
+    }
+
+    @media (max-width: 600px) {
+        .bmn-table {
+            font-size: 0.8rem;
+        }
+        .bmn-header h2 {
+            font-size: 1.2rem;
+        }
+    }
+</style>
+
+<div class="bmn-wrapper">
+    <div class="bmn-header">
+        <h2>Daftar Aset dan Inventaris Barang Milik Negara</h2>
+        <p>Laporan BMN Pengadilan Agama Penajam</p>
+    </div>
+
+    <div class="bmn-tabs" id="bmnYearTabs"></div>
+
+    <div id="bmnContent"><div class="bmn-loading">Memuat data&hellip;</div></div>
+</div>
+
+<script>
+(function () {
+    var API_URL = 'https://web-api.pa-penajam.go.id/api/aset-bmn';
+
+    var SECTIONS = [
+        {
+            title: 'Laporan Posisi BMN Di Neraca',
+            items: [
+                'Laporan Posisi BMN Di Neraca - Semester I',
+                'Laporan Posisi BMN Di Neraca - Semester II',
+                'Laporan Posisi BMN Di Neraca - Tahunan'
+            ]
+        },
+        {
+            title: 'Laporan Barang Kuasa Pengguna (Persediaan)',
+            items: [
+                'Laporan Barang Kuasa Pengguna - Persediaan - Semester I',
+                'Laporan Barang Kuasa Pengguna - Persediaan - Semester II'
+            ]
+        },
+        {
+            title: 'Laporan Kondisi Barang',
+            items: [
+                'Laporan Kondisi Barang - Tahunan'
+            ]
+        }
+    ];
+
+    var currentYear = new Date().getFullYear();
+    var tabsEl = document.getElementById('bmnYearTabs');
+    var contentEl = document.getElementById('bmnContent');
+
+    /* ------------------------------------------------
+     * Bangun tab tahun (tahun ini - 4 tahun ke belakang)
+     * ------------------------------------------------ */
+    for (var y = currentYear; y >= currentYear - 4; y--) {
+        var btn = document.createElement('button');
+        btn.className = 'tab-btn' + (y === currentYear ? ' active' : '');
+        btn.setAttribute('data-year', y);
+        btn.textContent = y;
+        tabsEl.appendChild(btn);
+    }
+
+    /* ------------------------------------------------
+     * Render dokumen
+     * ------------------------------------------------ */
+    function renderDoc(url) {
+        if (!url) {
+            return '<span class="badge-empty">Belum tersedia</span>';
+        }
+        return '<a href="' + url + '" target="_blank" rel="noopener noreferrer" class="btn-doc">&#128196; Lihat</a>';
+    }
+
+    function renderContent(data) {
+        /* Buat lookup: jenis_laporan -> link_dokumen */
+        var lookup = {};
+        data.forEach(function (row) {
+            lookup[row.jenis_laporan] = row.link_dokumen || null;
+        });
+
+        var html = '';
+        SECTIONS.forEach(function (section) {
+            html += '<div class="bmn-section-title">' + section.title + '</div>';
+            html += '<div style="overflow-x:auto;">';
+            html += '<table class="bmn-table">';
+            html += '<thead><tr>' +
+                    '<th class="text-center" style="width:45px">No.</th>' +
+                    '<th>Uraian</th>' +
+                    '<th class="text-center" style="width:140px">Dokumen</th>' +
+                    '</tr></thead><tbody>';
+
+            section.items.forEach(function (jenis, idx) {
+                html += '<tr>' +
+                        '<td class="no-col">' + (idx + 1) + '</td>' +
+                        '<td>' + jenis + '</td>' +
+                        '<td class="text-center">' + renderDoc(lookup.hasOwnProperty(jenis) ? lookup[jenis] : null) + '</td>' +
+                        '</tr>';
+            });
+
+            html += '</tbody></table></div>';
+        });
+
+        contentEl.innerHTML = html;
+    }
+
+    /* ------------------------------------------------
+     * Muat data dari API
+     * ------------------------------------------------ */
+    function loadYear(year) {
+        contentEl.innerHTML = '<div class="bmn-loading">Memuat data&hellip;</div>';
+
+        fetch(API_URL + '?tahun=' + year)
+            .then(function (res) { return res.json(); })
+            .then(function (json) {
+                if (json.success && Array.isArray(json.data)) {
+                    renderContent(json.data);
+                } else {
+                    contentEl.innerHTML = '<div class="bmn-loading">Data tidak tersedia untuk tahun ' + year + '.</div>';
+                }
+            })
+            .catch(function () {
+                contentEl.innerHTML = '<div class="bmn-loading" style="color:#dc2626;">Gagal memuat data. Periksa koneksi.</div>';
+            });
+    }
+
+    /* ------------------------------------------------
+     * Event listener tab
+     * ------------------------------------------------ */
+    tabsEl.addEventListener('click', function (e) {
+        var btn = e.target.closest ? e.target.closest('.tab-btn') : (e.target.className.indexOf('tab-btn') >= 0 ? e.target : null);
+        if (!btn) return;
+        tabsEl.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        currentYear = parseInt(btn.getAttribute('data-year'), 10);
+        loadYear(currentYear);
+    });
+
+    /* Muat tahun saat ini */
+    loadYear(currentYear);
+})();
+</script>
