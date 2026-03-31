@@ -1,0 +1,261 @@
+<style>
+    .lp-wrapper {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        max-width: 100%;
+        margin: 0 auto;
+        color: #1e293b;
+    }
+
+    .lp-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        padding: 2rem 1rem;
+        background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+        color: white;
+        border-radius: 8px;
+    }
+
+    .lp-header h2 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.6rem;
+        color: white !important;
+    }
+
+    .lp-header p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 0.95rem;
+    }
+
+    .lp-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #fef3c7;
+        overflow-x: auto;
+        padding-bottom: 2px;
+    }
+
+    .tab-btn {
+        padding: 0.6rem 1.4rem;
+        border: none;
+        background: none;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s;
+        white-space: nowrap;
+        font-size: 0.95rem;
+    }
+
+    .tab-btn:hover {
+        color: #d97706;
+        background-color: #fef3c7;
+        border-radius: 4px 4px 0 0;
+    }
+
+    .tab-btn.active {
+        color: #d97706;
+        border-bottom-color: #d97706;
+    }
+
+    .lp-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.8rem;
+        margin-bottom: 1.5rem;
+        background: white;
+    }
+
+    .lp-table thead th {
+        background: #d97706;
+        color: white;
+        padding: 8px 6px;
+        text-align: center;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .lp-table thead th.materi-col {
+        text-align: left;
+        min-width: 220px;
+    }
+
+    .lp-table tbody td {
+        padding: 7px 6px;
+        border-bottom: 1px solid #e2e8f0;
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .lp-table tbody tr:hover {
+        background-color: #fefce8;
+    }
+
+    .lp-table tbody td.materi-col {
+        text-align: left;
+        font-weight: 500;
+        color: #92400e;
+        padding-left: 10px;
+    }
+
+    .lp-table tbody td.total-row {
+        background-color: #fffbeb;
+        font-weight: 700;
+        color: #92400e;
+    }
+
+    .lp-loading {
+        text-align: center;
+        padding: 3rem 0;
+        color: #64748b;
+        font-size: 0.95rem;
+    }
+
+    .lp-badge {
+        color: #94a3b8;
+        font-size: 0.75rem;
+        font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+        .lp-table {
+            font-size: 0.72rem;
+        }
+        .lp-header h2 {
+            font-size: 1.2rem;
+        }
+    }
+</style>
+
+<div class="lp-wrapper">
+    <div class="lp-header">
+        <h2>Laporan Rekapitulasi Pengaduan</h2>
+        <p>Pengadilan Agama Penajam</p>
+    </div>
+
+    <div class="lp-tabs" id="lpYearTabs"></div>
+
+    <div id="lpContent"><div class="lp-loading">Memuat data&hellip;</div></div>
+</div>
+
+<script>
+(function () {
+    var API_URL = 'https://web-api.pa-penajam.go.id/api/laporan-pengaduan';
+
+    var MATERI = [
+        'Pelanggaran Terhadap Kode Etik Atau Pedoman Perilaku Hakim',
+        'Penyalahgunaan Wewenang / Jabatan',
+        'Pelanggaran Terhadap Disiplin PNS',
+        'Perbuatan Tercela',
+        'Pelanggaran Hukum Acara',
+        'Kekeliruan Administrasi',
+        'Pelayanan Publik Yang Tidak Memuaskan'
+    ];
+
+    var BULAN = ['jan','feb','mar','apr','mei','jun','jul','agu','sep','okt','nop','des'];
+    var BULAN_LABEL = { jan:'Jan', feb:'Feb', mar:'Mar', apr:'Apr', mei:'Mei', jun:'Jun', jul:'Jul', agu:'Agu', sep:'Sep', okt:'Okt', nop:'Nop', des:'Des' };
+
+    var currentYear = new Date().getFullYear();
+    var tabsEl = document.getElementById('lpYearTabs');
+    var contentEl = document.getElementById('lpContent');
+
+    for (var y = currentYear; y >= currentYear - 4; y--) {
+        var btn = document.createElement('button');
+        btn.className = 'tab-btn' + (y === currentYear ? ' active' : '');
+        btn.setAttribute('data-year', y);
+        btn.textContent = y;
+        tabsEl.appendChild(btn);
+    }
+
+    function buildLookup(data) {
+        var lookup = {};
+        data.forEach(function (row) {
+            lookup[row.materi_pengaduan] = row;
+        });
+        return lookup;
+    }
+
+    function num(v) {
+        return (v === null || v === undefined) ? 0 : parseInt(v, 10);
+    }
+
+    function colNum(row, key) {
+        return row ? num(row[key]) : 0;
+    }
+
+    function renderContent(data) {
+        var lookup = buildLookup(data);
+
+        var html = '<div style="overflow-x:auto;">';
+        html += '<table class="lp-table">';
+
+        html += '<thead><tr>';
+        html += '<th class="materi-col">Materi Pengaduan</th>';
+        BULAN.forEach(function (b) { html += '<th>' + BULAN_LABEL[b] + '</th>'; });
+        html += '<th>Proses</th>';
+        html += '<th>Sisa</th>';
+        html += '</tr></thead>';
+
+        html += '<tbody>';
+
+        MATERI.forEach(function (materi, idx) {
+            var row = lookup[materi];
+            html += '<tr>';
+            html += '<td class="materi-col">' + (idx + 1) + '. ' + materi + '</td>';
+            BULAN.forEach(function (b) {
+                html += '<td>' + colNum(row, b) + '</td>';
+            });
+            html += '<td>' + colNum(row, 'laporan_proses') + '</td>';
+            html += '<td>' + colNum(row, 'sisa') + '</td>';
+            html += '</tr>';
+        });
+
+        var total = { jan:0, feb:0, mar:0, apr:0, mei:0, jun:0, jul:0, agu:0, sep:0, okt:0, nop:0, des:0, laporan_proses:0, sisa:0 };
+        data.forEach(function (row) {
+            BULAN.forEach(function (b) { total[b] += num(row[b]); });
+            total.laporan_proses += num(row.laporan_proses);
+            total.sisa += num(row.sisa);
+        });
+
+        html += '<tr>';
+        html += '<td class="materi-col total-row">Jumlah</td>';
+        BULAN.forEach(function (b) { html += '<td class="total-row">' + total[b] + '</td>'; });
+        html += '<td class="total-row">' + total.laporan_proses + '</td>';
+        html += '<td class="total-row">' + total.sisa + '</td>';
+        html += '</tr>';
+
+        html += '</tbody></table></div>';
+        contentEl.innerHTML = html;
+    }
+
+    function loadYear(year) {
+        contentEl.innerHTML = '<div class="lp-loading">Memuat data&hellip;</div>';
+
+        fetch(API_URL + '?tahun=' + year)
+            .then(function (res) { return res.json(); })
+            .then(function (json) {
+                if (json.success && Array.isArray(json.data)) {
+                    renderContent(json.data);
+                } else {
+                    contentEl.innerHTML = '<div class="lp-loading">Data tidak tersedia untuk tahun ' + year + '.</div>';
+                }
+            })
+            .catch(function () {
+                contentEl.innerHTML = '<div class="lp-loading" style="color:#dc2626;">Gagal memuat data. Periksa koneksi.</div>';
+            });
+    }
+
+    tabsEl.addEventListener('click', function (e) {
+        var btn = e.target.closest ? e.target.closest('.tab-btn') : null;
+        if (!btn) return;
+        tabsEl.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        currentYear = parseInt(btn.getAttribute('data-year'), 10);
+        loadYear(currentYear);
+    });
+
+    loadYear(currentYear);
+})();
+</script>
