@@ -115,7 +115,7 @@ class SakipController extends Controller
             'jenis_dokumen' => 'required|string',
             'uraian'         => 'nullable|string',
             'link_dokumen'  => 'nullable|string',
-            'file_dokumen'  => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240',
+            'file_dokumen'  => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:20480',
         ]);
 
         if (!in_array($request->jenis_dokumen, self::JENIS_DOKUMEN)) {
@@ -178,7 +178,7 @@ class SakipController extends Controller
             'jenis_dokumen' => 'sometimes|required|string',
             'uraian'         => 'nullable|string',
             'link_dokumen'  => 'nullable|string',
-            'file_dokumen'  => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240',
+'file_dokumen'  => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:20480',
         ]);
 
         if ($request->has('jenis_dokumen') && !in_array($request->jenis_dokumen, self::JENIS_DOKUMEN)) {
