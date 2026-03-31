@@ -100,11 +100,6 @@ class LaporanPengaduanController extends Controller
         }
 
         $data = $this->sanitizeInput($request->only($this->allowedFields));
-        foreach ($this->bulanFields() as $field) {
-            if (isset($data[$field])) {
-                $data[$field] = (int) $data[$field];
-            }
-        }
 
         $item = LaporanPengaduan::create($data);
         return response()->json(['success' => true, 'message' => 'Data berhasil disimpan', 'data' => $item], 201);
@@ -124,11 +119,6 @@ class LaporanPengaduanController extends Controller
         $this->validate($request, $rules);
 
         $data = $this->sanitizeInput($request->only($this->allowedFields));
-        foreach ($this->bulanFields() as $field) {
-            if (isset($data[$field])) {
-                $data[$field] = (int) $data[$field];
-            }
-        }
 
         $item->update($data);
         return response()->json(['success' => true, 'message' => 'Data berhasil diperbarui', 'data' => $item->fresh()]);

@@ -20,29 +20,36 @@ class LaporanPengaduanSeeder extends Seeder
     public function run(): void
     {
         $now = \Carbon\Carbon::now();
+        $currentYear = (int) $now->year;
+        $currentMonth = (int) $now->month;
 
         foreach ([2025, 2024, 2023, 2022] as $tahun) {
             foreach ($this->materi as $materi) {
+                $data = $this->buildData($tahun, $tahun < $currentYear, $currentYear, $currentMonth);
+                $data['updated_at'] = $now;
+                $data['created_at'] = $now;
+
                 DB::table('laporan_pengaduan')->updateOrInsert(
                     ['tahun' => $tahun, 'materi_pengaduan' => $materi],
-                    array_merge([
-                        'jan' => 0, 'feb' => 0, 'mar' => 0,
-                        'apr' => 0, 'mei' => 0, 'jun' => 0,
-                        'jul' => 0, 'agu' => 0, 'sep' => 0,
-                        'okt' => 0, 'nop' => 0, 'des' => 0,
-                        'laporan_proses' => 0, 'sisa' => 0,
-                        'updated_at' => $now, 'created_at' => $now,
-                    ], $this->tahunData($tahun, $materi))
+                    $data
                 );
             }
         }
 
-        $total = 4 * count($this->materi);
-        $this->command->info("LaporanPengaduanSeeder: {$total} baris diproses.");
+        $this->command->info("LaporanPengaduanSeeder: " . (4 * count($this->materi)) . " baris diproses.");
     }
 
-    private function tahunData(int $tahun, string $materi): array
+    private function buildData(int $tahun, bool $isPastYear, int $currentYear, int $currentMonth): array
     {
-        return [];
+        $bulan = ['jan','feb','mar','apr','mei','jun','jul','agu','sep','okt','nop','des'];
+
+        $data = [];
+        foreach ($bulan as $b) {
+            $data[$b] = $isPastYear ? 0 : null;
+        }
+        $data['laporan_proses'] = $isPastYear ? 0 : null;
+        $data['sisa'] = $isPastYear ? 0 : null;
+
+        return $data;
     }
 }
