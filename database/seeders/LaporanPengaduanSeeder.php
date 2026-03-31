@@ -23,7 +23,7 @@ class LaporanPengaduanSeeder extends Seeder
         $currentYear = (int) $now->year;
         $currentMonth = (int) $now->month;
 
-        foreach ([2025, 2024, 2023, 2022] as $tahun) {
+        foreach ([2026, 2025, 2024, 2023, 2022] as $tahun) {
             foreach ($this->materi as $materi) {
                 $data = $this->buildData($tahun, $tahun < $currentYear, $currentYear, $currentMonth);
                 $data['updated_at'] = $now;

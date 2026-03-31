@@ -178,11 +178,9 @@
     }
 
     function num(v) {
-        return (v === null || v === undefined) ? 0 : parseInt(v, 10);
-    }
-
-    function colNum(row, key) {
-        return row ? num(row[key]) : 0;
+        if (v === null || v === undefined) return '—';
+        var n = parseInt(v, 10);
+        return isNaN(n) ? '—' : n;
     }
 
     function renderContent(data) {
@@ -205,18 +203,23 @@
             html += '<tr>';
             html += '<td class="materi-col">' + (idx + 1) + '. ' + materi + '</td>';
             BULAN.forEach(function (b) {
-                html += '<td>' + colNum(row, b) + '</td>';
+                html += '<td>' + num(row ? row[b] : null) + '</td>';
             });
-            html += '<td>' + colNum(row, 'laporan_proses') + '</td>';
-            html += '<td>' + colNum(row, 'sisa') + '</td>';
+            html += '<td>' + num(row ? row.laporan_proses : null) + '</td>';
+            html += '<td>' + num(row ? row.sisa : null) + '</td>';
             html += '</tr>';
         });
 
         var total = { jan:0, feb:0, mar:0, apr:0, mei:0, jun:0, jul:0, agu:0, sep:0, okt:0, nop:0, des:0, laporan_proses:0, sisa:0 };
         data.forEach(function (row) {
-            BULAN.forEach(function (b) { total[b] += num(row[b]); });
-            total.laporan_proses += num(row.laporan_proses);
-            total.sisa += num(row.sisa);
+            BULAN.forEach(function (b) {
+                var v = parseInt(row[b], 10);
+                if (!isNaN(v)) total[b] += v;
+            });
+            var lp = parseInt(row.laporan_proses, 10);
+            if (!isNaN(lp)) total.laporan_proses += lp;
+            var ss = parseInt(row.sisa, 10);
+            if (!isNaN(ss)) total.sisa += ss;
         });
 
         html += '<tr>';
