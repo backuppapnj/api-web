@@ -21,11 +21,16 @@ class LaporanPengaduanSeeder extends Seeder
     {
         $now = \Carbon\Carbon::now();
         $currentYear = (int) $now->year;
-        $currentMonth = (int) $now->month;
 
-        foreach ([2026, 2025, 2024, 2023, 2022] as $tahun) {
+        // Seed: tahun depan + tahun berjalan + 3 tahun lalu = 5 tahun
+        $years = [$currentYear + 1, $currentYear];
+        for ($i = 1; $i <= 3; $i++) {
+            $years[] = $currentYear - $i;
+        }
+        sort($years);
+        foreach ($years as $tahun) {
             foreach ($this->materi as $materi) {
-                $data = $this->buildData($tahun, $tahun < $currentYear, $currentYear, $currentMonth);
+                $data = $this->buildData($tahun, $tahun < $currentYear);
                 $data['updated_at'] = $now;
                 $data['created_at'] = $now;
 
@@ -36,10 +41,10 @@ class LaporanPengaduanSeeder extends Seeder
             }
         }
 
-        $this->command->info("LaporanPengaduanSeeder: " . (4 * count($this->materi)) . " baris diproses.");
+        $this->command->info("LaporanPengaduanSeeder: " . (count($years) * count($this->materi)) . " baris diproses.");
     }
 
-    private function buildData(int $tahun, bool $isPastYear, int $currentYear, int $currentMonth): array
+    private function buildData(int $tahun, bool $isPastYear): array
     {
         $bulan = ['jan','feb','mar','apr','mei','jun','jul','agu','sep','okt','nop','des'];
 
