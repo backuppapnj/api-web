@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             DipaPokSeeder::class,
             AsetBmnSeeder::class,
             SakipSeeder::class,
+            LaporanPengaduanSeeder::class,
         ]);
     }
 }

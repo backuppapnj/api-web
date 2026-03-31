@@ -51,6 +51,11 @@ $router->group(['prefix' => 'api', 'middleware' => 'throttle:100,1'], function (
     $router->get('sakip', 'SakipController@index');
     $router->get('sakip/{id:[0-9]+}', 'SakipController@show');
     $router->get('sakip/tahun/{tahun:[0-9]+}', 'SakipController@byYear');
+
+    // Laporan Pengaduan Routes
+    $router->get('laporan-pengaduan', 'LaporanPengaduanController@index');
+    $router->get('laporan-pengaduan/{id:[0-9]+}', 'LaporanPengaduanController@show');
+    $router->get('laporan-pengaduan/tahun/{tahun:[0-9]+}', 'LaporanPengaduanController@byYear');
 });
 
 // SECURITY: Protected routes dengan API Key + rate limiting (100 request/menit)
@@ -110,4 +115,10 @@ $router->group(['prefix' => 'api', 'middleware' => ['api.key', 'throttle:100,1']
     $router->put('sakip/{id:[0-9]+}', 'SakipController@update');
     $router->post('sakip/{id:[0-9]+}', 'SakipController@update');
     $router->delete('sakip/{id:[0-9]+}', 'SakipController@destroy');
+
+    // Laporan Pengaduan
+    $router->post('laporan-pengaduan', 'LaporanPengaduanController@store');
+    $router->put('laporan-pengaduan/{id:[0-9]+}', 'LaporanPengaduanController@update');
+    $router->post('laporan-pengaduan/{id:[0-9]+}', 'LaporanPengaduanController@update');
+    $router->delete('laporan-pengaduan/{id:[0-9]+}', 'LaporanPengaduanController@destroy');
 });
