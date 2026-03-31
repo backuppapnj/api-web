@@ -46,6 +46,11 @@ $router->group(['prefix' => 'api', 'middleware' => 'throttle:100,1'], function (
     // Aset BMN Routes
     $router->get('aset-bmn', 'AsetBmnController@index');
     $router->get('aset-bmn/{id:[0-9]+}', 'AsetBmnController@show');
+
+    // SAKIP Routes
+    $router->get('sakip', 'SakipController@index');
+    $router->get('sakip/{id:[0-9]+}', 'SakipController@show');
+    $router->get('sakip/tahun/{tahun:[0-9]+}', 'SakipController@byYear');
 });
 
 // SECURITY: Protected routes dengan API Key + rate limiting (100 request/menit)
@@ -99,4 +104,10 @@ $router->group(['prefix' => 'api', 'middleware' => ['api.key', 'throttle:100,1']
     $router->post('aset-bmn', 'AsetBmnController@store');
     $router->put('aset-bmn/{id:[0-9]+}', 'AsetBmnController@update');
     $router->delete('aset-bmn/{id:[0-9]+}', 'AsetBmnController@destroy');
+
+    // SAKIP
+    $router->post('sakip', 'SakipController@store');
+    $router->put('sakip/{id:[0-9]+}', 'SakipController@update');
+    $router->post('sakip/{id:[0-9]+}', 'SakipController@update');
+    $router->delete('sakip/{id:[0-9]+}', 'SakipController@destroy');
 });
