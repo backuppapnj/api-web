@@ -62,6 +62,11 @@ $router->group(['prefix' => 'api', 'middleware' => 'throttle:100,1'], function (
     $router->get('keuangan-perkara/{id:[0-9]+}', 'KeuanganPerkaraController@show');
     $router->get('keuangan-perkara/tahun/{tahun:[0-9]+}', 'KeuanganPerkaraController@byYear');
 
+    // Sisa Panjar Routes
+    $router->get('sisa-panjar', 'SisaPanjarController@index');
+    $router->get('sisa-panjar/{id:[0-9]+}', 'SisaPanjarController@show');
+    $router->get('sisa-panjar/tahun/{tahun:[0-9]+}', 'SisaPanjarController@byYear');
+
     // MOU Routes
     $router->get('mou', 'MouController@index');
     $router->get('mou/{id:[0-9]+}', 'MouController@show');
@@ -136,6 +141,12 @@ $router->group(['prefix' => 'api', 'middleware' => ['api.key', 'throttle:100,1']
     $router->put('keuangan-perkara/{id:[0-9]+}', 'KeuanganPerkaraController@update');
     $router->post('keuangan-perkara/{id:[0-9]+}', 'KeuanganPerkaraController@update');
     $router->delete('keuangan-perkara/{id:[0-9]+}', 'KeuanganPerkaraController@destroy');
+
+    // Sisa Panjar
+    $router->post('sisa-panjar', 'SisaPanjarController@store');
+    $router->put('sisa-panjar/{id:[0-9]+}', 'SisaPanjarController@update');
+    $router->post('sisa-panjar/{id:[0-9]+}', 'SisaPanjarController@update');
+    $router->delete('sisa-panjar/{id:[0-9]+}', 'SisaPanjarController@destroy');
 
     // MOU
     $router->post('mou', 'MouController@store');
