@@ -260,7 +260,9 @@
                     {
                         data: 'tanggal_agenda',
                         width: '150px',
-                        render: function (data) {
+                        render: function (data, type) {
+                            // Gunakan ISO string untuk sort agar urutan tanggal akurat
+                            if (type === 'sort' || type === 'type') return data;
                             return formatTanggal(data);
                         }
                     },
