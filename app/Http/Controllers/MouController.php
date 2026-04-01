@@ -21,7 +21,7 @@ class MouController extends Controller
         $paginated = $query->paginate($perPage);
 
         // Hitung status secara dinamis
-        $today = now()->startOfDay();
+        $today = \Carbon\Carbon::now()->startOfDay();
         foreach ($paginated as $item) {
             $this->applyStatus($item, $today);
         }
@@ -43,7 +43,7 @@ class MouController extends Controller
             return response()->json(['success' => false, 'message' => 'Data not found'], 404);
         }
 
-        $this->applyStatus($mou, now()->startOfDay());
+        $this->applyStatus($mou, \Carbon\Carbon::now()->startOfDay());
 
         return response()->json(['success' => true, 'data' => $mou]);
     }
