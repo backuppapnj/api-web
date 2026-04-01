@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             AsetBmnSeeder::class,
             SakipSeeder::class,
             LaporanPengaduanSeeder::class,
+            KeuanganPerkaraSeeder::class,
         ]);
     }
 }
