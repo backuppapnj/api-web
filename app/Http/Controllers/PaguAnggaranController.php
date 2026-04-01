@@ -21,7 +21,7 @@ class PaguAnggaranController extends Controller
         $this->validate($request, [
             'dipa' => 'required',
             'kategori' => 'required',
-            'jumlah_pagu' => 'required|numeric',
+            'jumlah_pagu' => 'required|numeric|min:0|max:999999999999.99',
             'tahun' => 'required|integer',
         ]);
 
