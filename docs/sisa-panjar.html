@@ -346,9 +346,7 @@
                         data: null,
                         orderable: false,
                         searchable: false,
-                        render: function (data, type, row, meta) {
-                            return meta.row + meta.settings._iDisplayStart + 1;
-                        }
+                        defaultContent: ''
                     },
                     {
                         data: 'bulan',
@@ -397,7 +395,14 @@
                 },
                 pageLength: 25,
                 ordering: true,
-                order: [[1, 'asc'], [0, 'asc']], // Urut berdasarkan bulan, lalu urutan asli
+                order: [[1, 'asc']],
+                drawCallback: function () {
+                    var api = this.api();
+                    var start = api.page.info().start;
+                    api.column(0, { page: 'current' }).nodes().each(function (cell, i) {
+                        cell.innerHTML = start + i + 1;
+                    });
+                },
                 footerCallback: function (row, data, start, end, display) {
                     var api = this.api();
                     var total = api.column(4, { search: 'applied' }).data().reduce(function (a, b) {
