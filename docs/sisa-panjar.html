@@ -381,6 +381,9 @@
                     {
                         data: 'tanggal_setor_kas_negara',
                         render: function (data, type, row) {
+                            if (type === 'sort' || type === 'type') {
+                                return data || '0000-00-00';
+                            }
                             if (row.status === 'disetor_kas_negara' && data) {
                                 return formatTanggal(data);
                             }
@@ -395,7 +398,7 @@
                 },
                 pageLength: 25,
                 ordering: true,
-                order: [[1, 'asc']],
+                order: [[6, 'desc']],
                 drawCallback: function () {
                     var api = this.api();
                     var start = api.page.info().start;
