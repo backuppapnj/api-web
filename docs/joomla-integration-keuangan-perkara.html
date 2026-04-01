@@ -279,7 +279,9 @@
                     },
                     {
                         data: 'bulan',
-                        render: function (data) {
+                        render: function (data, type) {
+                            // Gunakan angka untuk sort agar urutan 1–12, nama untuk tampilan
+                            if (type === 'sort' || type === 'type') return data;
                             return NAMA_BULAN[data] || '-';
                         }
                     },
