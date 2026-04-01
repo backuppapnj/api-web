@@ -70,6 +70,9 @@ $router->group(['prefix' => 'api', 'middleware' => 'throttle:100,1'], function (
     // MOU Routes
     $router->get('mou', 'MouController@index');
     $router->get('mou/{id:[0-9]+}', 'MouController@show');
+
+    $router->get('lra', 'LraReportController@index');
+    $router->get('lra/{id:[0-9]+}', 'LraReportController@show');
 });
 
 // SECURITY: Protected routes dengan API Key + rate limiting (100 request/menit)
@@ -153,4 +156,9 @@ $router->group(['prefix' => 'api', 'middleware' => ['api.key', 'throttle:100,1']
     $router->put('mou/{id:[0-9]+}', 'MouController@update');
     $router->post('mou/{id:[0-9]+}', 'MouController@update');
     $router->delete('mou/{id:[0-9]+}', 'MouController@destroy');
+
+    $router->post('lra', 'LraReportController@store');
+    $router->put('lra/{id:[0-9]+}', 'LraReportController@update');
+    $router->post('lra/{id:[0-9]+}', 'LraReportController@update');
+    $router->delete('lra/{id:[0-9]+}', 'LraReportController@destroy');
 });
