@@ -1,11 +1,3 @@
-<!--
-=====================================================
-CODE UNTUK JOOMLA 3 - AGENDA PIMPINAN
-Copy code ini ke artikel Joomla atau Custom HTML Module
-=====================================================
--->
-
-<!-- CSS DataTables -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
 
 <style>
@@ -132,10 +124,12 @@ Copy code ini ke artikel Joomla atau Custom HTML Module
 <div class="agenda-wrapper">
     <div class="agenda-header">
         <h2>Agenda Pimpinan</h2>
-        <p>Jadwal Kegiatan Ketua dan Pimpinan Pengadilan Agama Penajam Tahun 2025</p>
+        <p>Jadwal Kegiatan Ketua dan Pimpinan Pengadilan Agama Penajam</p>
     </div>
 
     <div class="filter-section">
+        <label for="filterTahun">Pilih Tahun:</label>
+        <select id="filterTahun"></select>
         <label for="filterBulan">Pilih Bulan:</label>
         <select id="filterBulan">
             <option value="">Semua Bulan</option>
@@ -201,17 +195,31 @@ Copy code ini ke artikel Joomla atau Custom HTML Module
         }
 
         let table;
-        let totalData = 0;
 
-        function updateDataInfo(count, bulan) {
+        // Isi opsi tahun secara dinamis: dari 2024 sampai tahun berjalan
+        (function populateTahun() {
+            const sel = document.getElementById('filterTahun');
+            const currentYear = new Date().getFullYear();
+            const opt = document.createElement('option');
+            opt.value = '';
+            opt.textContent = 'Semua Tahun';
+            sel.appendChild(opt);
+            for (let y = currentYear; y >= 2024; y--) {
+                const o = document.createElement('option');
+                o.value = y;
+                o.textContent = y;
+                if (y === currentYear) o.selected = true;
+                sel.appendChild(o);
+            }
+        })();
+
+        function updateDataInfo(count, tahun, bulan) {
             const info = document.getElementById('dataInfo');
             const bulanNames = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
                 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-            if (bulan) {
-                info.textContent = `Menampilkan ${count} data bulan ${bulanNames[parseInt(bulan)]}`;
-            } else {
-                info.textContent = `Menampilkan ${count} data (semua bulan)`;
-            }
+            const labelTahun = tahun ? `tahun ${tahun}` : 'semua tahun';
+            const labelBulan = bulan ? ` bulan ${bulanNames[parseInt(bulan)]}` : '';
+            info.textContent = `Menampilkan ${count} data (${labelTahun}${labelBulan})`;
         }
 
         function initDataTable() {
@@ -219,8 +227,12 @@ Copy code ini ke artikel Joomla atau Custom HTML Module
                 table.destroy();
             }
 
+            const tahun = document.getElementById('filterTahun').value;
             const bulan = document.getElementById('filterBulan').value;
-            const url = bulan ? `${API_URL}?bulan=${bulan}&per_page=all` : `${API_URL}?per_page=all`;
+            const qs = ['per_page=all'];
+            if (tahun) qs.push(`tahun=${tahun}`);
+            if (bulan) qs.push(`bulan=${bulan}`);
+            const url = `${API_URL}?${qs.join('&')}`;
 
             document.getElementById('dataInfo').textContent = 'Memuat...';
 
@@ -228,8 +240,8 @@ Copy code ini ke artikel Joomla atau Custom HTML Module
                 ajax: {
                     url: url,
                     dataSrc: function (json) {
-                        totalData = json.data ? json.data.length : 0;
-                        updateDataInfo(totalData, bulan);
+                        const count = json.data ? json.data.length : 0;
+                        updateDataInfo(count, tahun, bulan);
                         return json.data || [];
                     },
                     error: function (xhr, error, thrown) {
@@ -278,7 +290,10 @@ Copy code ini ke artikel Joomla atau Custom HTML Module
             });
         }
 
-        // Event listener untuk filter bulan
+        // Event listener untuk filter tahun dan bulan
+        document.getElementById('filterTahun').addEventListener('change', function () {
+            initDataTable();
+        });
         document.getElementById('filterBulan').addEventListener('change', function () {
             initDataTable();
         });
