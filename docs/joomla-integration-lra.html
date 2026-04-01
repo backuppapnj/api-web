@@ -1,0 +1,273 @@
+<style>
+    .lra-wrapper {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    .lra-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        padding: 2rem 1rem;
+        background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+        color: white;
+        border-radius: 8px;
+    }
+
+    .lra-header h2 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.8rem;
+        color: white !important;
+    }
+
+    .lra-header p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 0.95rem;
+    }
+
+    .lra-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #e2e8f0;
+        overflow-x: auto;
+        padding-bottom: 2px;
+    }
+
+    .lra-tab-btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        background: none;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s;
+        white-space: nowrap;
+    }
+
+    .lra-tab-btn:hover {
+        color: #0891b2;
+        background-color: #ecfeff;
+        border-radius: 4px 4px 0 0;
+    }
+
+    .lra-tab-btn.active {
+        color: #0891b2;
+        border-bottom-color: #0891b2;
+    }
+
+    .lra-section-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #164e63;
+        margin: 1.5rem 0 1rem 0;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e0f2fe;
+    }
+
+    .lra-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .lra-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.2s;
+        background: white;
+        text-decoration: none;
+        display: block;
+    }
+
+    .lra-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+        border-color: #0891b2;
+    }
+
+    .lra-card img {
+        width: 100%;
+        height: 280px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .lra-card-placeholder {
+        width: 100%;
+        height: 280px;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #94a3b8;
+    }
+
+    .lra-card-placeholder svg {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 0.5rem;
+    }
+
+    .lra-card-body {
+        padding: 0.75rem;
+        text-align: center;
+    }
+
+    .lra-card-body span {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #334155;
+    }
+
+    .lra-empty {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #94a3b8;
+        font-size: 1rem;
+    }
+
+    .lra-loading {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #64748b;
+    }
+
+    @media (max-width: 768px) {
+        .lra-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        .lra-card img, .lra-card-placeholder {
+            height: 200px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .lra-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="lra-wrapper">
+    <div class="lra-header">
+        <h2>Laporan Realisasi Anggaran</h2>
+        <p>Dokumen LRA Per Triwulan - PA Penajam</p>
+    </div>
+
+    <div class="lra-tabs" id="lraYearTabs"></div>
+    <div id="lraContent">
+        <div class="lra-loading">Memuat data...</div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        var API_URL = 'https://web-api.pa-penajam.go.id/api/lra';
+        var thisYear = new Date().getFullYear();
+        var currentYear = thisYear;
+        var yearTabs = document.getElementById('lraYearTabs');
+        var contentEl = document.getElementById('lraContent');
+
+        for (var y = thisYear; y >= thisYear - 4; y--) {
+            var btn = document.createElement('button');
+            btn.className = 'lra-tab-btn' + (y === thisYear ? ' active' : '');
+            btn.setAttribute('data-year', y);
+            btn.textContent = y;
+            yearTabs.appendChild(btn);
+        }
+
+        var placeholderSvg = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>';
+
+        function loadData(year) {
+            contentEl.innerHTML = '<div class="lra-loading">Memuat data...</div>';
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', API_URL + '?tahun=' + year + '&per_page=100');
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    try {
+                        var json = JSON.parse(xhr.responseText);
+                        renderData(json.data || []);
+                    } catch (e) {
+                        contentEl.innerHTML = '<div class="lra-empty">Gagal memproses data.</div>';
+                    }
+                } else {
+                    contentEl.innerHTML = '<div class="lra-empty">Gagal memuat data.</div>';
+                }
+            };
+            xhr.onerror = function () {
+                contentEl.innerHTML = '<div class="lra-empty">Gagal terhubung ke server.</div>';
+            };
+            xhr.send();
+        }
+
+        function renderData(items) {
+            if (!items || items.length === 0) {
+                contentEl.innerHTML = '<div class="lra-empty">Belum ada data LRA untuk tahun ini.</div>';
+                return;
+            }
+
+            var grouped = {};
+            for (var i = 0; i < items.length; i++) {
+                var dipa = items[i].jenis_dipa || 'Lainnya';
+                if (!grouped[dipa]) grouped[dipa] = [];
+                grouped[dipa].push(items[i]);
+            }
+
+            var html = '';
+            var dipaKeys = Object.keys(grouped).sort();
+
+            for (var d = 0; d < dipaKeys.length; d++) {
+                var dKey = dipaKeys[d];
+                var records = grouped[dKey];
+                records.sort(function (a, b) { return a.triwulan - b.triwulan; });
+
+                html += '<h4 class="lra-section-title">Laporan Realisasi Anggaran ' + dKey + '</h4>';
+                html += '<div class="lra-grid">';
+
+                for (var r = 0; r < records.length; r++) {
+                    var rec = records[r];
+                    var fileUrl = rec.file_url || '#';
+                    var coverUrl = rec.cover_url;
+                    var label = 'Triwulan ' + rec.triwulan;
+
+                    html += '<a href="' + fileUrl + '" target="_blank" rel="noopener noreferrer" class="lra-card">';
+                    if (coverUrl) {
+                        html += '<img src="' + coverUrl + '" alt="' + label + '" loading="lazy">';
+                    } else {
+                        html += '<div class="lra-card-placeholder">' + placeholderSvg + '<span>' + label + '</span></div>';
+                    }
+                    html += '<div class="lra-card-body"><span>' + label + '</span></div>';
+                    html += '</a>';
+                }
+
+                html += '</div>';
+            }
+
+            contentEl.innerHTML = html;
+        }
+
+        yearTabs.addEventListener('click', function (e) {
+            var btn = e.target.closest('.lra-tab-btn');
+            if (!btn) return;
+            var allBtns = document.querySelectorAll('.lra-tab-btn');
+            for (var i = 0; i < allBtns.length; i++) allBtns[i].classList.remove('active');
+            btn.classList.add('active');
+            currentYear = btn.getAttribute('data-year');
+            loadData(currentYear);
+        });
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function () { loadData(currentYear); });
+        } else {
+            loadData(currentYear);
+        }
+    })();
+</script>
