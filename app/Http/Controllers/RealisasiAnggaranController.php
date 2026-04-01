@@ -10,20 +10,37 @@ class RealisasiAnggaranController extends Controller
 {
     public function index(Request $request)
     {
-        $query = RealisasiAnggaran::query();
-        if ($request->has('tahun')) $query->where('tahun', $request->input('tahun'));
-        if ($request->has('bulan')) $query->where('bulan', $request->input('bulan'));
-        if ($request->has('dipa')) $query->where('dipa', $request->input('dipa'));
-        
+        // JOIN dengan pagu_anggaran agar pagu selalu mengambil nilai terbaru dari master
+        $query = RealisasiAnggaran::select(
+            'realisasi_anggaran.*',
+            'pagu_anggaran.jumlah_pagu as master_pagu'
+        )->leftJoin('pagu_anggaran', function ($join) {
+            $join->on('realisasi_anggaran.dipa', '=', 'pagu_anggaran.dipa')
+                 ->on('realisasi_anggaran.kategori', '=', 'pagu_anggaran.kategori')
+                 ->on('realisasi_anggaran.tahun', '=', 'pagu_anggaran.tahun');
+        });
+
+        if ($request->has('tahun')) $query->where('realisasi_anggaran.tahun', $request->input('tahun'));
+        if ($request->has('bulan')) $query->where('realisasi_anggaran.bulan', $request->input('bulan'));
+        if ($request->has('dipa')) $query->where('realisasi_anggaran.dipa', $request->input('dipa'));
+
         if ($request->has('q')) {
             $search = $request->input('q');
-            $query->where('kategori', 'like', "%{$search}%");
+            $query->where('realisasi_anggaran.kategori', 'like', "%{$search}%");
         }
 
-        $query->orderBy('tahun', 'desc')->orderBy('dipa', 'asc')->orderBy('bulan', 'asc')->orderBy('kategori', 'asc');
+        $query->orderBy('realisasi_anggaran.tahun', 'desc')
+              ->orderBy('realisasi_anggaran.dipa', 'asc')
+              ->orderBy('realisasi_anggaran.bulan', 'asc')
+              ->orderBy('realisasi_anggaran.kategori', 'asc');
 
         $perPage = $request->input('per_page', 15);
         $paginated = $query->paginate($perPage);
+
+        // Override pagu, sisa, dan persentase dengan nilai terbaru dari master pagu
+        foreach ($paginated as $item) {
+            $this->applyMasterPagu($item);
+        }
 
         return response()->json([
             'success' => true,
@@ -104,7 +121,12 @@ class RealisasiAnggaranController extends Controller
 
     public function show($id) {
         $anggaran = RealisasiAnggaran::find($id);
-        return response()->json(['success' => !!$anggaran, 'data' => $anggaran]);
+        if (!$anggaran) return response()->json(['success' => false, 'data' => null], 404);
+
+        // Ambil pagu terbaru dari master dan hitung ulang
+        $this->applyMasterPagu($anggaran);
+
+        return response()->json(['success' => true, 'data' => $anggaran]);
     }
 
     public function destroy($id) {
@@ -113,4 +135,19 @@ class RealisasiAnggaranController extends Controller
     }
 
     // uploadFile() diwarisi dari base Controller
+
+    /**
+     * Override nilai pagu, sisa, dan persentase dengan data terbaru dari master pagu_anggaran.
+     * Fallback ke nilai pagu yang tersimpan jika master tidak ditemukan.
+     */
+    private function applyMasterPagu(RealisasiAnggaran $item): void
+    {
+        $paguValue = $item->master_pagu ?? $item->pagu;
+
+        $item->setAttribute('pagu', $paguValue);
+        $item->setAttribute('sisa', $paguValue - $item->realisasi);
+        $item->setAttribute('persentase', $paguValue > 0
+            ? ($item->realisasi / $paguValue) * 100
+            : 0);
+    }
 }
