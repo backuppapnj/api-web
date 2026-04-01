@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PaguAnggaran;
+use App\Models\RealisasiAnggaran;
 use Illuminate\Http\Request;
 
 class PaguAnggaranController extends Controller
@@ -30,7 +31,29 @@ class PaguAnggaranController extends Controller
             ['jumlah_pagu' => $request->jumlah_pagu]
         );
 
+        // Update related realisasi data with new pagu value
+        $this->updateRelatedRealisasi($request->dipa, $request->kategori, $request->tahun, $request->jumlah_pagu);
+
         return response()->json(['success' => true, 'data' => $pagu]);
+    }
+
+    /**
+     * Update related realisasi data when pagu is updated
+     */
+    private function updateRelatedRealisasi($dipa, $kategori, $tahun, $newPaguValue)
+    {
+        // Find all realisasi data with matching dipa, kategori, tahun
+        $relatedRealisasi = RealisasiAnggaran::where('dipa', $dipa)
+                                            ->where('kategori', $kategori)
+                                            ->where('tahun', $tahun)
+                                            ->get();
+
+        foreach ($relatedRealisasi as $realisasi) {
+            $realisasi->pagu = $newPaguValue;
+            $realisasi->sisa = $newPaguValue - $realisasi->realisasi;
+            $realisasi->persentase = $newPaguValue > 0 ? ($realisasi->realisasi / $newPaguValue) * 100 : 0;
+            $realisasi->save();
+        }
     }
 
     public function destroy($id)
