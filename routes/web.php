@@ -61,6 +61,10 @@ $router->group(['prefix' => 'api', 'middleware' => 'throttle:100,1'], function (
     $router->get('keuangan-perkara', 'KeuanganPerkaraController@index');
     $router->get('keuangan-perkara/{id:[0-9]+}', 'KeuanganPerkaraController@show');
     $router->get('keuangan-perkara/tahun/{tahun:[0-9]+}', 'KeuanganPerkaraController@byYear');
+
+    // MOU Routes
+    $router->get('mou', 'MouController@index');
+    $router->get('mou/{id:[0-9]+}', 'MouController@show');
 });
 
 // SECURITY: Protected routes dengan API Key + rate limiting (100 request/menit)
@@ -132,4 +136,10 @@ $router->group(['prefix' => 'api', 'middleware' => ['api.key', 'throttle:100,1']
     $router->put('keuangan-perkara/{id:[0-9]+}', 'KeuanganPerkaraController@update');
     $router->post('keuangan-perkara/{id:[0-9]+}', 'KeuanganPerkaraController@update');
     $router->delete('keuangan-perkara/{id:[0-9]+}', 'KeuanganPerkaraController@destroy');
+
+    // MOU
+    $router->post('mou', 'MouController@store');
+    $router->put('mou/{id:[0-9]+}', 'MouController@update');
+    $router->post('mou/{id:[0-9]+}', 'MouController@update');
+    $router->delete('mou/{id:[0-9]+}', 'MouController@destroy');
 });
