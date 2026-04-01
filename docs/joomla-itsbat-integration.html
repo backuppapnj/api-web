@@ -212,17 +212,26 @@ PENTING: Ganti API_URL dengan URL API Lumen Anda
             }
         }
 
-        // Fungsi pembersihan URL untuk menangani double domain/protocol
+        // Base URL Joomla — untuk meresolve path relatif (images/...) ke URL absolut
+        var JOOMLA_BASE = 'https://www.pa-penajam.go.id/';
+
+        // Bersihkan URL: tangani double domain/protocol dan path relatif
         function fixUrl(url) {
             if (!url || typeof url !== 'string' || url === '#' || url === '-') return null;
-            
+
+            // Tangani double protocol, misal: "https://pa-penajam.go.idhttps://pa-penajam.go.id/..."
             var lastHttps = url.lastIndexOf('https://');
-            var lastHttp = url.lastIndexOf('http://');
+            var lastHttp  = url.lastIndexOf('http://');
             var lastIndex = Math.max(lastHttps, lastHttp);
-            
             if (lastIndex > 0) {
                 return url.substring(lastIndex);
             }
+
+            // Path relatif (images/...) → prefix dengan base URL Joomla
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                return JOOMLA_BASE + url.replace(/^\//, '');
+            }
+
             return url;
         }
 
