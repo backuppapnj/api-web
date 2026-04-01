@@ -43,7 +43,9 @@ class SisaPanjarController extends Controller
             }
         }
 
-        $limit = min((int) $request->get('limit', 10), 100);
+        // Maks 500 karena halaman publik (sisa-panjar.html) memuat semua data sekaligus
+        // untuk client-side DataTable. Konsisten dengan byYear() yang juga limit 500.
+        $limit = min((int) $request->get('limit', 10), 500);
 
         $data = $query->orderBy('created_at', 'desc')
             ->paginate($limit);
