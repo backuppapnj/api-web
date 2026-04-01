@@ -196,11 +196,13 @@
 
     <div class="filter-section">
         <label for="filterTahun">Pilih Tahun:</label>
-        <select id="filterTahun"></select>
+        <select id="filterTahun">
+            <option value="" selected>Semua Tahun</option>
+        </select>
         <label for="filterStatus" style="margin-left: 1rem;">Status:</label>
         <select id="filterStatus">
-            <option value="">Semua Status</option>
-            <option value="belum_diambil" selected>Belum Diambil</option>
+            <option value="" selected>Semua Status</option>
+            <option value="belum_diambil">Belum Diambil</option>
             <option value="disetor_kas_negara">Disetor Kas Negara</option>
         </select>
         <span class="filter-info" id="infoData">Memuat data...</span>
@@ -267,7 +269,6 @@
                 const o = document.createElement('option');
                 o.value = String(y);
                 o.textContent = String(y);
-                if (y === currentYear) o.selected = true;
                 sel.appendChild(o);
             }
         })();
@@ -279,17 +280,23 @@
 
             document.getElementById('infoData').textContent = 'Memuat...';
 
-            let url = `${API_URL}?tahun=${tahun}&limit=100`;
+            let url = `${API_URL}?limit=500`;
+            if (tahun) {
+                url += `&tahun=${tahun}`;
+            }
             if (status) {
                 url += `&status=${status}`;
             }
+
+            const tahunText = tahun || 'Semua Tahun';
+            const statusText = status ? (status === 'belum_diambil' ? 'Belum Diambil' : 'Disetor Kas Negara') : 'Semua Status';
 
             table = $('#tabelSisaPanjar').DataTable({
                 ajax: {
                     url: url,
                     dataSrc: function (json) {
                         document.getElementById('infoData').textContent = 
-                            `Tahun ${tahun}${status ? (status === 'belum_diambil' ? ' - Belum Diambil' : ' - Disetor Kas Negara') : ' - Semua Status'}`;
+                            `${tahunText} - ${statusText} (${json.data ? json.data.length : 0} data)`;
                         return json.data || [];
                     },
                     error: function () {
@@ -386,16 +393,13 @@
             initDataTable(tahun, status);
         });
 
-        // Initialize
-        const tahunAwal = document.getElementById('filterTahun').value;
-        const statusAwal = document.getElementById('filterStatus').value;
-
+        // Initialize - tampilkan semua data
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function () {
-                initDataTable(tahunAwal, statusAwal);
+                initDataTable('', '');
             });
         } else {
-            initDataTable(tahunAwal, statusAwal);
+            initDataTable('', '');
         }
     })();
 </script>
