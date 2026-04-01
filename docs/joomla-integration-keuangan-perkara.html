@@ -103,12 +103,6 @@
         background-color: #eff6ff;
     }
 
-    #tabelKeuangan tfoot tr td {
-        background: #f1f5f9;
-        font-weight: 700;
-        padding: 10px;
-        border-top: 2px solid #1e3a5f;
-    }
 
     .btn-detail {
         display: inline-block;
@@ -166,14 +160,6 @@
                 </tr>
             </thead>
             <tbody></tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="2" class="text-center">TOTAL</td>
-                    <td class="text-right" id="totalPenerimaan">-</td>
-                    <td class="text-right" id="totalPengeluaran">-</td>
-                    <td></td>
-                </tr>
-            </tfoot>
         </table>
     </div>
 </div>
@@ -238,8 +224,6 @@
             document.getElementById('infoKeuangan').textContent = 'Memuat...';
             document.getElementById('saldoAwalBox').style.display = 'none';
             document.getElementById('saldoAwalNominal').textContent = '';
-            document.getElementById('totalPenerimaan').textContent = '-';
-            document.getElementById('totalPengeluaran').textContent = '-';
 
             table = $('#tabelKeuangan').DataTable({
                 ajax: {
@@ -262,16 +246,10 @@
 
                         // Bangun 12 baris statis (Januari–Desember), isi dari API jika ada
                         var rows = [];
-                        var totalP = 0, totalK = 0;
                         for (var b = 1; b <= 12; b++) {
-                            var d = dataByBulan[b] || { bulan: b, penerimaan: null, pengeluaran: null, url_detail: null };
-                            totalP += d.penerimaan || 0;
-                            totalK += d.pengeluaran || 0;
-                            rows.push(d);
+                            rows.push(dataByBulan[b] || { bulan: b, penerimaan: null, pengeluaran: null, url_detail: null });
                         }
 
-                        document.getElementById('totalPenerimaan').textContent = formatRupiah(totalP);
-                        document.getElementById('totalPengeluaran').textContent = formatRupiah(totalK);
                         document.getElementById('infoKeuangan').textContent = 'Tahun ' + tahun;
 
                         return rows;
