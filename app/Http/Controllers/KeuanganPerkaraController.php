@@ -107,8 +107,16 @@ class KeuanganPerkaraController extends Controller
             }
         }
 
-        $item = KeuanganPerkara::create($data);
-        return response()->json(['success' => true, 'message' => 'Data berhasil disimpan', 'data' => $item], 201);
+        try {
+            $item = KeuanganPerkara::create($data);
+            return response()->json(['success' => true, 'message' => 'Data berhasil disimpan', 'data' => $item], 201);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Gagal menyimpan data keuangan perkara', [
+                'error' => $e->getMessage(),
+                'data' => $data
+            ]);
+            return response()->json(['success' => false, 'message' => 'Gagal menyimpan data: ' . $e->getMessage()], 500);
+        }
     }
 
     public function update(Request $request, int $id): JsonResponse
@@ -158,8 +166,17 @@ class KeuanganPerkaraController extends Controller
             }
         }
 
-        $item->update($data);
-        return response()->json(['success' => true, 'message' => 'Data berhasil diperbarui', 'data' => $item->fresh()]);
+        try {
+            $item->update($data);
+            return response()->json(['success' => true, 'message' => 'Data berhasil diperbarui', 'data' => $item->fresh()]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Gagal update data keuangan perkara', [
+                'error' => $e->getMessage(),
+                'id' => $id,
+                'data' => $data
+            ]);
+            return response()->json(['success' => false, 'message' => 'Gagal update data: ' . $e->getMessage()], 500);
+        }
     }
 
     public function destroy(int $id): JsonResponse

@@ -22,6 +22,7 @@ class CorsMiddleware
         $trustedDomains = [
             'https://pa-penajam.go.id',
             'https://www.pa-penajam.go.id',
+            'https://dataweb.pa-penajam.go.id',
         ];
         if (env('APP_ENV') === 'local') {
             $trustedDomains[] = 'http://localhost:3000';
