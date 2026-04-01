@@ -193,11 +193,11 @@
             return 'Rp ' + Number(angka).toLocaleString('id-ID');
         }
 
-        // Isi opsi tahun secara dinamis: tahun berjalan sampai 2024
+        // Isi opsi tahun secara dinamis: tahun berjalan sampai 2019
         (function populateTahun() {
             var sel = document.getElementById('filterTahunKeuangan');
             var currentYear = new Date().getFullYear();
-            for (var y = currentYear; y >= 2024; y--) {
+            for (var y = currentYear; y >= 2019; y--) {
                 var o = document.createElement('option');
                 o.value = String(y);
                 o.textContent = String(y);
@@ -233,28 +233,34 @@
                 ajax: {
                     url: API_URL + '?tahun=' + encodeURIComponent(tahun),
                     dataSrc: function (json) {
-                        var rows = json.data || [];
+                        var apiRows = json.data || [];
+
+                        // Indeks data API berdasarkan nomor bulan untuk lookup O(1)
+                        var dataByBulan = {};
+                        for (var i = 0; i < apiRows.length; i++) {
+                            dataByBulan[apiRows[i].bulan] = apiRows[i];
+                        }
 
                         // Tampilkan saldo awal dari baris bulan=1
-                        var bulan1 = null;
-                        for (var i = 0; i < rows.length; i++) {
-                            if (rows[i].bulan === 1) { bulan1 = rows[i]; break; }
-                        }
+                        var bulan1 = dataByBulan[1];
                         if (bulan1 && bulan1.saldo_awal !== null && bulan1.saldo_awal !== undefined) {
                             document.getElementById('saldoAwalNominal').textContent = formatRupiah(bulan1.saldo_awal);
                             document.getElementById('saldoAwalBox').style.display = 'flex';
                         }
 
-                        // Hitung total
+                        // Bangun 12 baris statis (Januari–Desember), isi dari API jika ada
+                        var rows = [];
                         var totalP = 0, totalK = 0;
-                        for (var j = 0; j < rows.length; j++) {
-                            totalP += rows[j].penerimaan || 0;
-                            totalK += rows[j].pengeluaran || 0;
+                        for (var b = 1; b <= 12; b++) {
+                            var d = dataByBulan[b] || { bulan: b, penerimaan: null, pengeluaran: null, url_detail: null };
+                            totalP += d.penerimaan || 0;
+                            totalK += d.pengeluaran || 0;
+                            rows.push(d);
                         }
+
                         document.getElementById('totalPenerimaan').textContent = formatRupiah(totalP);
                         document.getElementById('totalPengeluaran').textContent = formatRupiah(totalK);
-                        document.getElementById('infoKeuangan').textContent =
-                            'Menampilkan ' + rows.length + ' bulan tahun ' + tahun;
+                        document.getElementById('infoKeuangan').textContent = 'Tahun ' + tahun;
 
                         return rows;
                     },
