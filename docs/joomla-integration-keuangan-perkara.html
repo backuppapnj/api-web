@@ -1,0 +1,338 @@
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+
+<style>
+    .keuangan-wrapper {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    .keuangan-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        padding: 2rem 1rem;
+        background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+        color: white;
+        border-radius: 8px;
+    }
+
+    .keuangan-header h2 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.8rem;
+        color: white !important;
+    }
+
+    .keuangan-header p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 0.95rem;
+    }
+
+    .filter-section {
+        margin-bottom: 1rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        background: #f8fafc;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .filter-section label {
+        font-weight: 600;
+        color: #334155;
+    }
+
+    .filter-section select {
+        padding: 0.5rem 1rem;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        background: white;
+        cursor: pointer;
+        min-width: 150px;
+    }
+
+    .filter-section select:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .filter-info {
+        margin-left: auto;
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+
+    .saldo-awal-box {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 1rem;
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        color: #1e40af;
+    }
+
+    #tabelKeuangan {
+        width: 100% !important;
+        font-size: 0.9rem;
+    }
+
+    #tabelKeuangan thead th {
+        background: #1e3a5f;
+        color: white;
+        padding: 12px 10px;
+        text-align: left;
+        font-weight: 600;
+    }
+
+    #tabelKeuangan tbody td {
+        padding: 12px 10px;
+        vertical-align: middle;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    #tabelKeuangan tbody tr:hover {
+        background-color: #eff6ff;
+    }
+
+    #tabelKeuangan tfoot tr td {
+        background: #f1f5f9;
+        font-weight: 700;
+        padding: 10px;
+        border-top: 2px solid #1e3a5f;
+    }
+
+    .btn-detail {
+        display: inline-block;
+        padding: 4px 12px;
+        background: #2563eb;
+        color: white !important;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+    .btn-detail:hover {
+        background: #1e40af;
+        text-decoration: none;
+        color: white !important;
+    }
+
+    .text-right  { text-align: right  !important; }
+    .text-center { text-align: center !important; }
+
+    @media (max-width: 768px) {
+        #tabelKeuangan { font-size: 0.8rem; }
+        .filter-section { flex-direction: column; align-items: flex-start; }
+        .filter-info { margin-left: 0; margin-top: 0.5rem; }
+    }
+</style>
+
+<div class="keuangan-wrapper">
+    <div class="keuangan-header">
+        <h2>Keuangan Perkara</h2>
+        <p>Rekapitulasi Penerimaan dan Pengeluaran Keuangan Perkara Pengadilan Agama Penajam</p>
+    </div>
+
+    <div class="filter-section">
+        <label for="filterTahunKeuangan">Pilih Tahun:</label>
+        <select id="filterTahunKeuangan"></select>
+        <span class="filter-info" id="infoKeuangan">Memuat...</span>
+    </div>
+
+    <div id="saldoAwalBox" class="saldo-awal-box" style="display:none;">
+        Saldo Awal Tahun: <strong id="saldoAwalNominal"></strong>
+    </div>
+
+    <div style="overflow-x:auto;">
+        <table id="tabelKeuangan" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th class="text-center">No</th>
+                    <th>Bulan</th>
+                    <th class="text-right">Penerimaan (Rp)</th>
+                    <th class="text-right">Pengeluaran (Rp)</th>
+                    <th class="text-center">Detail</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2" class="text-center">TOTAL</td>
+                    <td class="text-right" id="totalPenerimaan">-</td>
+                    <td class="text-right" id="totalPengeluaran">-</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+<script>
+    (function () {
+        var API_URL = 'https://web-api.pa-penajam.go.id/api/keuangan-perkara';
+
+        var NAMA_BULAN = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        function formatRupiah(angka) {
+            if (angka === null || angka === undefined) return '-';
+            return 'Rp ' + Number(angka).toLocaleString('id-ID');
+        }
+
+        // Isi opsi tahun secara dinamis: tahun berjalan sampai 2024
+        (function populateTahun() {
+            var sel = document.getElementById('filterTahunKeuangan');
+            var currentYear = new Date().getFullYear();
+            for (var y = currentYear; y >= 2024; y--) {
+                var o = document.createElement('option');
+                o.value = String(y);
+                o.textContent = String(y);
+                if (y === currentYear) o.selected = true;
+                sel.appendChild(o);
+            }
+        })();
+
+        // Buat elemen anchor secara DOM (aman dari XSS)
+        function buatTombolDetail(url) {
+            if (!url) return '-';
+            var a = document.createElement('a');
+            a.href = url;
+            a.textContent = 'Detail';
+            a.className = 'btn-detail';
+            a.target = '_blank';
+            a.rel = 'noopener';
+            return a.outerHTML;
+        }
+
+        var table;
+
+        function initTable(tahun) {
+            if (table) table.destroy();
+
+            document.getElementById('infoKeuangan').textContent = 'Memuat...';
+            document.getElementById('saldoAwalBox').style.display = 'none';
+            document.getElementById('saldoAwalNominal').textContent = '';
+            document.getElementById('totalPenerimaan').textContent = '-';
+            document.getElementById('totalPengeluaran').textContent = '-';
+
+            table = $('#tabelKeuangan').DataTable({
+                ajax: {
+                    url: API_URL + '?tahun=' + encodeURIComponent(tahun),
+                    dataSrc: function (json) {
+                        var rows = json.data || [];
+
+                        // Tampilkan saldo awal dari baris bulan=1
+                        var bulan1 = null;
+                        for (var i = 0; i < rows.length; i++) {
+                            if (rows[i].bulan === 1) { bulan1 = rows[i]; break; }
+                        }
+                        if (bulan1 && bulan1.saldo_awal !== null && bulan1.saldo_awal !== undefined) {
+                            document.getElementById('saldoAwalNominal').textContent = formatRupiah(bulan1.saldo_awal);
+                            document.getElementById('saldoAwalBox').style.display = 'flex';
+                        }
+
+                        // Hitung total
+                        var totalP = 0, totalK = 0;
+                        for (var j = 0; j < rows.length; j++) {
+                            totalP += rows[j].penerimaan || 0;
+                            totalK += rows[j].pengeluaran || 0;
+                        }
+                        document.getElementById('totalPenerimaan').textContent = formatRupiah(totalP);
+                        document.getElementById('totalPengeluaran').textContent = formatRupiah(totalK);
+                        document.getElementById('infoKeuangan').textContent =
+                            'Menampilkan ' + rows.length + ' bulan tahun ' + tahun;
+
+                        return rows;
+                    },
+                    error: function () {
+                        document.getElementById('infoKeuangan').textContent = 'Gagal memuat data.';
+                    }
+                },
+                columns: [
+                    {
+                        data: null,
+                        searchable: false,
+                        orderable: false,
+                        className: 'text-center',
+                        width: '40px',
+                        defaultContent: ''
+                    },
+                    {
+                        data: 'bulan',
+                        render: function (data) {
+                            return NAMA_BULAN[data] || '-';
+                        }
+                    },
+                    {
+                        data: 'penerimaan',
+                        className: 'text-right',
+                        render: function (data, type) {
+                            if (type === 'sort' || type === 'type') return data || 0;
+                            return data !== null ? formatRupiah(data) : '-';
+                        }
+                    },
+                    {
+                        data: 'pengeluaran',
+                        className: 'text-right',
+                        render: function (data, type) {
+                            if (type === 'sort' || type === 'type') return data || 0;
+                            return data !== null ? formatRupiah(data) : '-';
+                        }
+                    },
+                    {
+                        data: 'url_detail',
+                        className: 'text-center',
+                        orderable: false,
+                        searchable: false,
+                        render: function (data) {
+                            return buatTombolDetail(data);
+                        }
+                    }
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json',
+                    emptyTable: 'Tidak ada data keuangan untuk ditampilkan',
+                },
+                order: [[1, 'asc']],
+                pageLength: 12,
+                lengthChange: false,
+                searching: false,
+                info: false,
+                paging: false,
+                dom: 'rt',
+                drawCallback: function (settings) {
+                    var api = this.api();
+                    var start = api.page.info().start;
+                    api.column(0, { page: 'current' }).nodes().each(function (cell, i) {
+                        cell.textContent = (start + i + 1) + '.';
+                    });
+                }
+            });
+        }
+
+        document.getElementById('filterTahunKeuangan').addEventListener('change', function () {
+            initTable(this.value);
+        });
+
+        var tahunAwal = document.getElementById('filterTahunKeuangan').value;
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function () { initTable(tahunAwal); });
+        } else {
+            initTable(tahunAwal);
+        }
+    })();
+</script>

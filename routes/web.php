@@ -56,6 +56,11 @@ $router->group(['prefix' => 'api', 'middleware' => 'throttle:100,1'], function (
     $router->get('laporan-pengaduan', 'LaporanPengaduanController@index');
     $router->get('laporan-pengaduan/{id:[0-9]+}', 'LaporanPengaduanController@show');
     $router->get('laporan-pengaduan/tahun/{tahun:[0-9]+}', 'LaporanPengaduanController@byYear');
+
+    // Keuangan Perkara Routes
+    $router->get('keuangan-perkara', 'KeuanganPerkaraController@index');
+    $router->get('keuangan-perkara/{id:[0-9]+}', 'KeuanganPerkaraController@show');
+    $router->get('keuangan-perkara/tahun/{tahun:[0-9]+}', 'KeuanganPerkaraController@byYear');
 });
 
 // SECURITY: Protected routes dengan API Key + rate limiting (100 request/menit)
@@ -121,4 +126,10 @@ $router->group(['prefix' => 'api', 'middleware' => ['api.key', 'throttle:100,1']
     $router->put('laporan-pengaduan/{id:[0-9]+}', 'LaporanPengaduanController@update');
     $router->post('laporan-pengaduan/{id:[0-9]+}', 'LaporanPengaduanController@update');
     $router->delete('laporan-pengaduan/{id:[0-9]+}', 'LaporanPengaduanController@destroy');
+
+    // Keuangan Perkara
+    $router->post('keuangan-perkara', 'KeuanganPerkaraController@store');
+    $router->put('keuangan-perkara/{id:[0-9]+}', 'KeuanganPerkaraController@update');
+    $router->post('keuangan-perkara/{id:[0-9]+}', 'KeuanganPerkaraController@update');
+    $router->delete('keuangan-perkara/{id:[0-9]+}', 'KeuanganPerkaraController@destroy');
 });
