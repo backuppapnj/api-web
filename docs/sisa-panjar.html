@@ -93,25 +93,31 @@
     #tabelSisaPanjar {
         width: 100% !important;
         font-size: 0.9rem;
+        border-collapse: collapse;
     }
 
     #tabelSisaPanjar thead th {
         background: #ea580c;
         color: white;
         padding: 12px 10px;
-        text-align: left;
+        text-align: center;
         font-weight: 600;
         white-space: nowrap;
+        border: 1px solid #d97706;
     }
 
     #tabelSisaPanjar tbody td {
-        padding: 12px 10px;
+        padding: 10px;
         vertical-align: middle;
-        border-bottom: 1px solid #e5e7eb;
+        border: 1px solid #e5e7eb;
+    }
+
+    #tabelSisaPanjar tbody tr:nth-child(even) {
+        background-color: #fff7ed;
     }
 
     #tabelSisaPanjar tbody tr:hover {
-        background-color: #fff7ed;
+        background-color: #ffedd5;
     }
 
     .currency {
@@ -348,35 +354,8 @@
                 },
                 pageLength: 25,
                 ordering: true,
-                order: [[1, 'asc']], // Order by bulan
-                dom: 'rt<"bottom"ip><"clear">',
-                drawCallback: function(settings) {
-                    // Group by bulan - add rowspan for same bulan
-                    var api = this.api();
-                    var rows = api.rows({ page: 'current' }).nodes();
-                    var last = null;
-                    var count = 0;
-                    var firstCell = null;
-
-                    api.column(1, { page: 'current' }).data().each(function(group, i) {
-                        if (last !== group) {
-                            if (firstCell && count > 1) {
-                                firstCell.attr('rowspan', count);
-                            }
-                            $(rows).eq(i).find('td:eq(1)').addClass('bg-orange-50');
-                            firstCell = $(rows).eq(i).find('td:eq(1)');
-                            count = 1;
-                            last = group;
-                        } else {
-                            $(rows).eq(i).find('td:eq(1)').remove();
-                            count++;
-                        }
-                    });
-
-                    if (firstCell && count > 1) {
-                        firstCell.attr('rowspan', count);
-                    }
-                }
+                order: [[1, 'asc'], [0, 'asc']], // Order by bulan, then by original order
+                dom: 'rt<"bottom"ip><"clear">'
             });
         }
 
