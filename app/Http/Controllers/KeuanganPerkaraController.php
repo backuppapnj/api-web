@@ -63,6 +63,7 @@ class KeuanganPerkaraController extends Controller
             'penerimaan'  => 'nullable|integer|min:0',
             'pengeluaran' => 'nullable|integer|min:0',
             'url_detail'  => 'nullable|string|max:1000',
+            'file_upload' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240',
         ]);
 
         $exists = KeuanganPerkara::where('tahun', $request->tahun)
@@ -74,7 +75,39 @@ class KeuanganPerkaraController extends Controller
             ], 422);
         }
 
-        $item = KeuanganPerkara::create($request->only($this->allowedFields));
+        $data = $request->only($this->allowedFields);
+
+        if ($request->hasFile('file_upload')) {
+            try {
+                if (!class_exists('\App\Services\GoogleDriveService')) {
+                    throw new \Exception('Class GoogleDriveService not found');
+                }
+                $driveService = new \App\Services\GoogleDriveService();
+                $data['url_detail'] = $driveService->upload($request->file('file_upload'));
+
+                \Illuminate\Support\Facades\Log::info('Keuangan perkara: file diupload ke Google Drive', [
+                    'tahun' => $request->tahun, 'bulan' => $request->bulan,
+                ]);
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('Google Drive gagal. Menggunakan penyimpanan lokal.', [
+                    'error' => $e->getMessage(),
+                ]);
+                try {
+                    $file = $request->file('file_upload');
+                    $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9.]/', '_', $file->getClientOriginalName());
+                    $destinationPath = app()->basePath('public/uploads/keuangan-perkara');
+                    if (!file_exists($destinationPath)) {
+                        mkdir($destinationPath, 0755, true);
+                    }
+                    $file->move($destinationPath, $filename);
+                    $data['url_detail'] = $request->root() . '/uploads/keuangan-perkara/' . $filename;
+                } catch (\Throwable $localEx) {
+                    return response()->json(['success' => false, 'message' => 'Gagal upload file: ' . $e->getMessage()], 500);
+                }
+            }
+        }
+
+        $item = KeuanganPerkara::create($data);
         return response()->json(['success' => true, 'message' => 'Data berhasil disimpan', 'data' => $item], 201);
     }
 
@@ -90,9 +123,42 @@ class KeuanganPerkaraController extends Controller
             'penerimaan'  => 'nullable|integer|min:0',
             'pengeluaran' => 'nullable|integer|min:0',
             'url_detail'  => 'nullable|string|max:1000',
+            'file_upload' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240',
         ]);
 
-        $item->update($request->only($this->allowedFields));
+        $data = $request->only($this->allowedFields);
+
+        if ($request->hasFile('file_upload')) {
+            try {
+                if (!class_exists('\App\Services\GoogleDriveService')) {
+                    throw new \Exception('Class GoogleDriveService not found');
+                }
+                $driveService = new \App\Services\GoogleDriveService();
+                $data['url_detail'] = $driveService->upload($request->file('file_upload'));
+
+                \Illuminate\Support\Facades\Log::info('Keuangan perkara: file diupload ke Google Drive (update)', [
+                    'id' => $id,
+                ]);
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('Google Drive gagal. Menggunakan penyimpanan lokal.', [
+                    'error' => $e->getMessage(),
+                ]);
+                try {
+                    $file = $request->file('file_upload');
+                    $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9.]/', '_', $file->getClientOriginalName());
+                    $destinationPath = app()->basePath('public/uploads/keuangan-perkara');
+                    if (!file_exists($destinationPath)) {
+                        mkdir($destinationPath, 0755, true);
+                    }
+                    $file->move($destinationPath, $filename);
+                    $data['url_detail'] = $request->root() . '/uploads/keuangan-perkara/' . $filename;
+                } catch (\Throwable $localEx) {
+                    return response()->json(['success' => false, 'message' => 'Gagal upload file: ' . $e->getMessage()], 500);
+                }
+            }
+        }
+
+        $item->update($data);
         return response()->json(['success' => true, 'message' => 'Data berhasil diperbarui', 'data' => $item->fresh()]);
     }
 
