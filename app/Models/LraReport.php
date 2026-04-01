@@ -11,7 +11,7 @@ class LraReport extends Model
     protected $fillable = [
         'tahun',
         'jenis_dipa',
-        'triwulan',
+        'periode',
         'judul',
         'file_url',
         'cover_url',
@@ -19,6 +19,5 @@ class LraReport extends Model
 
     protected $casts = [
         'tahun' => 'integer',
-        'triwulan' => 'integer',
     ];
 }

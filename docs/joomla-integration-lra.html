@@ -158,7 +158,7 @@
 <div class="lra-wrapper">
     <div class="lra-header">
         <h2>Laporan Realisasi Anggaran</h2>
-        <p>Dokumen LRA Per Triwulan - PA Penajam</p>
+        <p>Dokumen LRA Per Periode - PA Penajam</p>
     </div>
 
     <div class="lra-tabs" id="lraYearTabs"></div>
@@ -227,7 +227,10 @@
             for (var d = 0; d < dipaKeys.length; d++) {
                 var dKey = dipaKeys[d];
                 var records = grouped[dKey];
-                records.sort(function (a, b) { return a.triwulan - b.triwulan; });
+                records.sort(function (a, b) {
+                    var order = { semester_1: 1, semester_2: 2, unaudited: 3, audited: 4 };
+                    return (order[a.periode] || 99) - (order[b.periode] || 99);
+                });
 
                 html += '<h4 class="lra-section-title">Laporan Realisasi Anggaran ' + dKey + '</h4>';
                 html += '<div class="lra-grid">';
@@ -236,7 +239,7 @@
                     var rec = records[r];
                     var fileUrl = rec.file_url || '#';
                     var coverUrl = rec.cover_url;
-                    var label = 'Triwulan ' + rec.triwulan;
+                    var label = { semester_1: 'Semester 1', semester_2: 'Semester 2', unaudited: 'Unaudited', audited: 'Audited' }[rec.periode] || rec.periode;
 
                     html += '<a href="' + fileUrl + '" target="_blank" rel="noopener noreferrer" class="lra-card">';
                     if (coverUrl) {

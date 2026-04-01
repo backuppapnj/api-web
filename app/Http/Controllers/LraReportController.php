@@ -13,7 +13,7 @@ class LraReportController extends Controller
     private array $allowedFields = [
         'tahun',
         'jenis_dipa',
-        'triwulan',
+        'periode',
         'judul',
     ];
 
@@ -41,7 +41,7 @@ class LraReportController extends Controller
         $result = $query
             ->orderBy('tahun', 'desc')
             ->orderBy('jenis_dipa', 'asc')
-            ->orderBy('triwulan', 'asc')
+            ->orderBy('periode', 'asc')
             ->paginate($perPage);
 
         return response()->json([
@@ -82,7 +82,7 @@ class LraReportController extends Controller
         $this->validate($request, [
             'tahun' => 'required|integer|min:2000|max:2100',
             'jenis_dipa' => 'required|in:DIPA 01,DIPA 04',
-            'triwulan' => 'required|integer|min:1|max:4',
+            'periode' => 'required|in:semester_1,semester_2,unaudited,audited',
             'judul' => 'required|string|max:255',
             'file_upload' => 'required|file|mimes:pdf|max:10240',
             'cover_upload' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:5120',
@@ -91,6 +91,7 @@ class LraReportController extends Controller
         $data = $request->only($this->allowedFields);
         $data['judul'] = trim(strip_tags((string) ($data['judul'] ?? '')));
         $data['jenis_dipa'] = trim(strip_tags((string) ($data['jenis_dipa'] ?? '')));
+        $data['periode'] = trim(strip_tags((string) ($data['periode'] ?? '')));
 
         try {
             $data['file_url'] = $this->uploadToGoogleDrive($request->file('file_upload'), $request, 'uploads/lra');
@@ -134,7 +135,7 @@ class LraReportController extends Controller
         $this->validate($request, [
             'tahun' => 'required|integer|min:2000|max:2100',
             'jenis_dipa' => 'required|in:DIPA 01,DIPA 04',
-            'triwulan' => 'required|integer|min:1|max:4',
+            'periode' => 'required|in:semester_1,semester_2,unaudited,audited',
             'judul' => 'required|string|max:255',
             'file_upload' => 'nullable|file|mimes:pdf|max:10240',
             'cover_upload' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:5120',
@@ -143,6 +144,7 @@ class LraReportController extends Controller
         $data = $request->only($this->allowedFields);
         $data['judul'] = trim(strip_tags((string) ($data['judul'] ?? '')));
         $data['jenis_dipa'] = trim(strip_tags((string) ($data['jenis_dipa'] ?? '')));
+        $data['periode'] = trim(strip_tags((string) ($data['periode'] ?? '')));
 
         try {
             if ($request->hasFile('file_upload')) {
