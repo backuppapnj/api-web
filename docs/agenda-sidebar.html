@@ -1,0 +1,232 @@
+{source}
+
+ 
+<style>
+ /* Reset dasar agar tidak terpengaruh style template Joomla yang agresif */
+ .agenda-timeline * {
+ box-sizing: border-box;
+ }
+
+ .agenda-timeline {
+ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+ color: #333;
+ position: relative;
+ padding-left: 10px;
+ /* Ruang untuk visual di sisi paling kiri jika perlu */
+ }
+
+ .agenda-timeline__header {
+ font-size: 14px;
+ font-weight: 600;
+ color: #444;
+ margin-bottom: 15px;
+ padding-bottom: 8px;
+ border-bottom: 2px solid #e0e0e0;
+ display: none;
+ /* Opsional: aktifkan jika ingin judul internal */
+ }
+
+ .agenda-timeline__status {
+ font-size: 13px;
+ color: #666;
+ margin-bottom: 12px;
+ font-style: italic;
+ }
+
+ .agenda-timeline__list {
+ list-style: none;
+ padding: 0;
+ margin: 0;
+ position: relative;
+ border-left: 2px solid #e0e0e0;
+ /* Garis vertikal timeline */
+ margin-left: 5px;
+ /* Geser sedikit agar titik timeline pas */
+ padding-left: 20px;
+ /* Jarak antara garis dan konten */
+ }
+
+ .agenda-timeline__item {
+ position: relative;
+ margin-bottom: 20px;
+ }
+
+ /* Titik (Dot) di garis timeline */
+ .agenda-timeline__item::before {
+ content: '';
+ position: absolute;
+ left: -26px;
+ /* -20px padding -2px border -4px (setengah dot 8px) */
+ top: 0;
+ width: 10px;
+ height: 10px;
+ background-color: #fff;
+ border: 2px solid #006600;
+ /* Warna hijau branding */
+ border-radius: 50%;
+ z-index: 1;
+ }
+
+ /* Efek hover pada item: dot berubah warna */
+ .agenda-timeline__item:hover::before {
+ background-color: #006600;
+ }
+
+ .agenda-timeline__date {
+ display: inline-block;
+ font-size: 11px;
+ font-weight: 700;
+ text-transform: uppercase;
+ color: #006600;
+ /* Warna hijau branding */
+ background-color: #f0f7f0;
+ padding: 2px 6px;
+ border-radius: 4px;
+ margin-bottom: 6px;
+ letter-spacing: 0.5px;
+ }
+
+ .agenda-timeline__text {
+ display: block;
+ font-size: 13px;
+ line-height: 1.5;
+ color: #2c3e50;
+ }
+
+ .agenda-timeline__footer {
+ margin-top: 20px;
+ padding-left: 26px;
+ /* Sejajar dengan teks konten (20px padding list + margin dll) */
+ text-align: left;
+ padding-bottom: 5px;
+ }
+
+ .agenda-timeline__more {
+ display: block;
+ /* Tombol penuh agar mudah diklik */
+ width: 100%;
+ text-align: center;
+ font-size: 13px;
+ font-weight: 600;
+ text-decoration: none;
+ color: #fff;
+ background-color: #006600;
+ padding: 10px 15px;
+ border-radius: 6px;
+ /* Radius sedikit kotak agar rapi */
+ transition: background-color 0.2s, transform 0.1s;
+ box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+ }
+
+ .agenda-timeline__more:hover,
+ .agenda-timeline__more:focus {
+ background-color: #004d00;
+ text-decoration: none;
+ color: #fff;
+ transform: translateY(-1px);
+ box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+ }
+</style>
+
+<div id="agendaPimpinanModule" class="agenda-timeline">
+<div class="agenda-timeline__status" id="agendaPimpinanStatus">Sedang memuat agenda...</div>
+<ul class="agenda-timeline__list" id="agendaPimpinanList"></ul>
+<div class="agenda-timeline__footer" id="agendaPimpinanFooter" style="display:none;">
+<a class="agenda-timeline__more" href="/agenda-pimpinan">Lihat Semua Agenda</a>
+</div>
+</div>
+
+<script>
+ (function () {
+ // === KONFIGURASI ===
+ var API_URL = 'https://web-api.pa-penajam.go.id/api/agenda'; // URL API ANDA
+ var LIMIT = 5;
+ // ===================
+
+ var statusEl = document.getElementById('agendaPimpinanStatus');
+ var listEl = document.getElementById('agendaPimpinanList');
+ var footerEl = document.getElementById('agendaPimpinanFooter');
+
+ function escapeHtml(str) {
+ if (str === null || str === undefined) return '';
+ return String(str)
+ .replace(/&/g, '&amp;')
+ .replace(/</g, '&lt;')
+ .replace(/>/g, '&gt;')
+ .replace(/"/g, '&quot;')
+ .replace(/'/g, '&#39;');
+ }
+
+ function formatTanggal(iso) {
+ if (!iso) return '-';
+ var d = new Date(iso);
+ if (isNaN(d.getTime())) return escapeHtml(iso);
+ var bulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+ // Format: 17 Okt 2025
+ return d.getDate() + ' ' + bulan[d.getMonth()] + ' ' + d.getFullYear();
+ }
+
+ function render(data) {
+ listEl.innerHTML = '';
+
+ if (!data || !data.length) {
+ statusEl.innerHTML = 'Belum ada agenda terbaru.';
+ footerEl.style.display = 'none';
+ return;
+ }
+
+ statusEl.style.display = 'none'; // Sembunyikan status loading jika ada data
+ footerEl.style.display = 'block'; // Tampilkan tombol "Lihat Semua"
+
+ for (var i = 0; i < data.length; i++) {
+ var item = data[i] || {};
+ var tanggal = formatTanggal(item.tanggal_agenda);
+ var isi = escapeHtml(item.isi_agenda || '-');
+
+ var li = document.createElement('li');
+ li.className = 'agenda-timeline__item';
+
+ var dateEl = document.createElement('span');
+ dateEl.className = 'agenda-timeline__date';
+ dateEl.textContent = tanggal;
+
+ var textEl = document.createElement('span');
+ textEl.className = 'agenda-timeline__text';
+ textEl.innerHTML = isi; // Aman karena sudah di-escape sebelumnya
+
+ li.appendChild(dateEl);
+ li.appendChild(textEl);
+ listEl.appendChild(li);
+ }
+ }
+
+ function loadWithJQuery($) {
+ $.ajax({
+ url: API_URL + '?per_page=' + encodeURIComponent(LIMIT),
+ method: 'GET',
+ dataType: 'json',
+ success: function (json) {
+ var data = (json && json.data) ? json.data : [];
+ render(data);
+ },
+ error: function () {
+ statusEl.innerHTML = 'Gagal memuat data agenda.';
+ statusEl.style.color = 'red';
+ }
+ });
+ }
+
+ // Deteksi & Gunakan jQuery dari Joomla
+ if (window.jQuery) {
+ window.jQuery(function ($) {
+ loadWithJQuery($);
+ });
+ } else {
+ // Fallback pesan error halus
+ console.error('jQuery not found for Agenda Module');
+ statusEl.innerHTML = 'Error: Komponen sistem belum siap.';
+ }
+ })();
+</script>
+
+{/source}

@@ -31,7 +31,19 @@ class AgendaPimpinanController extends Controller
         // Default sort: Latest date first
         $query->orderBy('tanggal_agenda', 'desc');
 
-        // Check if pagination is requested (default yes for admin)
+        // Jika per_page=all, ambil semua data tanpa pagination
+        if ($request->input('per_page') === 'all') {
+            $data = $query->get();
+            return response()->json([
+                'status' => 'success',
+                'data' => $data,
+                'total' => $data->count(),
+                'current_page' => 1,
+                'last_page' => 1,
+                'per_page' => $data->count(),
+            ]);
+        }
+
         $perPage = $request->input('per_page', 5);
         $paginated = $query->paginate($perPage);
 

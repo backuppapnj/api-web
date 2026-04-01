@@ -220,7 +220,7 @@ Copy code ini ke artikel Joomla atau Custom HTML Module
             }
 
             const bulan = document.getElementById('filterBulan').value;
-            const url = bulan ? `${API_URL}?bulan=${bulan}` : API_URL;
+            const url = bulan ? `${API_URL}?bulan=${bulan}&per_page=all` : `${API_URL}?per_page=all`;
 
             document.getElementById('dataInfo').textContent = 'Memuat...';
 
