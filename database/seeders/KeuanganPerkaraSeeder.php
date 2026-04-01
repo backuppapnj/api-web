@@ -137,6 +137,9 @@ class KeuanganPerkaraSeeder extends Seeder
 
     public function run(): void
     {
+        // Hapus data lama agar seeder aman dijalankan berkali-kali
+        DB::table('keuangan_perkara')->truncate();
+
         $now = Carbon::now()->toDateTimeString();
         $rows = [];
 
