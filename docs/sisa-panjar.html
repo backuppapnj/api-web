@@ -371,7 +371,10 @@
                     {
                         data: 'status',
                         className: 'text-center',
-                        render: function (data) {
+                        render: function (data, type) {
+                            if (type === 'sort' || type === 'type') {
+                                return data === 'belum_diambil' ? 0 : 1;
+                            }
                             if (data === 'disetor_kas_negara') {
                                 return '<span class="status-badge disetor">Disetor Kas Negara</span>';
                             }
@@ -398,7 +401,7 @@
                 },
                 pageLength: 25,
                 ordering: true,
-                order: [[6, 'desc']],
+                order: [[5, 'asc'], [6, 'desc']],
                 drawCallback: function () {
                     var api = this.api();
                     var start = api.page.info().start;
