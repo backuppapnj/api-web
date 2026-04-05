@@ -238,11 +238,23 @@
 
     function formatPdfUrl(url) {
         if (!url) return '';
-        // If it's a direct PDF link, embed it. 
-        // If it's a Google Drive link, we might need to convert it to preview mode for iframe
+        
+        // 1. Handle Google Drive links (convert to preview)
         if (url.includes('drive.google.com/file/d/')) {
             return url.replace('/view?usp=sharing', '/preview').replace('/view', '/preview');
         }
+        
+        // 2. Handle relative paths from API storage/uploads
+        if (url.startsWith('/storage/') || url.startsWith('/uploads/')) {
+            const API_ROOT = 'https://web-api.pa-penajam.go.id';
+            return API_ROOT + url;
+        }
+
+        // 3. Fix double protocol or double domain cases (e.g. https://pa-penajam.go.idhttps://...)
+        if (url.includes('https://') && url.lastIndexOf('https://') > 0) {
+            return url.substring(url.lastIndexOf('https://'));
+        }
+        
         return url;
     }
 
