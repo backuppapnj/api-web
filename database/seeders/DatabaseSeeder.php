@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             LaporanPengaduanSeeder::class,
             KeuanganPerkaraSeeder::class,
             SisaPanjarSeeder::class,
+            MediasiSeeder::class,
         ]);
     }
 }
