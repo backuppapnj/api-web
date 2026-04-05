@@ -73,6 +73,12 @@ $router->group(['prefix' => 'api', 'middleware' => 'throttle:100,1'], function (
 
     $router->get('lra', 'LraReportController@index');
     $router->get('lra/{id:[0-9]+}', 'LraReportController@show');
+
+    // Mediasi Routes
+    $router->get('mediasi-sk', 'MediasiSkController@index');
+    $router->get('mediasi-sk/{id:[0-9]+}', 'MediasiSkController@show');
+    $router->get('mediator-banners', 'MediatorBannerController@index');
+    $router->get('mediator-banners/{id:[0-9]+}', 'MediatorBannerController@show');
 });
 
 // SECURITY: Protected routes dengan API Key + rate limiting (100 request/menit)
@@ -161,4 +167,15 @@ $router->group(['prefix' => 'api', 'middleware' => ['api.key', 'throttle:100,1']
     $router->put('lra/{id:[0-9]+}', 'LraReportController@update');
     $router->post('lra/{id:[0-9]+}', 'LraReportController@update');
     $router->delete('lra/{id:[0-9]+}', 'LraReportController@destroy');
+
+    // Mediasi Routes
+    $router->post('mediasi-sk', 'MediasiSkController@store');
+    $router->put('mediasi-sk/{id:[0-9]+}', 'MediasiSkController@update');
+    $router->post('mediasi-sk/{id:[0-9]+}', 'MediasiSkController@update');
+    $router->delete('mediasi-sk/{id:[0-9]+}', 'MediasiSkController@destroy');
+
+    $router->post('mediator-banners', 'MediatorBannerController@store');
+    $router->put('mediator-banners/{id:[0-9]+}', 'MediatorBannerController@update');
+    $router->post('mediator-banners/{id:[0-9]+}', 'MediatorBannerController@update');
+    $router->delete('mediator-banners/{id:[0-9]+}', 'MediatorBannerController@destroy');
 });
