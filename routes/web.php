@@ -80,6 +80,10 @@ $router->group(['prefix' => 'api', 'middleware' => 'throttle:100,1'], function (
     $router->get('mediator-banners', 'MediatorBannerController@index');
     $router->get('mediator-banners/{id:[0-9]+}', 'MediatorBannerController@show');
 
+    // SK Inovasi Routes
+    $router->get('sk-inovasi', 'SkInovasiController@index');
+    $router->get('sk-inovasi/{id:[0-9]+}', 'SkInovasiController@show');
+
     // Inovasi Routes
     $router->get('inovasi', 'InovasiController@index');
     $router->get('inovasi/{id:[0-9]+}', 'InovasiController@show');
@@ -182,6 +186,12 @@ $router->group(['prefix' => 'api', 'middleware' => ['api.key', 'throttle:100,1']
     $router->put('mediator-banners/{id:[0-9]+}', 'MediatorBannerController@update');
     $router->post('mediator-banners/{id:[0-9]+}', 'MediatorBannerController@update');
     $router->delete('mediator-banners/{id:[0-9]+}', 'MediatorBannerController@destroy');
+
+    // SK Inovasi Routes
+    $router->post('sk-inovasi', 'SkInovasiController@store');
+    $router->put('sk-inovasi/{id:[0-9]+}', 'SkInovasiController@update');
+    $router->post('sk-inovasi/{id:[0-9]+}', 'SkInovasiController@update');
+    $router->delete('sk-inovasi/{id:[0-9]+}', 'SkInovasiController@destroy');
 
     // Inovasi
     $router->post('inovasi', 'InovasiController@store');
