@@ -1,0 +1,755 @@
+<style type="text/css">
+  .pap-wrap {
+    background-color: #f0f4f0;
+    border: 1px solid #c8d8c8;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    font-family: Arial, Helvetica, sans-serif !important
+  }
+
+  /* HERO */
+  .pap-hero {
+    background-color: #1b5e20;
+    padding: 14px 18px;
+    display: table;
+    width: 100%;
+    box-sizing: border-box
+  }
+
+  .pap-hero-logo {
+    display: table-cell;
+    vertical-align: middle;
+    width: 56px
+  }
+
+  .pap-hero-logo span {
+    display: block;
+    width: 50px;
+    height: 50px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 50px
+  }
+
+  .pap-hero-body {
+    display: table-cell;
+    vertical-align: middle;
+    padding-left: 14px
+  }
+
+  .pap-hero-body h2 {
+    color: #ffffff !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    margin: 0 0 4px 0 !important;
+    padding: 0 !important;
+    line-height: 1.2 !important
+  }
+
+  .pap-hero-body p {
+    color: #a5d6a7 !important;
+    font-size: 14px !important;
+    margin: 0 0 6px 0 !important;
+    padding: 0 !important
+  }
+
+  .pap-sk {
+    display: inline-block;
+    background-color: #2e7d32;
+    border: 1px solid #66bb6a;
+    border-radius: 4px;
+    color: #c8e6c9 !important;
+    font-size: 12px !important;
+    padding: 3px 10px;
+    font-weight: 700 !important
+  }
+
+  .pap-hero-stat {
+    display: table-cell;
+    vertical-align: middle;
+    width: 100px;
+    text-align: center;
+    background-color: #2e7d32;
+    border-radius: 8px;
+    padding: 10px 12px
+  }
+
+  .pap-hero-stat strong {
+    display: block;
+    color: #ffffff !important;
+    font-size: 34px !important;
+    font-weight: 700 !important;
+    line-height: 1;
+    margin: 0
+  }
+
+  .pap-hero-stat span {
+    color: #a5d6a7 !important;
+    font-size: 13px !important;
+    line-height: 1.3
+  }
+
+  /* SECTION LABEL */
+  .pap-slabel {
+    background-color: #e8f5e9;
+    padding: 10px 18px;
+    border-left: 5px solid #388e3c;
+    display: table;
+    width: 100%;
+    box-sizing: border-box
+  }
+
+  .pap-slabel-icon {
+    display: table-cell;
+    vertical-align: middle;
+    width: 24px
+  }
+
+  .pap-slabel-text {
+    display: table-cell;
+    vertical-align: middle;
+    padding-left: 8px;
+    color: #2e7d32 !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px
+  }
+
+  /* KARTU LAYANAN UTAMA - 2 kolom */
+  .pap-main-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 8px;
+    padding: 8px 12px
+  }
+
+  .pap-main-table td {
+    width: 50%;
+    vertical-align: top
+  }
+
+  .pap-mcard {
+    background-color: #ffffff;
+    border: 2px solid #c8e6c9;
+    border-radius: 10px;
+    padding: 18px 16px;
+    text-align: center;
+    display: block;
+    text-decoration: none !important
+  }
+
+  .pap-mcard:hover {
+    background-color: #f0faf0;
+    border-color: #81c784
+  }
+
+  .pap-mcard-hot {
+    border-color: #e87722;
+    border-width: 2.5px
+  }
+
+  .pap-mcard-hot:hover {
+    background-color: #fff8f0
+  }
+
+  .pap-mcard-icon {
+    display: block;
+    margin: 0 auto 10px auto;
+    text-align: center
+  }
+
+  .pap-mcard-label {
+    display: block;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: #1b5e20 !important;
+    line-height: 1.4 !important;
+    margin-bottom: 4px
+  }
+
+  .pap-mcard-label-hot {
+    color: #92400e !important
+  }
+
+  .pap-mcard-sub {
+    display: block;
+    font-size: 13px !important;
+    color: #555555 !important;
+    margin-top: 4px;
+    line-height: 1.4
+  }
+
+  .pap-badge-new {
+    display: inline-block;
+    background-color: #e87722;
+    color: #ffffff !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    border-radius: 4px;
+    padding: 2px 6px;
+    margin-left: 5px;
+    vertical-align: middle
+  }
+
+  .pap-badge-ti {
+    display: inline-block;
+    background-color: #e8f5e9;
+    color: #2e7d32 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    border-radius: 4px;
+    padding: 2px 6px;
+    margin-left: 5px;
+    vertical-align: middle;
+    border: 1px solid #a5d6a7
+  }
+
+  /* TOMBOL LAYANAN INFO - 3 kolom */
+  .pap-info-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 7px;
+    padding: 8px 12px
+  }
+
+  .pap-info-table td {
+    width: 33%;
+    vertical-align: top
+  }
+
+  .pap-ibtn {
+    display: block;
+    background-color: #ffffff;
+    border: 1.5px solid #c8e6c9;
+    border-radius: 8px;
+    padding: 14px 10px;
+    text-align: center;
+    text-decoration: none !important
+  }
+
+  .pap-ibtn:hover {
+    background-color: #e8f5e9
+  }
+
+  .pap-ibtn-icon {
+    display: block;
+    margin: 0 auto 8px auto
+  }
+
+  .pap-ibtn-label {
+    display: block;
+    font-size: 14px !important;
+    color: #1b5e20 !important;
+    font-weight: 700 !important;
+    line-height: 1.4 !important
+  }
+
+  /* INOVASI */
+  .pap-inovasi {
+    background-color: #145214;
+    padding: 14px 18px
+  }
+
+  .pap-inovasi h3 {
+    color: #ffffff !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    margin: 0 0 4px 0 !important;
+    padding: 0 !important
+  }
+
+  .pap-inovasi-sub {
+    color: #a5d6a7 !important;
+    font-size: 13px !important;
+    display: block;
+    margin-bottom: 10px
+  }
+
+  .pap-chips {
+    padding: 2px 0
+  }
+
+  .pap-chip {
+    display: inline-block;
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #1b5e20 !important;
+    margin: 3px 3px;
+    text-decoration: none !important;
+    white-space: nowrap
+  }
+
+  .pap-chip:hover {
+    background-color: #c8e6c9
+  }
+
+  .pap-chip-more {
+    display: inline-block;
+    background-color: #e87722;
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    margin: 3px 3px;
+    text-decoration: none !important;
+    white-space: nowrap
+  }
+
+  .pap-chip-more:hover {
+    background-color: #f57f17
+  }
+
+  /* e-BROSUR */
+  .pap-brosur {
+    background-color: #d4b483;
+    border-radius: 8px;
+    margin: 8px 12px;
+    padding: 16px 18px;
+    display: table;
+    width: calc(100% - 24px);
+    box-sizing: border-box
+  }
+
+  .pap-brosur-icon {
+    display: table-cell;
+    vertical-align: middle;
+    width: 54px
+  }
+
+  .pap-brosur-body {
+    display: table-cell;
+    vertical-align: middle;
+    padding-left: 12px
+  }
+
+  .pap-brosur-body h3 {
+    font-size: 22px !important;
+    font-weight: 900 !important;
+    color: #1a1a1a !important;
+    margin: 0 0 4px 0 !important;
+    padding: 0 !important;
+    letter-spacing: 1px
+  }
+
+  .pap-brosur-body p {
+    font-size: 13px !important;
+    color: #4a3800 !important;
+    margin: 0 0 8px 0 !important;
+    padding: 0 !important
+  }
+
+  .pap-brosur-btn {
+    display: inline-block;
+    background-color: #1b5e20;
+    color: #ffffff !important;
+    border-radius: 5px;
+    padding: 8px 18px;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    text-decoration: none !important
+  }
+
+  .pap-brosur-btn:hover {
+    background-color: #2e7d32
+  }
+
+  /* APLIKASI EKSTERNAL - 4 kolom */
+  .pap-ext-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 6px;
+    padding: 8px 12px
+  }
+
+  .pap-ext-table td {
+    width: 25%;
+    vertical-align: top
+  }
+
+  .pap-ebtn {
+    display: block;
+    background-color: #2d6a2d;
+    border-radius: 6px;
+    padding: 11px 8px;
+    text-align: center;
+    text-decoration: none !important
+  }
+
+  .pap-ebtn:hover {
+    background-color: #388e3c
+  }
+
+  .pap-ebtn-label {
+    display: block;
+    font-size: 13px !important;
+    color: #e8f5e9 !important;
+    font-weight: 700 !important;
+    line-height: 1.4 !important
+  }
+
+  /* FOOTER */
+  .pap-footer {
+    background-color: #1b3a1b;
+    padding: 10px 16px
+  }
+
+  .pap-flink {
+    display: inline-block;
+    background-color: #2d5a2d;
+    border-radius: 5px;
+    padding: 7px 12px;
+    font-size: 13px !important;
+    color: #c8e6c9 !important;
+    font-weight: 700 !important;
+    margin: 3px 3px;
+    text-decoration: none !important;
+    white-space: nowrap
+  }
+
+  .pap-flink:hover {
+    background-color: #388e3c;
+    color: #ffffff !important
+  }
+
+  .pap-divider {
+    height: 1px;
+    background-color: #dde8dd;
+    margin: 0 12px
+  }
+</style>
+
+<div class="pap-wrap">
+
+  <!-- HERO -->
+  <div class="pap-hero">
+    <div class="pap-hero-logo">
+      <span>
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7v2h20V7L12 2z" fill="#1b5e20" />
+          <path d="M4 11v8h3v-5h2v5h2v-8H4z" fill="#1b5e20" />
+          <path d="M13 11v8h2v-5h2v5h3v-8h-7z" fill="#1b5e20" />
+          <path d="M2 20h20v2H2v-2z" fill="#1b5e20" />
+          <circle cx="12" cy="7" r="1.5" fill="#e87722" />
+        </svg>
+      </span>
+    </div>
+    <div class="pap-hero-body">
+      <h2>Pengadilan Agama Penajam</h2>
+      <p>Pelayanan Prima Berbasis Teknologi Informasi</p>
+      <span class="pap-sk">SK Inovasi No. 1297/KPA.W17-A8/OT1.6/XII/2025</span>
+    </div>
+    <div class="pap-hero-stat">
+      <strong>22</strong>
+      <span>Inovasi<br />Aktif 2026</span>
+    </div>
+  </div>
+
+  <!-- LAYANAN UTAMA - 2 KOLOM -->
+  <div class="pap-slabel">
+    <span class="pap-slabel-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="#388e3c">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+      </svg></span>
+    <span class="pap-slabel-text">Layanan Utama Masyarakat</span>
+  </div>
+  <table class="pap-main-table">
+    <tbody>
+      <tr>
+        <td>
+          <a href="https://ecourt.mahkamahagung.go.id/" target="_blank" rel="noopener noreferrer"
+            class="pap-mcard pap-mcard-hot">
+            <span class="pap-mcard-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="#e87722">
+                <path
+                  d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+              </svg></span>
+            <span class="pap-mcard-label pap-mcard-label-hot">Daftar Perkara Online <span
+                class="pap-badge-new">BARU</span></span>
+            <span class="pap-mcard-sub">e-Court Mahkamah Agung &mdash; Daftar perkara tanpa harus datang ke
+              pengadilan</span>
+          </a>
+        </td>
+        <td>
+          <a href="http://gugatanmandiri.badilag.net/gugatan_mandiri/" target="_blank" rel="noopener noreferrer"
+            class="pap-mcard pap-mcard-hot">
+            <span class="pap-mcard-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="#e87722">
+                <path
+                  d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z" />
+              </svg></span>
+            <span class="pap-mcard-label pap-mcard-label-hot">Gugatan Mandiri <span
+                class="pap-badge-new">BARU</span></span>
+            <span class="pap-mcard-sub">Ajukan gugatan sendiri tanpa kuasa hukum secara online</span>
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796"
+            class="pap-mcard pap-mcard-hot">
+            <span class="pap-mcard-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="#e87722">
+                <path
+                  d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z" />
+              </svg></span>
+            <span class="pap-mcard-label pap-mcard-label-hot">Antrian Sidang &amp; PTSP <span
+                class="pap-badge-new">BARU</span></span>
+            <span class="pap-mcard-sub">Ambil nomor antrian online, tidak perlu antre panjang</span>
+          </a>
+        </td>
+        <td>
+          <a href="http://sipp.pa-penajam.go.id/list_jadwal_sidang" target="_blank" rel="noopener noreferrer"
+            class="pap-mcard">
+            <span class="pap-mcard-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="#1b5e20">
+                <path
+                  d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z" />
+                <path d="M7 11h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2z" />
+              </svg></span>
+            <span class="pap-mcard-label">Jadwal Sidang</span>
+            <span class="pap-mcard-sub">Cek jadwal sidang perkara Anda</span>
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="http://103.124.144.44/vac/" target="_blank" rel="noopener noreferrer" class="pap-mcard">
+            <span class="pap-mcard-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="#1b5e20">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+              </svg></span>
+            <span class="pap-mcard-label">Validasi Akta Cerai <span class="pap-badge-ti">TI</span></span>
+            <span class="pap-mcard-sub">Cek keaslian akta cerai secara online</span>
+          </a>
+        </td>
+        <td>
+          <a href="https://panjar.pa-penajam.go.id/" class="pap-mcard">
+            <span class="pap-mcard-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="#1b5e20">
+                <path
+                  d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z" />
+              </svg></span>
+            <span class="pap-mcard-label">Biaya Perkara</span>
+            <span class="pap-mcard-sub">Informasi biaya dan panjar perkara</span>
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pap-divider"></div>
+
+  <!-- LAYANAN INFORMASI - 3 KOLOM -->
+  <div class="pap-slabel">
+    <span class="pap-slabel-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="#388e3c">
+        <path
+          d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z" />
+      </svg></span>
+    <span class="pap-slabel-text">Layanan Informasi &amp; Pengaduan</span>
+  </div>
+  <table class="pap-info-table">
+    <tbody>
+      <tr>
+        <td>
+          <a href="http://sipp.pa-penajam.go.id" target="_blank" rel="noopener noreferrer" class="pap-ibtn">
+            <span class="pap-ibtn-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="#1b5e20">
+                <path
+                  d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+              </svg></span>
+            <span class="pap-ibtn-label">Penelusuran Perkara</span>
+          </a>
+        </td>
+        <td>
+          <a href="layanan-publik/panggilan-pemberitahuan-melalui-media-massa/panggilan-sidang-ghaib" class="pap-ibtn">
+            <span class="pap-ibtn-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="#1b5e20">
+                <path
+                  d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
+              </svg></span>
+            <span class="pap-ibtn-label">Panggilan Sidang Ghaib</span>
+          </a>
+        </td>
+        <td>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSeBGcyJNDLHgQ79cPz7B-TAv1W-e40yvr1zDjF7T568aHIXAQ/viewform"
+            target="_blank" rel="noopener noreferrer" class="pap-ibtn">
+            <span class="pap-ibtn-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="#1b5e20">
+                <path
+                  d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L12 15.45 7.77 18l1.12-4.81-3.73-3.23 4.92-.42L12 5l1.92 4.53 4.92.42-3.73 3.23L16.23 18z" />
+              </svg></span>
+            <span class="pap-ibtn-label">Survei Kepuasan</span>
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="https://siwas.mahkamahagung.go.id/" target="_blank" rel="noopener noreferrer" class="pap-ibtn">
+            <span class="pap-ibtn-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="#1b5e20">
+                <path
+                  d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z" />
+              </svg></span>
+            <span class="pap-ibtn-label">Pengawasan &amp; Pengaduan</span>
+          </a>
+        </td>
+        <td>
+          <a href="http://sipp.pa-penajam.go.id/statistik_perkara" target="_blank" rel="noopener noreferrer"
+            class="pap-ibtn">
+            <span class="pap-ibtn-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="#1b5e20">
+                <path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z" />
+              </svg></span>
+            <span class="pap-ibtn-label">Statistik Perkara</span>
+          </a>
+        </td>
+        <td>
+          <a href="http://www.pa-penajam.go.id/transparansi/lhkpn" class="pap-ibtn">
+            <span class="pap-ibtn-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="#1b5e20">
+                <path
+                  d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z" />
+              </svg></span>
+            <span class="pap-ibtn-label">LHKPN Pejabat</span>
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <a href="https://putusan3.mahkamahagung.go.id/pengadilan/profil/pengadilan/pa-penajam.html" target="_blank"
+            rel="noopener noreferrer" class="pap-ibtn">
+            <span class="pap-ibtn-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="#1b5e20">
+                <path
+                  d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+              </svg></span>
+            <span class="pap-ibtn-label">Direktori Putusan</span>
+          </a>
+        </td>
+        <td>
+          <a href="index.php?option=com_wrapper&amp;view=wrapper&amp;Itemid=740" class="pap-ibtn">
+            <span class="pap-ibtn-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="#1b5e20">
+                <path
+                  d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" />
+              </svg></span>
+            <span class="pap-ibtn-label">CCTV Online</span>
+          </a>
+        </td>
+        <td>
+          <a href="layanan-publik/informasi-layanan-pengadilan/prosedur-evakuasi" target="_blank"
+            rel="noopener noreferrer" class="pap-ibtn">
+            <span class="pap-ibtn-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="#1b5e20">
+                <path
+                  d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z" />
+              </svg></span>
+            <span class="pap-ibtn-label">Prosedur Evakuasi</span>
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- INOVASI -->
+  <div class="pap-inovasi">
+    <h3>Inovasi &amp; Aplikasi PA Penajam 2026</h3>
+    <span class="pap-inovasi-sub">22 inovasi aktif &mdash; SK No. 1297/KPA.W17-A8/OT1.6/XII/2025</span>
+    <div class="pap-chips">
+      <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796" class="pap-chip">PARABOLA</a>
+      <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796" class="pap-chip">PACAR ARTIS</a>
+      <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796" class="pap-chip">SIPERAWAT</a>
+      <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796" class="pap-chip">BRYAN CAKEP</a>
+      <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796" class="pap-chip">SITARA</a>
+      <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796" class="pap-chip">APIK</a>
+      <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796" class="pap-chip">PERFORMA</a>
+      <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796" class="pap-chip">IDAMAN</a>
+      <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796" class="pap-chip">SIMBARA</a>
+      <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796" class="pap-chip">SILANTAS</a>
+      <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796" class="pap-chip">SIPESKA</a>
+      <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796" class="pap-chip">PANTURA</a>
+      <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796" class="pap-chip">PERWIRA</a>
+      <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796" class="pap-chip">NASI TANAK</a>
+      <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796" class="pap-chip">SI SUKMA</a>
+      <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796" class="pap-chip">PTSL</a>
+      <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796" class="pap-chip">We Listen We
+        Resolve</a>
+      <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796" class="pap-chip">Antrian
+        Sidang</a>
+      <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796" class="pap-chip">Antrian
+        PTSP</a>
+      <a href="index.php?option=com_content&amp;view=article&amp;id=704&amp;Itemid=796" class="pap-chip-more">+ Lihat
+        Semua Inovasi &rsaquo;</a>
+    </div>
+  </div>
+
+  <!-- e-BROSUR -->
+  <div class="pap-brosur">
+    <div class="pap-brosur-icon">
+      <svg width="42" height="42" viewBox="0 0 24 24" fill="#1b5e20">
+        <path
+          d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z" />
+      </svg>
+    </div>
+    <div class="pap-brosur-body">
+      <h3>e-BROSUR</h3>
+      <p>Panduan lengkap persyaratan pengajuan perkara di Pengadilan Agama Penajam</p>
+      <a href="https://heyzine.com/flip-book/f045e9200d.html" target="_blank" rel="noopener noreferrer"
+        class="pap-brosur-btn">Buka Brosur Digital &rsaquo;</a>
+    </div>
+  </div>
+
+  <!-- APLIKASI EKSTERNAL - 4 KOLOM -->
+  <div class="pap-slabel">
+    <span class="pap-slabel-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="#388e3c">
+        <path
+          d="M17 7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h10c2.76 0 5-2.24 5-5s-2.24-5-5-5zM7 15c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" />
+      </svg></span>
+    <span class="pap-slabel-text">Aplikasi &amp; Sistem Terintegrasi</span>
+  </div>
+  <table class="pap-ext-table">
+    <tbody>
+      <tr>
+        <td><a href="http://sipp-ma.mahkamahagung.go.id" target="_blank" rel="noopener noreferrer"
+            class="pap-ebtn"><span class="pap-ebtn-label">SIPP MARI</span></a></td>
+        <td><a href="https://sakti.kemenkeu.go.id/" target="_blank" rel="noopener noreferrer" class="pap-ebtn"><span
+              class="pap-ebtn-label">SAKTI KEMENKEU</span></a></td>
+        <td><a href="https://sipesut.pa-penajam.go.id/" target="_blank" rel="noopener noreferrer" class="pap-ebtn"><span
+              class="pap-ebtn-label">SIPP KEMENPAN RB</span></a></td>
+        <td><a href="https://sipesut.pa-penajam.go.id/" target="_blank" rel="noopener noreferrer" class="pap-ebtn"><span
+              class="pap-ebtn-label">SIPESUT</span></a></td>
+      </tr>
+      <tr>
+        <td><a href="http://komdanas.mahkamahagung.go.id/" target="_blank" rel="noopener noreferrer"
+            class="pap-ebtn"><span class="pap-ebtn-label">KOMDANAS</span></a></td>
+        <td><a href="https://lpse.mahkamahagung.go.id/eproc4" target="_blank" rel="noopener noreferrer"
+            class="pap-ebtn"><span class="pap-ebtn-label">LPSE</span></a></td>
+        <td><a href="http://pta-smd.my.id/optik/login.php" target="_blank" rel="noopener noreferrer"
+            class="pap-ebtn"><span class="pap-ebtn-label">OPTIK</span></a></td>
+        <td><a href="https://play.google.com/store/apps/details?id=io.kodular.epakdhe.VRAprojectSIPPASTIpta"
+            target="_blank" rel="noopener noreferrer" class="pap-ebtn"><span class="pap-ebtn-label">SIP-PASTI
+              PTA</span></a></td>
+      </tr>
+      <tr>
+        <td><a href="http://sikep.mahkamahagung.go.id/" target="_blank" rel="noopener noreferrer" class="pap-ebtn"><span
+              class="pap-ebtn-label">SIKEP</span></a></td>
+        <td><a href="http://simpeg.badilag.net/simkep/Login.wgx" target="_blank" rel="noopener noreferrer"
+            class="pap-ebtn"><span class="pap-ebtn-label">ABS BADILAG</span></a></td>
+        <td><a href="https://www.lapor.go.id/" target="_blank" rel="noopener noreferrer" class="pap-ebtn"><span
+              class="pap-ebtn-label">SPAN LAPOR!</span></a></td>
+        <td><a href="https://simtalak.badilag.net/" target="_blank" rel="noopener noreferrer" class="pap-ebtn"><span
+              class="pap-ebtn-label">SIMTALAK</span></a></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- FOOTER -->
+  <div class="pap-footer">
+    <a href="index.php?option=com_content&amp;view=article&amp;id=423:protokol-persidangan-2&amp;catid=165:pengumuman-new&amp;Itemid=721"
+      class="pap-flink">Protokol Persidangan</a>
+    <a href="index.php?option=com_content&amp;view=article&amp;id=222&amp;Itemid=637" class="pap-flink">Dari Masa ke
+      Masa</a>
+    <a href="index.php?option=com_content&amp;view=article&amp;id=108&amp;Itemid=527" class="pap-flink">Kegiatan
+      Pengadilan</a>
+    <a href="https://docs.google.com/forms/d/1oCShBAaDs_EVpxqNg4rqATMs7tboXdTvPdMnp1GMtWI/viewform?edit_requested=true"
+      target="_blank" rel="noopener noreferrer" class="pap-flink">Indeks Persepsi Korupsi</a>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeBGcyJNDLHgQ79cPz7B-TAv1W-e40yvr1zDjF7T568aHIXAQ/viewform"
+      target="_blank" rel="noopener noreferrer" class="pap-flink">Indeks Kepuasan Masyarakat</a>
+    <a href="index.php?option=com_content&amp;view=article&amp;id=655&amp;Itemid=771" target="_blank"
+      rel="noopener noreferrer" class="pap-flink">Prosedur Bantuan Hukum</a>
+  </div>
+
+</div>
+
+<p>&nbsp;</p>

@@ -79,6 +79,10 @@ $router->group(['prefix' => 'api', 'middleware' => 'throttle:100,1'], function (
     $router->get('mediasi-sk/{id:[0-9]+}', 'MediasiSkController@show');
     $router->get('mediator-banners', 'MediatorBannerController@index');
     $router->get('mediator-banners/{id:[0-9]+}', 'MediatorBannerController@show');
+
+    // Inovasi Routes
+    $router->get('inovasi', 'InovasiController@index');
+    $router->get('inovasi/{id:[0-9]+}', 'InovasiController@show');
 });
 
 // SECURITY: Protected routes dengan API Key + rate limiting (100 request/menit)
@@ -178,4 +182,10 @@ $router->group(['prefix' => 'api', 'middleware' => ['api.key', 'throttle:100,1']
     $router->put('mediator-banners/{id:[0-9]+}', 'MediatorBannerController@update');
     $router->post('mediator-banners/{id:[0-9]+}', 'MediatorBannerController@update');
     $router->delete('mediator-banners/{id:[0-9]+}', 'MediatorBannerController@destroy');
+
+    // Inovasi
+    $router->post('inovasi', 'InovasiController@store');
+    $router->put('inovasi/{id:[0-9]+}', 'InovasiController@update');
+    $router->post('inovasi/{id:[0-9]+}', 'InovasiController@update');
+    $router->delete('inovasi/{id:[0-9]+}', 'InovasiController@destroy');
 });
