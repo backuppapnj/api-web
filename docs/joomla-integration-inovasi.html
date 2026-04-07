@@ -136,21 +136,21 @@
                             }
                         }
                         
-                        html += '<div class="sk-embed-wrapper" style="margin-bottom: 2rem;">';
-                        html += '<div class="sk-embed-header">';
-                        html += '<h4 class="sk-embed-title">' + (doc.nomor_sk || 'SK Inovasi') + '</h4>';
-                        html += '<p class="sk-embed-info">Tahun ' + (doc.tahun || '-') + ' - ' + (doc.tentang || '') + '</p>';
+                        html += '<div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 2rem;">';
+                        html += '<div style="padding: 1rem 1.5rem; background: #fef3c7; border-bottom: 2px solid #f59e0b;">';
+                        html += '<h4 style="font-weight: 700; color: #92400e; margin: 0 0 0.3rem 0; font-size: 1.1rem;">' + (doc.nomor_sk || 'SK Inovasi') + '</h4>';
+                        html += '<p style="font-size: 0.85rem; color: #78716c; margin: 0;">Tahun ' + (doc.tahun || '-') + ' - ' + (doc.tentang || '') + '</p>';
                         html += '</div>';
                         
                         if (embedUrl) {
-                            html += '<iframe src="' + embedUrl + '" class="sk-embed-frame" frameborder="0" allow="autoplay; fullscreen"></iframe>';
+                            html += '<iframe src="' + embedUrl + '" style="width: 100%; height: 600px; border: none; display: block;" frameborder="0" allow="autoplay; fullscreen"></iframe>';
                         } else if (fileUrl) {
                             html += '<div style="padding: 2rem; text-align: center; background: #f8fafc;">';
                             html += '<p style="color: #64748b; margin-bottom: 1rem;">Dokumen tidak dapat di-embed. Silakan buka di tab baru:</p>';
-                            html += '<a href="' + fileUrl + '" target="_blank" class="sk-btn-download">&#128196; Buka Dokumen</a>';
+                            html += '<a href="' + fileUrl + '" target="_blank" style="display: inline-flex; align-items: center; gap: 5px; padding: 8px 16px; background: #f59e0b; color: white; border-radius: 6px; text-decoration: none; font-size: 0.85rem; font-weight: 600;">&#128196; Buka Dokumen</a>';
                             html += '</div>';
                         } else {
-                            html += '<div class="sk-empty">Belum ada dokumen tersedia</div>';
+                            html += '<div style="text-align: center; padding: 2rem; color: #78716c; font-size: 0.95rem;">Belum ada dokumen tersedia</div>';
                         }
                         
                         html += '</div>';
