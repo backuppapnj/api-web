@@ -24,7 +24,7 @@
     <div class="sk-section" id="skSection">
         <h3>Dasar Hukum & SK Inovasi</h3>
         <p style="color: #78716c; margin: 0 0 1rem 0; font-size: 0.95rem;">Surat Keputusan dan dokumen resmi yang menjadi dasar pelaksanaan inovasi:</p>
-        <div class="sk-grid" id="skGrid">
+        <div id="skContainer">
             <div class="inovasi-loading">
                 <div class="spinner"></div>
                 Memuat dokumen SK...
@@ -115,7 +115,7 @@
 
     // Load SK documents
     function loadSKDocuments() {
-        var skGrid = document.getElementById('skGrid');
+        var skContainer = document.getElementById('skContainer');
         
         fetch('https://web-api.pa-penajam.go.id/api/sk-inovasi?active=1')
             .then(function (res) { return res.json(); })
@@ -125,25 +125,44 @@
                     var skDocs = json.data;
                     
                     skDocs.forEach(function (doc) {
-                        html += '<div class="sk-card">';
-                        html += '<div class="sk-card-title">' + (doc.nomor_sk || 'SK Inovasi') + '</div>';
-                        html += '<div class="sk-card-desc">Tahun ' + (doc.tahun || '-') + ' - ' + (doc.tentang || '') + '</div>';
                         var fileUrl = doc.file_url || null;
-                        if (fileUrl) {
-                            html += '<a href="' + fileUrl + '" target="_blank" class="sk-btn">&#128196; Lihat Dokumen</a>';
-                        } else {
-                            html += '<span class="badge-empty">Belum tersedia</span>';
+                        var embedUrl = '';
+                        
+                        // Convert Google Drive URL to embed URL
+                        if (fileUrl && fileUrl.indexOf('drive.google.com') !== -1) {
+                            var fileId = fileUrl.match(/\/d\/([^\/]+)/);
+                            if (fileId && fileId[1]) {
+                                embedUrl = 'https://drive.google.com/file/d/' + fileId[1] + '/preview';
+                            }
                         }
+                        
+                        html += '<div class="sk-embed-wrapper" style="margin-bottom: 2rem;">';
+                        html += '<div class="sk-embed-header">';
+                        html += '<h4 class="sk-embed-title">' + (doc.nomor_sk || 'SK Inovasi') + '</h4>';
+                        html += '<p class="sk-embed-info">Tahun ' + (doc.tahun || '-') + ' - ' + (doc.tentang || '') + '</p>';
+                        html += '</div>';
+                        
+                        if (embedUrl) {
+                            html += '<iframe src="' + embedUrl + '" class="sk-embed-frame" frameborder="0" allow="autoplay; fullscreen"></iframe>';
+                        } else if (fileUrl) {
+                            html += '<div style="padding: 2rem; text-align: center; background: #f8fafc;">';
+                            html += '<p style="color: #64748b; margin-bottom: 1rem;">Dokumen tidak dapat di-embed. Silakan buka di tab baru:</p>';
+                            html += '<a href="' + fileUrl + '" target="_blank" class="sk-btn-download">&#128196; Buka Dokumen</a>';
+                            html += '</div>';
+                        } else {
+                            html += '<div class="sk-empty">Belum ada dokumen tersedia</div>';
+                        }
+                        
                         html += '</div>';
                     });
                     
-                    skGrid.innerHTML = html;
+                    skContainer.innerHTML = html;
                 } else {
-                    skGrid.innerHTML = '<p style="color: #78716c; font-size: 0.9rem;">Belum ada dokumen SK Inovasi yang tersedia.</p>';
+                    skContainer.innerHTML = '<p class="sk-empty">Belum ada dokumen SK Inovasi yang tersedia.</p>';
                 }
             })
             .catch(function () {
-                skGrid.innerHTML = '<p style="color: #dc2626; font-size: 0.9rem;">Gagal memuat dokumen SK Inovasi.</p>';
+                skContainer.innerHTML = '<p class="sk-empty" style="color: #dc2626;">Gagal memuat dokumen SK Inovasi.</p>';
             });
     }
 
