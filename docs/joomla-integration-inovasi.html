@@ -1,256 +1,795 @@
-<!--
-=====================================================
-CODE UNTUK JOOMLA 3 - INOVASI LAYANAN
-Copy code ini ke artikel Joomla atau Custom HTML Module
-PENTING: Ganti API_URL dengan URL API Lumen Anda
-=====================================================
--->
-
 <style>
+    /* Base Styles - Joomla 3 Compatible */
     .inovasi-wrapper {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         max-width: 100%;
         margin: 0 auto;
         color: #1e293b;
+        line-height: 1.6;
     }
 
-    .inovasi-header {
-        text-align: center;
-        margin-bottom: 1.5rem;
-        padding: 2rem 1rem;
-        background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
+    /* Hero Section */
+    .inovasi-hero {
+        background: linear-gradient(135deg, #4338ca 0%, #6366f1 50%, #818cf8 100%);
         color: white;
-        border-radius: 8px;
+        padding: 3rem 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
     }
 
-    .inovasi-header h2 {
-        margin: 0 0 0.5rem 0;
-        font-size: 1.6rem;
+    .inovasi-hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 0.5; }
+        50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    .inovasi-hero h2 {
+        margin: 0 0 1rem 0;
+        font-size: 2.2rem;
         color: white !important;
+        position: relative;
+        z-index: 1;
+        font-weight: 700;
     }
 
-    .inovasi-header p {
-        margin: 0;
+    .inovasi-hero p {
+        margin: 0 0 2rem 0;
+        opacity: 0.95;
+        font-size: 1.1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Stats Counter */
+    .inovasi-stats {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 1;
+    }
+
+    .stat-item {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 1.2rem 2rem;
+        border-radius: 10px;
+        min-width: 150px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        display: block;
+        margin-bottom: 0.3rem;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
         opacity: 0.9;
+    }
+
+    /* SK Section */
+    .sk-section {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        border-left: 5px solid #f59e0b;
+    }
+
+    .sk-section h3 {
+        margin: 0 0 1rem 0;
+        color: #92400e;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .sk-section h3::before {
+        content: '\1F4DC';
+        font-size: 1.8rem;
+    }
+
+    .sk-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .sk-card {
+        background: white;
+        padding: 1.2rem;
+        border-radius: 8px;
+        border: 2px solid #f59e0b;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .sk-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 16px rgba(245, 158, 11, 0.2);
+        border-color: #d97706;
+    }
+
+    .sk-card-title {
+        font-weight: 600;
+        color: #92400e;
+        margin-bottom: 0.5rem;
         font-size: 0.95rem;
     }
 
-    .inovasi-intro {
-        margin: 1rem 0;
-        padding: 1rem;
-        background: #eef2ff;
-        border-left: 4px solid #6366f1;
-        border-radius: 0 6px 6px 0;
-        font-size: 0.9rem;
-        line-height: 1.6;
-        color: #3730a3;
+    .sk-card-desc {
+        font-size: 0.85rem;
+        color: #78716c;
+        margin-bottom: 0.8rem;
     }
 
+    .sk-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 14px;
+        background: #f59e0b;
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    .sk-btn:hover {
+        background: #d97706;
+        transform: scale(1.05);
+    }
+
+    /* Category Tabs */
     .inovasi-tabs {
         display: flex;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-        border-bottom: 2px solid #e0e7ff;
-        overflow-x: auto;
-        padding-bottom: 2px;
+        gap: 0.8rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .tab-btn {
-        padding: 0.6rem 1.4rem;
-        border: none;
-        background: none;
+        padding: 0.8rem 1.8rem;
+        border: 2px solid #e0e7ff;
+        background: white;
         font-weight: 600;
         color: #64748b;
         cursor: pointer;
-        border-bottom: 3px solid transparent;
-        transition: all 0.2s;
-        white-space: nowrap;
+        border-radius: 50px;
+        transition: all 0.3s ease;
         font-size: 0.95rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .tab-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+        transition: left 0.5s;
+    }
+
+    .tab-btn:hover::before {
+        left: 100%;
     }
 
     .tab-btn:hover {
+        border-color: #6366f1;
         color: #4338ca;
-        background-color: #eef2ff;
-        border-radius: 4px 4px 0 0;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
     }
 
     .tab-btn.active {
-        color: #4338ca;
-        border-bottom-color: #4338ca;
-    }
-
-    .inovasi-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.88rem;
-        margin-bottom: 1.5rem;
-        background: white;
-    }
-
-    .inovasi-table thead th {
-        background: #4338ca;
+        background: linear-gradient(135deg, #4338ca, #6366f1);
         color: white;
-        padding: 10px 12px;
-        text-align: left;
-        font-weight: 600;
+        border-color: #4338ca;
+        box-shadow: 0 6px 20px rgba(67, 56, 202, 0.3);
     }
 
-    .inovasi-table thead th.text-center {
-        text-align: center;
+    /* Search Box */
+    .search-box {
+        margin-bottom: 2rem;
+        position: relative;
     }
 
-    .inovasi-table tbody td {
-        padding: 10px 12px;
-        border-bottom: 1px solid #e2e8f0;
-        vertical-align: top;
+    .search-input {
+        width: 100%;
+        padding: 1rem 1.5rem 1rem 3rem;
+        border: 2px solid #e0e7ff;
+        border-radius: 50px;
+        font-size: 1rem;
+        transition: all 0.3s;
+        box-sizing: border-box;
     }
 
-    .inovasi-table tbody tr:hover {
-        background-color: #eef2ff;
+    .search-input:focus {
+        outline: none;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
     }
 
-    .inovasi-table tbody td.text-center {
-        text-align: center;
+    .search-icon {
+        position: absolute;
+        left: 1.2rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.2rem;
+        color: #94a3b8;
     }
 
-    .inovasi-table tbody td.no-col {
-        text-align: center;
-        width: 45px;
-        color: #64748b;
+    /* Card Grid Layout */
+    .inovasi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
     }
 
-    .inovasi-table tbody td.deskripsi-col {
-        text-align: justify;
-        line-height: 1.5;
-        color: #475569;
+    .inovasi-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.8rem;
+        border: 2px solid #e0e7ff;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
     }
 
-    .inovasi-table tbody td.nama-col {
-        font-weight: 600;
+    .inovasi-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #4338ca, #6366f1, #818cf8);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+    }
+
+    .inovasi-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .inovasi-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(67, 56, 202, 0.15);
+        border-color: #6366f1;
+    }
+
+    .card-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .card-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #4338ca, #6366f1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        flex-shrink: 0;
+    }
+
+    .card-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0 0 0.3rem 0;
+        line-height: 1.4;
+    }
+
+    .card-category {
+        display: inline-block;
+        padding: 3px 10px;
+        background: #eef2ff;
         color: #4338ca;
-        width: 35%;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .card-description {
+        color: #64748b;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1rem;
+        border-top: 1px solid #e0e7ff;
+    }
+
+    .btn-detail {
+        padding: 8px 18px;
+        background: linear-gradient(135deg, #4338ca, #6366f1);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-detail:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(67, 56, 202, 0.3);
     }
 
     .btn-doc {
         display: inline-flex;
         align-items: center;
-        justify-content: center;
-        gap: 4px;
-        padding: 5px 14px;
-        background-color: #eef2ff;
-        color: #4338ca;
-        border: 1px solid #c7d2fe;
-        border-radius: 5px;
+        gap: 5px;
+        padding: 8px 14px;
+        background-color: #f0fdf4;
+        color: #16a34a;
+        border: 1px solid #86efac;
+        border-radius: 6px;
         text-decoration: none;
-        font-size: 0.8rem;
+        font-size: 0.85rem;
         font-weight: 600;
         transition: all 0.2s;
-        white-space: nowrap;
     }
 
     .btn-doc:hover {
-        background-color: #4338ca;
+        background-color: #16a34a;
         color: white;
-        border-color: #4338ca;
+        border-color: #16a34a;
     }
 
-    .badge-empty {
-        color: #94a3b8;
-        font-size: 0.8rem;
-        font-style: italic;
+    /* Modal */
+    .inovasi-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 10000;
+        animation: fadeIn 0.3s;
     }
 
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .modal-content {
+        background: white;
+        max-width: 800px;
+        margin: 5% auto;
+        border-radius: 16px;
+        padding: 2.5rem;
+        position: relative;
+        max-height: 85vh;
+        overflow-y: auto;
+        animation: slideDown 0.3s;
+    }
+
+    @keyframes slideDown {
+        from { transform: translateY(-50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 1rem;
+        right: 1.5rem;
+        font-size: 2rem;
+        cursor: pointer;
+        color: #64748b;
+        transition: color 0.2s;
+        background: none;
+        border: none;
+    }
+
+    .modal-close:hover {
+        color: #dc2626;
+    }
+
+    .modal-title {
+        font-size: 1.8rem;
+        color: #1e293b;
+        margin: 0 0 1rem 0;
+        padding-right: 3rem;
+    }
+
+    .modal-meta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .modal-badge {
+        padding: 5px 12px;
+        background: #eef2ff;
+        color: #4338ca;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .modal-description {
+        color: #475569;
+        line-height: 1.8;
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .modal-btn {
+        padding: 12px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .modal-btn-primary {
+        background: linear-gradient(135deg, #4338ca, #6366f1);
+        color: white;
+    }
+
+    .modal-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(67, 56, 202, 0.3);
+    }
+
+    /* Loading & Empty States */
     .inovasi-loading {
         text-align: center;
-        padding: 3rem 0;
+        padding: 4rem 0;
         color: #64748b;
-        font-size: 0.95rem;
+        font-size: 1.1rem;
+    }
+
+    .spinner {
+        border: 4px solid #e0e7ff;
+        border-top: 4px solid #4338ca;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
 
     .inovasi-empty {
         text-align: center;
-        padding: 2rem;
+        padding: 3rem;
         color: #64748b;
+        font-size: 1.1rem;
+        background: #f8fafc;
+        border-radius: 12px;
+        border: 2px dashed #cbd5e1;
+    }
+
+    .badge-empty {
+        color: #94a3b8;
+        font-size: 0.85rem;
         font-style: italic;
     }
 
+    /* Responsive */
     @media (max-width: 768px) {
-        .inovasi-table {
-            font-size: 0.8rem;
+        .inovasi-hero h2 {
+            font-size: 1.6rem;
         }
-        .inovasi-table thead th,
-        .inovasi-table tbody td {
-            padding: 8px;
+        .inovasi-stats {
+            gap: 1rem;
         }
-        .inovasi-header h2 {
-            font-size: 1.2rem;
+        .stat-item {
+            min-width: 120px;
+            padding: 1rem;
         }
-        .inovasi-table tbody td.nama-col {
-            width: 40%;
+        .stat-number {
+            font-size: 2rem;
+        }
+        .inovasi-grid {
+            grid-template-columns: 1fr;
+        }
+        .modal-content {
+            margin: 10% 1rem;
+            padding: 1.5rem;
         }
     }
 
-    @media (max-width: 600px) {
-        .inovasi-table {
-            display: block;
-            overflow-x: auto;
-            white-space: nowrap;
+    @media (max-width: 480px) {
+        .inovasi-hero {
+            padding: 2rem 1rem;
+        }
+        .inovasi-hero h2 {
+            font-size: 1.4rem;
         }
         .tab-btn {
-            padding: 0.5rem 1rem;
+            padding: 0.6rem 1.2rem;
             font-size: 0.85rem;
         }
     }
 </style>
 
 <div class="inovasi-wrapper">
-    <div class="inovasi-header">
-        <h2>Inovasi Layanan Pengadilan Agama Penajam</h2>
-        <p>Daftar Inovasi Pelayanan dan Kebijakan</p>
+    <!-- Hero Section -->
+    <div class="inovasi-hero">
+        <h2>&#128640; Inovasi Layanan Pengadilan Agama Penajam</h2>
+        <p>Menyajikan berbagai inovasi pelayanan dan kebijakan untuk meningkatkan kualitas pelayanan publik</p>
+        
+        <div class="inovasi-stats">
+            <div class="stat-item">
+                <span class="stat-number" id="totalInovasi">0</span>
+                <span class="stat-label">Total Inovasi</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="totalKategori">0</span>
+                <span class="stat-label">Kategori</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="totalDokumen">0</span>
+                <span class="stat-label">Dokumen</span>
+            </div>
+        </div>
     </div>
 
-    <div class="inovasi-intro">
-        <strong>Inovasi Layanan</strong> merupakan berbagai inisiatif dan program yang dikembangkan oleh Pengadilan Agama Penajam untuk meningkatkan kualitas pelayanan publik, mempermudah akses keadilan, dan memberikan solusi terbaik bagi masyarakat dalam menyelesaikan perkara.
+    <!-- SK Section -->
+    <div class="sk-section" id="skSection">
+        <h3>Dasar Hukum & SK Inovasi</h3>
+        <p style="color: #78716c; margin: 0 0 1rem 0; font-size: 0.95rem;">Berikut adalah surat keputusan dan dokumen resmi yang menjadi dasar pelaksanaan inovasi:</p>
+        <div class="sk-grid" id="skGrid">
+            <div class="inovasi-loading">
+                <div class="spinner"></div>
+                Memuat dokumen SK...
+            </div>
+        </div>
     </div>
 
+    <!-- Category Tabs -->
     <div class="inovasi-tabs" id="inovasiCategoryTabs"></div>
 
-    <div id="inovasiContent"><div class="inovasi-loading">Memuat data&hellip;</div></div>
+    <!-- Search Box -->
+    <div class="search-box">
+        <span class="search-icon">&#128269;</span>
+        <input type="text" class="search-input" id="searchInput" placeholder="Cari inovasi berdasarkan nama atau deskripsi...">
+    </div>
+
+    <!-- Content Grid -->
+    <div id="inovasiContent">
+        <div class="inovasi-loading">
+            <div class="spinner"></div>
+            Memuat data inovasi...
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="inovasiModal" class="inovasi-modal">
+    <div class="modal-content">
+        <button class="modal-close" id="modalClose">&times;</button>
+        <h3 class="modal-title" id="modalTitle"></h3>
+        <div class="modal-meta" id="modalMeta"></div>
+        <div class="modal-description" id="modalDescription"></div>
+        <div class="modal-actions" id="modalActions"></div>
+    </div>
 </div>
 
 <script>
 (function () {
-    var API_URL = 'https://yoursite.com/api/inovasi';
+    'use strict';
+    
+    var API_URL = 'https://web-api.pa-penajam.go.id/api/inovasi';
+    var SK_API_URL = 'https://web-api.pa-penajam.go.id/api/sakip';
 
     var CATEGORIES = [
-        { key: '', label: 'Semua' },
-        { key: 'Inovasi Layanan', label: 'Inovasi Layanan' },
-        { key: 'Inovasi Layanan Saat Pandemi', label: 'Inovasi Layanan Saat Pandemi' }
+        { key: '', label: '&#127775; Semua' },
+        { key: 'Inovasi Layanan', label: '&#128161; Inovasi Layanan' },
+        { key: 'Inovasi Layanan Saat Pandemi', label: '&#129435; Inovasi Masa Pandemi' }
     ];
 
     var currentCategory = '';
+    var allInovasi = [];
     var tabsEl = document.getElementById('inovasiCategoryTabs');
     var contentEl = document.getElementById('inovasiContent');
+    var searchInput = document.getElementById('searchInput');
+    var modal = document.getElementById('inovasiModal');
+    var modalClose = document.getElementById('modalClose');
 
     // Build category tabs
-    CATEGORIES.forEach(function (cat, idx) {
+    CATEGORIES.forEach(function (cat) {
         var btn = document.createElement('button');
         btn.className = 'tab-btn' + (cat.key === currentCategory ? ' active' : '');
         btn.setAttribute('data-category', cat.key);
-        btn.textContent = cat.label;
+        btn.innerHTML = cat.label;
         tabsEl.appendChild(btn);
     });
 
-    function renderDoc(url) {
-        if (!url || url === '#') {
-            return '<span class="badge-empty">Belum tersedia</span>';
+    // Animate counter
+    function animateCounter(element, target, duration) {
+        duration = duration || 1500;
+        var start = 0;
+        var startTime = null;
+        
+        function animation(currentTime) {
+            if (!startTime) startTime = currentTime;
+            var progress = Math.min((currentTime - startTime) / duration, 1);
+            var easeOut = 1 - Math.pow(1 - progress, 3);
+            var current = Math.floor(easeOut * target);
+            element.textContent = current;
+            
+            if (progress < 1) {
+                requestAnimationFrame(animation);
+            } else {
+                element.textContent = target;
+            }
         }
-        return '<a href="' + url + '" target="_blank" rel="noopener noreferrer" class="btn-doc">&#128196; Lihat</a>';
+        
+        requestAnimationFrame(animation);
     }
 
+    // Load SK documents
+    function loadSKDocuments() {
+        var skGrid = document.getElementById('skGrid');
+        
+        fetch(SK_API_URL + '?jenis_dokumen=Indikator+Kinerja+Utara')
+            .then(function (res) { return res.json(); })
+            .then(function (json) {
+                if (json.success && json.data && json.data.length > 0) {
+                    var html = '';
+                    var skDocs = json.data.slice(0, 4); // Show max 4 SK documents
+                    
+                    skDocs.forEach(function (doc) {
+                        html += '<div class="sk-card">';
+                        html += '<div class="sk-card-title">' + (doc.jenis_dokumen || 'Dokumen SK') + '</div>';
+                        html += '<div class="sk-card-desc">Tahun ' + (doc.tahun || '-') + '</div>';
+                        if (doc.link_dokumen) {
+                            html += '<a href="' + doc.link_dokumen + '" target="_blank" class="sk-btn">&#128196; Lihat Dokumen</a>';
+                        } else {
+                            html += '<span class="badge-empty">Belum tersedia</span>';
+                        }
+                        html += '</div>';
+                    });
+                    
+                    skGrid.innerHTML = html;
+                } else {
+                    // Try loading all SAKIP documents
+                    fetch(SK_API_URL)
+                        .then(function (res) { return res.json(); })
+                        .then(function (json) {
+                            if (json.success && json.data && json.data.length > 0) {
+                                var html = '';
+                                var skDocs = json.data.slice(0, 4);
+                                
+                                skDocs.forEach(function (doc) {
+                                    html += '<div class="sk-card">';
+                                    html += '<div class="sk-card-title">' + (doc.jenis_dokumen || 'Dokumen SK') + '</div>';
+                                    html += '<div class="sk-card-desc">' + (doc.uraian || 'Tahun ' + (doc.tahun || '-')) + '</div>';
+                                    if (doc.link_dokumen) {
+                                        html += '<a href="' + doc.link_dokumen + '" target="_blank" class="sk-btn">&#128196; Lihat Dokumen</a>';
+                                    } else {
+                                        html += '<span class="badge-empty">Belum tersedia</span>';
+                                    }
+                                    html += '</div>';
+                                });
+                                
+                                skGrid.innerHTML = html;
+                            } else {
+                                skGrid.innerHTML = '<p style="color: #78716c; font-size: 0.9rem;">Belum ada dokumen SK yang tersedia.</p>';
+                            }
+                        })
+                        .catch(function () {
+                            skGrid.innerHTML = '<p style="color: #dc2626; font-size: 0.9rem;">Gagal memuat dokumen SK.</p>';
+                        });
+                }
+            })
+            .catch(function () {
+                skGrid.innerHTML = '<p style="color: #dc2626; font-size: 0.9rem;">Gagal memuat dokumen SK.</p>';
+            });
+    }
+
+    // Open modal
+    function openModal(inovasi) {
+        document.getElementById('modalTitle').textContent = inovasi.nama_inovasi;
+        
+        var metaHtml = '<span class="modal-badge">' + (inovasi.kategori || '-') + '</span>';
+        if (inovasi.urutan) {
+            metaHtml += '<span class="modal-badge">Urutan: ' + inovasi.urutan + '</span>';
+        }
+        document.getElementById('modalMeta').innerHTML = metaHtml;
+        
+        document.getElementById('modalDescription').textContent = inovasi.deskripsi || 'Tidak ada deskripsi.';
+        
+        var actionsHtml = '';
+        if (inovasi.link_dokumen) {
+            actionsHtml += '<a href="' + inovasi.link_dokumen + '" target="_blank" class="modal-btn modal-btn-primary">&#128196; Lihat Dokumen</a>';
+        }
+        document.getElementById('modalActions').innerHTML = actionsHtml;
+        
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Close modal
+    function closeModal() {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    // Close modal on outside click
+    window.addEventListener('click', function (e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    // Close modal button
+    modalClose.addEventListener('click', closeModal);
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal.style.display === 'block') {
+            closeModal();
+        }
+    });
+
+    // Render content as cards
     function renderContent(data) {
         if (!data || data.length === 0) {
-            contentEl.innerHTML = '<div class="inovasi-empty">Tidak ada data inovasi untuk kategori ini.</div>';
+            contentEl.innerHTML = '<div class="inovasi-empty">&#128533; Tidak ada data inovasi untuk kategori ini.</div>';
             return;
         }
 
@@ -261,63 +800,118 @@ PENTING: Ganti API_URL dengan URL API Lumen Anda
             return urutanA - urutanB;
         });
 
-        var html = '<div style="overflow-x:auto;">';
-        html += '<table class="inovasi-table">';
-        html += '<thead><tr>' +
-                '<th class="text-center" style="width:45px">No.</th>' +
-                '<th>Nama Inovasi</th>' +
-                '<th>Deskripsi</th>' +
-                '<th class="text-center" style="width:100px">Dokumen</th>' +
-                '</tr></thead><tbody>';
+        var html = '<div class="inovasi-grid">';
 
-        data.forEach(function (row, idx) {
-            var nama = row.nama_inovasi || '<span class="badge-empty">-</span>';
-            var deskripsi = row.deskripsi || '<span class="badge-empty">-</span>';
-            var docLink = row.link_dokumen || null;
+        data.forEach(function (row) {
+            var icon = row.kategori && row.kategori.indexOf('Pandemi') >= 0 ? '&#129435;' : '&#128161;';
+            var deskripsi = row.deskripsi || 'Tidak ada deskripsi.';
+            var truncatedDesc = deskripsi.length > 150 ? deskripsi.substring(0, 150) + '...' : deskripsi;
 
-            html += '<tr>' +
-                    '<td class="no-col">' + (idx + 1) + '</td>' +
-                    '<td class="nama-col">' + nama + '</td>' +
-                    '<td class="deskripsi-col">' + deskripsi + '</td>' +
-                    '<td class="text-center">' + renderDoc(docLink) + '</td>' +
-                    '</tr>';
+            html += '<div class="inovasi-card" data-id="' + (row.id || '') + '">';
+            html += '<div class="card-header">';
+            html += '<div class="card-icon">' + icon + '</div>';
+            html += '<div style="flex: 1;">';
+            html += '<h4 class="card-title">' + (row.nama_inovasi || '-') + '</h4>';
+            html += '<span class="card-category">' + (row.kategori || '-') + '</span>';
+            html += '</div></div>';
+            html += '<p class="card-description">' + truncatedDesc + '</p>';
+            html += '<div class="card-footer">';
+            html += '<button class="btn-detail" onclick="window.showInovasiDetail(' + JSON.stringify(row).replace(/"/g, '&quot;') + ')">Detail &#8594;</button>';
+            
+            if (row.link_dokumen) {
+                html += '<a href="' + row.link_dokumen + '" target="_blank" class="btn-doc">&#128196; Dokumen</a>';
+            } else {
+                html += '<span class="badge-empty">Tanpa dokumen</span>';
+            }
+            
+            html += '</div></div>';
         });
 
-        html += '</tbody></table></div>';
+        html += '</div>';
         contentEl.innerHTML = html;
     }
 
-    function loadCategory(category) {
-        contentEl.innerHTML = '<div class="inovasi-loading">Memuat data&hellip;</div>';
+    // Filter and search
+    function filterData() {
+        var searchTerm = searchInput.value.toLowerCase().trim();
+        var filtered = allInovasi;
 
-        var url = API_URL;
-        if (category) {
-            url += '?kategori=' + encodeURIComponent(category);
+        // Filter by category
+        if (currentCategory) {
+            filtered = filtered.filter(function (item) {
+                return item.kategori === currentCategory;
+            });
         }
 
-        fetch(url)
+        // Filter by search term
+        if (searchTerm) {
+            filtered = filtered.filter(function (item) {
+                var nama = (item.nama_inovasi || '').toLowerCase();
+                var deskripsi = (item.deskripsi || '').toLowerCase();
+                return nama.indexOf(searchTerm) >= 0 || deskripsi.indexOf(searchTerm) >= 0;
+            });
+        }
+
+        renderContent(filtered);
+    }
+
+    // Load data
+    function loadData() {
+        contentEl.innerHTML = '<div class="inovasi-loading"><div class="spinner"></div>Memuat data inovasi...</div>';
+
+        fetch(API_URL)
             .then(function (res) { return res.json(); })
             .then(function (json) {
                 if (json.success && Array.isArray(json.data)) {
-                    renderContent(json.data);
+                    allInovasi = json.data;
+                    
+                    // Update stats
+                    var totalInovasi = allInovasi.length;
+                    var categories = {};
+                    var withDocs = 0;
+                    
+                    allInovasi.forEach(function (item) {
+                        if (item.kategori) categories[item.kategori] = true;
+                        if (item.link_dokumen) withDocs++;
+                    });
+                    
+                    animateCounter(document.getElementById('totalInovasi'), totalInovasi);
+                    animateCounter(document.getElementById('totalKategori'), Object.keys(categories).length);
+                    animateCounter(document.getElementById('totalDokumen'), withDocs);
+                    
+                    filterData();
                 } else {
-                    contentEl.innerHTML = '<div class="inovasi-empty">Data tidak tersedia untuk kategori ini.</div>';
+                    contentEl.innerHTML = '<div class="inovasi-empty">&#128533; Data tidak tersedia.</div>';
                 }
             })
             .catch(function () {
-                contentEl.innerHTML = '<div class="inovasi-loading" style="color:#dc2626;">Gagal memuat data. Periksa koneksi.</div>';
+                contentEl.innerHTML = '<div class="inovasi-empty" style="color: #dc2626;">&#10060; Gagal memuat data. Periksa koneksi internet Anda.</div>';
             });
     }
 
+    // Tab click handler
     tabsEl.addEventListener('click', function (e) {
-        var btn = e.target.closest ? e.target.closest('.tab-btn') : (e.target.className.indexOf('tab-btn') >= 0 ? e.target : null);
+        var btn = e.target.closest ? e.target.closest('.tab-btn') : (e.target.className && e.target.className.indexOf('tab-btn') >= 0 ? e.target : null);
         if (!btn) return;
+        
         tabsEl.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
         btn.classList.add('active');
         currentCategory = btn.getAttribute('data-category');
-        loadCategory(currentCategory);
+        filterData();
     });
 
-    loadCategory(currentCategory);
+    // Search input handler
+    searchInput.addEventListener('input', function () {
+        filterData();
+    });
+
+    // Make showInovasiDetail globally accessible
+    window.showInovasiDetail = function (inovasi) {
+        openModal(inovasi);
+    };
+
+    // Initial load
+    loadSKDocuments();
+    loadData();
 })();
 </script>
