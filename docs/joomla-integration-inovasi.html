@@ -25,10 +25,9 @@
         <h3>Dasar Hukum & SK Inovasi</h3>
         <p style="color: #78716c; margin: 0 0 1rem 0; font-size: 0.95rem;">Surat Keputusan dan dokumen resmi yang menjadi dasar pelaksanaan inovasi:</p>
         <div class="sk-grid" id="skGrid">
-            <div class="sk-card">
-                <div class="sk-card-title">SK Inovasi Tahun 2026</div>
-                <div class="sk-card-desc">SK No. 1297/KPA.W17-A8/OT1.6/XII/2025 tentang Penetapan Inovasi Pelayanan Pengadilan Agama Penajam</div>
-                <a href="#" target="_blank" class="sk-btn">&#128196; Lihat Dokumen</a>
+            <div class="inovasi-loading">
+                <div class="spinner"></div>
+                Memuat dokumen SK...
             </div>
         </div>
     </div>
@@ -112,6 +111,40 @@
         }
         
         requestAnimationFrame(animation);
+    }
+
+    // Load SK documents
+    function loadSKDocuments() {
+        var skGrid = document.getElementById('skGrid');
+        
+        fetch('https://web-api.pa-penajam.go.id/api/sk-inovasi?active=1')
+            .then(function (res) { return res.json(); })
+            .then(function (json) {
+                if (json.success && json.data && json.data.length > 0) {
+                    var html = '';
+                    var skDocs = json.data;
+                    
+                    skDocs.forEach(function (doc) {
+                        html += '<div class="sk-card">';
+                        html += '<div class="sk-card-title">' + (doc.nomor_sk || 'SK Inovasi') + '</div>';
+                        html += '<div class="sk-card-desc">Tahun ' + (doc.tahun || '-') + ' - ' + (doc.tentang || '') + '</div>';
+                        var fileUrl = doc.file_url || null;
+                        if (fileUrl) {
+                            html += '<a href="' + fileUrl + '" target="_blank" class="sk-btn">&#128196; Lihat Dokumen</a>';
+                        } else {
+                            html += '<span class="badge-empty">Belum tersedia</span>';
+                        }
+                        html += '</div>';
+                    });
+                    
+                    skGrid.innerHTML = html;
+                } else {
+                    skGrid.innerHTML = '<p style="color: #78716c; font-size: 0.9rem;">Belum ada dokumen SK Inovasi yang tersedia.</p>';
+                }
+            })
+            .catch(function () {
+                skGrid.innerHTML = '<p style="color: #dc2626; font-size: 0.9rem;">Gagal memuat dokumen SK Inovasi.</p>';
+            });
     }
 
     // Open modal
@@ -284,6 +317,7 @@
     };
 
     // Initial load
+    loadSKDocuments();
     loadData();
 })();
 </script>
