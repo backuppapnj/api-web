@@ -47,7 +47,7 @@ class SkInovasiController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validator = validator($request->all(), [
             'tahun' => 'required|integer|min:2000|max:2100',
             'nomor_sk' => 'required|string|max:255',
             'tentang' => 'required|string',
@@ -55,6 +55,16 @@ class SkInovasiController extends Controller
             'file_url' => 'nullable|url',
             'is_active' => 'boolean',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $validated = $validator->validated();
 
         $data = [
             'tahun' => $validated['tahun'],
@@ -94,7 +104,7 @@ class SkInovasiController extends Controller
             ], 404);
         }
 
-        $validated = $request->validate([
+        $validator = validator($request->all(), [
             'tahun' => 'sometimes|integer|min:2000|max:2100',
             'nomor_sk' => 'sometimes|string|max:255',
             'tentang' => 'sometimes|string',
@@ -102,6 +112,16 @@ class SkInovasiController extends Controller
             'file_url' => 'nullable|url',
             'is_active' => 'boolean',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $validated = $validator->validated();
 
         $data = [];
 
