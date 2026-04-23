@@ -13,7 +13,7 @@ class UraianTugas extends Model
         'jabatan',
         'kelompok_jabatan_id',
         'nip',
-        'status_kepegawaian',
+        'jenis_pegawai_id',
         'foto_url',
         'link_dokumen',
         'urutan',
@@ -21,11 +21,17 @@ class UraianTugas extends Model
 
     protected $casts = [
         'kelompok_jabatan_id' => 'integer',
-        'urutan' => 'integer',
+        'jenis_pegawai_id'    => 'integer',
+        'urutan'              => 'integer',
     ];
 
     public function kelompokJabatan()
     {
         return $this->belongsTo(KelompokJabatan::class, 'kelompok_jabatan_id');
+    }
+
+    public function jenisPegawai()
+    {
+        return $this->belongsTo(JenisPegawai::class, 'jenis_pegawai_id');
     }
 }

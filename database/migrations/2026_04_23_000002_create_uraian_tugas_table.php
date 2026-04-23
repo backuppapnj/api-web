@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('jabatan', 255);
             $table->unsignedBigInteger('kelompok_jabatan_id');
             $table->string('nip', 30)->nullable();
-            $table->enum('status_kepegawaian', ['PNS', 'PPNPN', 'CASN'])->nullable();
+            $table->unsignedBigInteger('jenis_pegawai_id')->nullable();
             $table->string('foto_url', 500)->nullable();
             $table->string('link_dokumen', 500)->nullable();
             $table->integer('urutan')->default(0);
@@ -25,7 +25,13 @@ return new class extends Migration
                   ->on('kelompok_jabatan')
                   ->onDelete('restrict');
 
+            $table->foreign('jenis_pegawai_id')
+                  ->references('id')
+                  ->on('jenis_pegawai')
+                  ->onDelete('set null');
+
             $table->index('kelompok_jabatan_id');
+            $table->index('jenis_pegawai_id');
             $table->index('urutan');
         });
     }

@@ -13,7 +13,7 @@ class UraianTugasController extends Controller
         'jabatan',
         'kelompok_jabatan_id',
         'nip',
-        'status_kepegawaian',
+        'jenis_pegawai_id',
         'foto_url',
         'link_dokumen',
         'urutan',
@@ -25,7 +25,7 @@ class UraianTugasController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $query = UraianTugas::with('kelompokJabatan');
+        $query = UraianTugas::with(['kelompokJabatan', 'jenisPegawai']);
 
         if ($request->has('kelompok_id') && $request->kelompok_id !== '') {
             $kelompokId = (int) $request->kelompok_id;
@@ -65,7 +65,7 @@ class UraianTugasController extends Controller
             return response()->json(['success' => false, 'message' => 'ID tidak valid'], 400);
         }
 
-        $item = UraianTugas::with('kelompokJabatan')->find($id);
+        $item = UraianTugas::with(['kelompokJabatan', 'jenisPegawai'])->find($id);
         if (!$item) {
             return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
         }
@@ -83,7 +83,7 @@ class UraianTugasController extends Controller
             'kelompok_jabatan_id' => 'required|integer|exists:kelompok_jabatan,id',
             'nama'                => 'nullable|string|max:255',
             'nip'                 => 'nullable|string|max:30',
-            'status_kepegawaian'  => 'nullable|in:PNS,PPNPN,CASN',
+            'jenis_pegawai_id'    => 'nullable|integer|exists:jenis_pegawai,id',
             'foto_url'            => 'nullable|url|max:500',
             'link_dokumen'        => 'nullable|url|max:500',
             'urutan'              => 'nullable|integer|min:0',
@@ -95,7 +95,7 @@ class UraianTugasController extends Controller
         );
 
         $item = UraianTugas::create($data);
-        $item->load('kelompokJabatan');
+        $item->load(['kelompokJabatan', 'jenisPegawai']);
 
         return response()->json([
             'success' => true,
@@ -123,7 +123,7 @@ class UraianTugasController extends Controller
             'kelompok_jabatan_id' => 'sometimes|required|integer|exists:kelompok_jabatan,id',
             'nama'                => 'nullable|string|max:255',
             'nip'                 => 'nullable|string|max:30',
-            'status_kepegawaian'  => 'nullable|in:PNS,PPNPN,CASN',
+            'jenis_pegawai_id'    => 'nullable|integer|exists:jenis_pegawai,id',
             'foto_url'            => 'nullable|url|max:500',
             'link_dokumen'        => 'nullable|url|max:500',
             'urutan'              => 'nullable|integer|min:0',
@@ -136,7 +136,7 @@ class UraianTugasController extends Controller
 
         $item->fill($data);
         $item->save();
-        $item->load('kelompokJabatan');
+        $item->load(['kelompokJabatan', 'jenisPegawai']);
 
         return response()->json([
             'success' => true,

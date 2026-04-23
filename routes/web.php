@@ -92,6 +92,10 @@ $router->group(['prefix' => 'api', 'middleware' => 'throttle:100,1'], function (
     $router->get('kelompok-jabatan', 'KelompokJabatanController@index');
     $router->get('kelompok-jabatan/{id:[0-9]+}', 'KelompokJabatanController@show');
 
+    // Jenis Pegawai Routes
+    $router->get('jenis-pegawai', 'JenisPegawaiController@index');
+    $router->get('jenis-pegawai/{id:[0-9]+}', 'JenisPegawaiController@show');
+
     // Uraian Tugas Routes
     $router->get('uraian-tugas', 'UraianTugasController@index');
     $router->get('uraian-tugas/{id:[0-9]+}', 'UraianTugasController@show');
@@ -212,6 +216,12 @@ $router->group(['prefix' => 'api', 'middleware' => ['api.key', 'throttle:100,1']
     $router->put('kelompok-jabatan/{id:[0-9]+}', 'KelompokJabatanController@update');
     $router->post('kelompok-jabatan/{id:[0-9]+}', 'KelompokJabatanController@update');
     $router->delete('kelompok-jabatan/{id:[0-9]+}', 'KelompokJabatanController@destroy');
+
+    // Jenis Pegawai
+    $router->post('jenis-pegawai', 'JenisPegawaiController@store');
+    $router->put('jenis-pegawai/{id:[0-9]+}', 'JenisPegawaiController@update');
+    $router->post('jenis-pegawai/{id:[0-9]+}', 'JenisPegawaiController@update');
+    $router->delete('jenis-pegawai/{id:[0-9]+}', 'JenisPegawaiController@destroy');
 
     // Uraian Tugas
     $router->post('uraian-tugas', 'UraianTugasController@store');
