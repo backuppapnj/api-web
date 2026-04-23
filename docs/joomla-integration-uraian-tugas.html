@@ -1,0 +1,501 @@
+<style>
+    /* ===== WRAPPER ===== */
+    .ut-wrapper {
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        color: #334155;
+        line-height: 1.6;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    /* ===== JUDUL ===== */
+    .ut-title {
+        text-align: center;
+        font-size: 24px;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .ut-divider {
+        border: none;
+        border-top: 3px solid #0d9488;
+        width: 60px;
+        margin: 0 auto 30px auto;
+        border-radius: 3px;
+    }
+
+    /* ===== TOOLBAR: SEARCH + TAB ===== */
+    .ut-toolbar {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .ut-search-box {
+        position: relative;
+        max-width: 360px;
+    }
+
+    .ut-search-box svg {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+    }
+
+    .ut-search-input {
+        width: 100%;
+        padding: 10px 14px 10px 38px;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 14px;
+        color: #334155;
+        background: #ffffff;
+        box-sizing: border-box;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    .ut-search-input:focus {
+        border-color: #0d9488;
+        box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+    }
+
+    /* ===== TABS ===== */
+    .ut-tabs-nav {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        scrollbar-width: thin;
+    }
+
+    .ut-tab-btn {
+        padding: 9px 22px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        font-weight: 600;
+        cursor: pointer;
+        color: #64748b;
+        border-radius: 10px;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        white-space: nowrap;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .ut-tab-btn:hover {
+        border-color: #0d9488;
+        color: #0d9488;
+        background: #f0fdfa;
+    }
+
+    .ut-tab-btn.active {
+        background: #0d9488;
+        color: #ffffff;
+        border-color: #0d9488;
+        box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+    }
+
+    .ut-tab-pane {
+        display: none;
+        animation: ut-slideUp 0.35s ease-out;
+    }
+
+    .ut-tab-pane.active {
+        display: block;
+    }
+
+    @keyframes ut-slideUp {
+        from { opacity: 0; transform: translateY(12px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== CARD GRID ===== */
+    .ut-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+    }
+
+    .ut-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 24px 16px 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        transition: transform 0.2s, box-shadow 0.2s;
+        text-align: center;
+    }
+
+    .ut-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    /* Foto / Avatar */
+    .ut-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #e2e8f0;
+        margin-bottom: 14px;
+        background: #f1f5f9;
+    }
+
+    .ut-avatar-initials {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0d9488 0%, #0891b2 100%);
+        color: #ffffff;
+        font-size: 26px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 14px;
+        flex-shrink: 0;
+        border: 3px solid rgba(255,255,255,0.3);
+    }
+
+    /* Nama & Jabatan */
+    .ut-card-nama {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 4px;
+        line-height: 1.3;
+    }
+
+    .ut-card-nama-tba {
+        font-size: 14px;
+        font-style: italic;
+        color: #94a3b8;
+        margin-bottom: 4px;
+    }
+
+    .ut-card-jabatan {
+        font-size: 13px;
+        color: #64748b;
+        margin-bottom: 12px;
+        line-height: 1.4;
+    }
+
+    /* Badge Status */
+    .ut-badge {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        margin-bottom: 14px;
+    }
+
+    .ut-badge-PNS    { background: #dbeafe; color: #1d4ed8; }
+    .ut-badge-PPNPN  { background: #ffedd5; color: #c2410c; }
+    .ut-badge-CASN   { background: #dcfce7; color: #166534; }
+
+    /* Tombol Download */
+    .ut-btn-download {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #0d9488;
+        color: #ffffff !important;
+        text-decoration: none !important;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 8px 18px;
+        border-radius: 8px;
+        transition: all 0.2s;
+        box-shadow: 0 2px 6px rgba(13, 148, 136, 0.25);
+        margin-top: auto;
+    }
+
+    .ut-btn-download:hover {
+        background: #0f766e;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 14px rgba(13, 148, 136, 0.3);
+    }
+
+    /* No Data */
+    .ut-no-data {
+        text-align: center;
+        padding: 60px 20px;
+        color: #94a3b8;
+        font-style: italic;
+        grid-column: 1 / -1;
+    }
+
+    /* Loading Skeleton */
+    .ut-skeleton-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+    }
+
+    .ut-skeleton-card {
+        background: #f1f5f9;
+        border-radius: 16px;
+        height: 220px;
+        animation: ut-shimmer 1.4s infinite linear;
+        background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+        background-size: 200% 100%;
+    }
+
+    @keyframes ut-shimmer {
+        0%   { background-position: -200% 0; }
+        100% { background-position:  200% 0; }
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+        .ut-title { font-size: 20px; }
+        .ut-grid  { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
+        .ut-card  { padding: 18px 12px 16px; }
+        .ut-avatar, .ut-avatar-initials { width: 64px; height: 64px; font-size: 22px; }
+        .ut-card-nama { font-size: 14px; }
+    }
+</style>
+
+<div class="ut-wrapper">
+    <h2 class="ut-title">Uraian Tugas</h2>
+    <hr class="ut-divider" />
+
+    <!-- Toolbar: Search -->
+    <div class="ut-toolbar">
+        <div class="ut-search-box">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input
+                id="ut-search"
+                type="text"
+                class="ut-search-input"
+                placeholder="Cari nama atau jabatan..."
+                oninput="utFilterCards()"
+            />
+        </div>
+        <!-- Tab navigasi (diisi dinamis) -->
+        <div class="ut-tabs-nav" id="ut-tabs-nav"></div>
+    </div>
+
+    <!-- Loading skeleton -->
+    <div id="ut-loading" class="ut-skeleton-grid">
+        <div class="ut-skeleton-card"></div>
+        <div class="ut-skeleton-card"></div>
+        <div class="ut-skeleton-card"></div>
+        <div class="ut-skeleton-card"></div>
+        <div class="ut-skeleton-card"></div>
+        <div class="ut-skeleton-card"></div>
+    </div>
+
+    <!-- Tab konten (diisi dinamis) -->
+    <div id="ut-tab-content"></div>
+</div>
+
+<script>
+(function () {
+    // Ganti dengan URL API yang sesuai
+    var API_BASE = 'https://api.pa-penajam.go.id/api';
+
+    var allData = [];
+    var kelompokList = [];
+    var activeTabId = 'all';
+
+    // Ambil data dari API
+    function utInit() {
+        Promise.all([
+            fetch(API_BASE + '/kelompok-jabatan').then(r => r.json()),
+            fetch(API_BASE + '/uraian-tugas').then(r => r.json())
+        ]).then(function (results) {
+            var kelRes = results[0];
+            var dataRes = results[1];
+
+            if (kelRes.success) kelompokList = kelRes.data || [];
+            if (dataRes.success) allData = dataRes.data || [];
+
+            document.getElementById('ut-loading').style.display = 'none';
+            utBuildTabs();
+            utRenderAll();
+        }).catch(function () {
+            document.getElementById('ut-loading').innerHTML =
+                '<p style="text-align:center;color:#ef4444;padding:40px">Gagal memuat data. Coba muat ulang halaman.</p>';
+        });
+    }
+
+    // Bangun tab navigasi
+    function utBuildTabs() {
+        var nav = document.getElementById('ut-tabs-nav');
+        var content = document.getElementById('ut-tab-content');
+
+        // Tab "Semua"
+        nav.innerHTML = '<button class="ut-tab-btn active" onclick="utSwitchTab(\'all\')" id="ut-tab-btn-all">Semua</button>';
+
+        kelompokList.forEach(function (k) {
+            var btn = document.createElement('button');
+            btn.className = 'ut-tab-btn';
+            btn.id = 'ut-tab-btn-' + k.id;
+            btn.textContent = k.nama_kelompok;
+            btn.setAttribute('onclick', 'utSwitchTab(' + k.id + ')');
+            nav.appendChild(btn);
+
+            var pane = document.createElement('div');
+            pane.className = 'ut-tab-pane';
+            pane.id = 'ut-pane-' + k.id;
+            content.appendChild(pane);
+        });
+
+        // Pane "Semua"
+        var paneAll = document.createElement('div');
+        paneAll.className = 'ut-tab-pane active';
+        paneAll.id = 'ut-pane-all';
+        content.prepend(paneAll);
+    }
+
+    // Render semua card ke tab yang sesuai
+    function utRenderAll() {
+        // Kosongkan semua pane
+        document.querySelectorAll('.ut-tab-pane').forEach(function (p) { p.innerHTML = ''; });
+
+        var query = document.getElementById('ut-search').value.toLowerCase().trim();
+
+        // Filter data berdasarkan query
+        var filtered = query
+            ? allData.filter(function (d) {
+                return (d.nama || '').toLowerCase().includes(query)
+                    || (d.jabatan || '').toLowerCase().includes(query);
+              })
+            : allData;
+
+        // Render ke pane "all"
+        utRenderPane('ut-pane-all', filtered);
+
+        // Render ke pane per kelompok
+        kelompokList.forEach(function (k) {
+            var subset = filtered.filter(function (d) { return d.kelompok_jabatan_id == k.id; });
+            utRenderPane('ut-pane-' + k.id, subset);
+        });
+    }
+
+    // Render daftar card ke satu pane
+    function utRenderPane(paneId, items) {
+        var pane = document.getElementById(paneId);
+        if (!pane) return;
+
+        if (!items || items.length === 0) {
+            pane.innerHTML = '<div class="ut-no-data">Tidak ada data.</div>';
+            return;
+        }
+
+        var grid = document.createElement('div');
+        grid.className = 'ut-grid';
+
+        items.forEach(function (item) {
+            grid.appendChild(utMakeCard(item));
+        });
+
+        pane.appendChild(grid);
+    }
+
+    // Buat satu card pegawai
+    function utMakeCard(item) {
+        var card = document.createElement('div');
+        card.className = 'ut-card';
+        card.setAttribute('data-nama', (item.nama || '').toLowerCase());
+        card.setAttribute('data-jabatan', (item.jabatan || '').toLowerCase());
+
+        var fotoHtml = '';
+        if (item.foto_url) {
+            fotoHtml = '<img src="' + escHtml(item.foto_url) + '" alt="' + escHtml(item.nama || item.jabatan) + '" class="ut-avatar" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'" />'
+                     + '<div class="ut-avatar-initials" style="display:none">' + utInitials(item.nama || item.jabatan) + '</div>';
+        } else {
+            fotoHtml = '<div class="ut-avatar-initials">' + utInitials(item.nama || item.jabatan) + '</div>';
+        }
+
+        var namaHtml = item.nama
+            ? '<div class="ut-card-nama">' + escHtml(item.nama) + '</div>'
+            : '<div class="ut-card-nama-tba">— Belum Terisi —</div>';
+
+        var badgeHtml = item.status_kepegawaian
+            ? '<span class="ut-badge ut-badge-' + escHtml(item.status_kepegawaian) + '">' + escHtml(item.status_kepegawaian) + '</span>'
+            : '';
+
+        var btnHtml = item.link_dokumen
+            ? '<a href="' + escHtml(item.link_dokumen) + '" target="_blank" rel="noopener noreferrer" class="ut-btn-download">'
+              + '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>'
+              + 'Download</a>'
+            : '';
+
+        card.innerHTML = fotoHtml
+            + namaHtml
+            + '<div class="ut-card-jabatan">' + escHtml(item.jabatan) + '</div>'
+            + badgeHtml
+            + btnHtml;
+
+        return card;
+    }
+
+    // Pindah tab
+    function utSwitchTab(tabId) {
+        activeTabId = tabId;
+
+        // Update tombol aktif
+        document.querySelectorAll('.ut-tab-btn').forEach(function (b) { b.classList.remove('active'); });
+        var activeBtn = document.getElementById('ut-tab-btn-' + tabId);
+        if (activeBtn) activeBtn.classList.add('active');
+
+        // Update pane aktif
+        document.querySelectorAll('.ut-tab-pane').forEach(function (p) { p.classList.remove('active'); });
+        var activePane = document.getElementById('ut-pane-' + tabId);
+        if (activePane) activePane.classList.add('active');
+    }
+
+    // Filter berdasarkan pencarian
+    function utFilterCards() {
+        utRenderAll();
+        // Tetap di tab yang aktif sekarang
+        document.querySelectorAll('.ut-tab-pane').forEach(function (p) { p.classList.remove('active'); });
+        var pane = document.getElementById('ut-pane-' + activeTabId);
+        if (pane) pane.classList.add('active');
+    }
+
+    // Ambil inisial nama (maks 2 huruf)
+    function utInitials(name) {
+        if (!name) return '?';
+        var parts = name.trim().split(/\s+/);
+        if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+        return parts[0].substring(0, 2).toUpperCase();
+    }
+
+    // Escape HTML untuk keamanan
+    function escHtml(str) {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    // Ekspos fungsi ke scope global untuk event handler inline
+    window.utSwitchTab = utSwitchTab;
+    window.utFilterCards = utFilterCards;
+
+    // Mulai
+    utInit();
+})();
+</script>

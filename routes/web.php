@@ -87,6 +87,14 @@ $router->group(['prefix' => 'api', 'middleware' => 'throttle:100,1'], function (
     // Inovasi Routes
     $router->get('inovasi', 'InovasiController@index');
     $router->get('inovasi/{id:[0-9]+}', 'InovasiController@show');
+
+    // Kelompok Jabatan Routes
+    $router->get('kelompok-jabatan', 'KelompokJabatanController@index');
+    $router->get('kelompok-jabatan/{id:[0-9]+}', 'KelompokJabatanController@show');
+
+    // Uraian Tugas Routes
+    $router->get('uraian-tugas', 'UraianTugasController@index');
+    $router->get('uraian-tugas/{id:[0-9]+}', 'UraianTugasController@show');
 });
 
 // SECURITY: Protected routes dengan API Key + rate limiting (100 request/menit)
@@ -198,4 +206,16 @@ $router->group(['prefix' => 'api', 'middleware' => ['api.key', 'throttle:100,1']
     $router->put('inovasi/{id:[0-9]+}', 'InovasiController@update');
     $router->post('inovasi/{id:[0-9]+}', 'InovasiController@update');
     $router->delete('inovasi/{id:[0-9]+}', 'InovasiController@destroy');
+
+    // Kelompok Jabatan
+    $router->post('kelompok-jabatan', 'KelompokJabatanController@store');
+    $router->put('kelompok-jabatan/{id:[0-9]+}', 'KelompokJabatanController@update');
+    $router->post('kelompok-jabatan/{id:[0-9]+}', 'KelompokJabatanController@update');
+    $router->delete('kelompok-jabatan/{id:[0-9]+}', 'KelompokJabatanController@destroy');
+
+    // Uraian Tugas
+    $router->post('uraian-tugas', 'UraianTugasController@store');
+    $router->put('uraian-tugas/{id:[0-9]+}', 'UraianTugasController@update');
+    $router->post('uraian-tugas/{id:[0-9]+}', 'UraianTugasController@update');
+    $router->delete('uraian-tugas/{id:[0-9]+}', 'UraianTugasController@destroy');
 });
