@@ -52,7 +52,7 @@ class UraianTugasSeeder extends Seeder
             ['nama' => 'Ashar, S.H.', 'jabatan' => 'Operator - Penata Layanan Operasional', 'kelompok_jabatan_id' => $kelompokMap['Kesekretariatan'] ?? 4],
         ];
 
-        $now = now();
+        $now = \Carbon\Carbon::now();
         $records = [];
 
         foreach ($data as $index => $item) {
