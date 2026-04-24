@@ -48,6 +48,19 @@ class UraianTugasController extends Controller
               ->orderBy('urutan', 'asc')
               ->orderBy('jabatan', 'asc');
 
+        if ($request->has('paginate') && $request->paginate == '1') {
+            $perPage = (int) $request->input('per_page', 10);
+            $data = $query->paginate($perPage);
+
+            return response()->json([
+                'success'      => true,
+                'data'         => $data->items(),
+                'current_page' => $data->currentPage(),
+                'last_page'    => $data->lastPage(),
+                'total'        => $data->total(),
+            ]);
+        }
+
         $data = $query->get();
 
         return response()->json([
