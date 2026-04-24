@@ -19,37 +19,37 @@ class UraianTugasSeeder extends Seeder
             ['nama' => 'Nahdiyanti, S.H.I., M.H.', 'jabatan' => 'Wakil Ketua', 'kelompok_jabatan_id' => $kelompokMap['Pimpinan'] ?? 1],
 
             // Hakim
-            ['nama' => 'Daru Halleila, S.H.', 'jabatan' => 'Hakim', 'kelompok_jabatan_id' => $kelompokMap['Hakim'] ?? 2],
-            ['nama' => null, 'jabatan' => 'Hakim', 'kelompok_jabatan_id' => $kelompokMap['Hakim'] ?? 2],
+            ['nama' => 'Nur Rizka Fani, S.H.', 'jabatan' => 'Hakim', 'kelompok_jabatan_id' => $kelompokMap['Hakim'] ?? 2],
+            ['nama' => 'Vidya Nurchaliza, S.H.', 'jabatan' => 'Hakim', 'kelompok_jabatan_id' => $kelompokMap['Hakim'] ?? 2],
 
             // Kepaniteraan
             ['nama' => 'H. Muhammad Hamdi, S.H., M.Hum.', 'jabatan' => 'Panitera', 'kelompok_jabatan_id' => $kelompokMap['Kepaniteraan'] ?? 3],
             ['nama' => 'Zulfah, S.H.I.', 'jabatan' => 'Panitera Muda Hukum', 'kelompok_jabatan_id' => $kelompokMap['Kepaniteraan'] ?? 3],
             ['nama' => 'Faridah Fitriyani, S.H.I.', 'jabatan' => 'Panitera Muda Gugatan', 'kelompok_jabatan_id' => $kelompokMap['Kepaniteraan'] ?? 3],
-            ['nama' => null, 'jabatan' => 'Panitera Muda Permohonan', 'kelompok_jabatan_id' => $kelompokMap['Kepaniteraan'] ?? 3],
-            ['nama' => 'Nuzula Yustisia, S.H.I.', 'jabatan' => 'Panitera Pengganti', 'kelompok_jabatan_id' => $kelompokMap['Kepaniteraan'] ?? 3],
-            ['nama' => null, 'jabatan' => 'Jurusita', 'kelompok_jabatan_id' => $kelompokMap['Kepaniteraan'] ?? 3],
+            ['nama' => 'Nuzula Yustisia, S.H.I.', 'jabatan' => 'Panitera Muda Permohonan', 'kelompok_jabatan_id' => $kelompokMap['Kepaniteraan'] ?? 3],
+            ['nama' => 'Raini Maulidina, S.H.', 'jabatan' => 'Panitera Pengganti', 'kelompok_jabatan_id' => $kelompokMap['Kepaniteraan'] ?? 3],
+            ['nama' => 'Muhammad Miftahudin, S.H.', 'jabatan' => 'Jurusita', 'kelompok_jabatan_id' => $kelompokMap['Kepaniteraan'] ?? 3],
             ['nama' => 'Nurul Fitriani, A.Md. Kom', 'jabatan' => 'Jurusita Pengganti', 'kelompok_jabatan_id' => $kelompokMap['Kepaniteraan'] ?? 3],
+            ['nama' => 'Yulinda, A.Md. Kom.', 'jabatan' => 'Pengelola Penanganan Perkara', 'kelompok_jabatan_id' => $kelompokMap['Kepaniteraan'] ?? 3],
+            ['nama' => 'Muhammad Ilham, S.H.', 'jabatan' => 'Klerek - Analis Perkara Peradilan', 'kelompok_jabatan_id' => $kelompokMap['Kepaniteraan'] ?? 3],
+            ['nama' => 'Irwan Syah Setiawan, A.Md.', 'jabatan' => 'Pengelola Penanganan Perkara', 'kelompok_jabatan_id' => $kelompokMap['Kepaniteraan'] ?? 3],
+            ['nama' => 'Qurrotu Aini, S.H.', 'jabatan' => 'Klerek - Analis Perkara Peradilan', 'kelompok_jabatan_id' => $kelompokMap['Kepaniteraan'] ?? 3],
+            ['nama' => 'Raina Putri Nasuha, S.H.', 'jabatan' => 'Klerek - Analis Perkara Peradilan', 'kelompok_jabatan_id' => $kelompokMap['Kepaniteraan'] ?? 3],
+            ['nama' => 'Cucu Khofifah, S.H.', 'jabatan' => 'Klerek - Analis Perkara Peradilan', 'kelompok_jabatan_id' => $kelompokMap['Kepaniteraan'] ?? 3],
+            ['nama' => 'Jakfar, A.Md.A.B.', 'jabatan' => 'Klerek - Dokumentalis Hukum', 'kelompok_jabatan_id' => $kelompokMap['Kepaniteraan'] ?? 3],
+            ['nama' => 'Nuravita Pramesti, A.Md.', 'jabatan' => 'Klerek - Dokumentalis Hukum', 'kelompok_jabatan_id' => $kelompokMap['Kepaniteraan'] ?? 3],
+            ['nama' => 'Novayanti', 'jabatan' => 'Operator - Penata Layanan Operasional', 'kelompok_jabatan_id' => $kelompokMap['Kepaniteraan'] ?? 3],
 
             // Kesekretariatan
             ['nama' => 'Indra Yanita Yuliana, S.E., M.Si.', 'jabatan' => 'Sekretaris', 'kelompok_jabatan_id' => $kelompokMap['Kesekretariatan'] ?? 4],
-            ['nama' => 'Iqbal Khairillah, S.H.', 'jabatan' => 'Kasubag Kepegawaian, Organisasi dan Tata Laksana', 'kelompok_jabatan_id' => $kelompokMap['Kesekretariatan'] ?? 4],
-            ['nama' => null, 'jabatan' => 'Kasubag Umum dan Keuangan', 'kelompok_jabatan_id' => $kelompokMap['Kesekretariatan'] ?? 4],
-            ['nama' => 'Muhammad Zaim Noor, S.H.', 'jabatan' => 'Kasubag Perencanaan, Teknologi Informasi dan Pelaporan', 'kelompok_jabatan_id' => $kelompokMap['Kesekretariatan'] ?? 4],
+            ['nama' => 'Muhammad Zaim Noor, S.H.', 'jabatan' => 'Kasubag Umum dan Keuangan', 'kelompok_jabatan_id' => $kelompokMap['Kesekretariatan'] ?? 4],
+            ['nama' => 'Awaluddin Nur, S.H.I.', 'jabatan' => 'Kasubag Perencanaan, Teknologi Informasi dan Pelaporan', 'kelompok_jabatan_id' => $kelompokMap['Kesekretariatan'] ?? 4],
             ['nama' => 'Muhardiansyah, S.Kom', 'jabatan' => 'Pranata Komputer Ahli Pertama', 'kelompok_jabatan_id' => $kelompokMap['Kesekretariatan'] ?? 4],
-            ['nama' => 'Raini Maulidina, S.H.', 'jabatan' => 'Analis Perkara Peradilan', 'kelompok_jabatan_id' => $kelompokMap['Kesekretariatan'] ?? 4],
-            ['nama' => 'Yulinda, A.Md. Kom.', 'jabatan' => 'Pengadministrasi Registrasi Perkara', 'kelompok_jabatan_id' => $kelompokMap['Kesekretariatan'] ?? 4],
-            ['nama' => 'Muhammad Ilham, S.H.', 'jabatan' => 'Analis Perkara Peradilan', 'kelompok_jabatan_id' => $kelompokMap['Kesekretariatan'] ?? 4],
-            ['nama' => 'Irwan Syah Setiawan, A.Md.', 'jabatan' => 'Pengadministrasi Registrasi Perkara', 'kelompok_jabatan_id' => $kelompokMap['Kesekretariatan'] ?? 4],
-            ['nama' => 'Qurrotu Aini, S.H.', 'jabatan' => 'Analis Perkara Peradilan', 'kelompok_jabatan_id' => $kelompokMap['Kesekretariatan'] ?? 4],
-
-            // PPNPN
-            ['nama' => 'Adi Irawan', 'jabatan' => 'Pengemudi', 'kelompok_jabatan_id' => $kelompokMap['PPNPN'] ?? 5],
-            ['nama' => 'Najwa Hijriana, S.E.', 'jabatan' => 'Pengemudi', 'kelompok_jabatan_id' => $kelompokMap['PPNPN'] ?? 5],
-            ['nama' => 'Amin Nur', 'jabatan' => 'Satpam', 'kelompok_jabatan_id' => $kelompokMap['PPNPN'] ?? 5],
-            ['nama' => 'Damai Azizu, S.Kom', 'jabatan' => 'Satpam', 'kelompok_jabatan_id' => $kelompokMap['PPNPN'] ?? 5],
-            ['nama' => 'Ashar, S.H.', 'jabatan' => 'Pramubakti', 'kelompok_jabatan_id' => $kelompokMap['PPNPN'] ?? 5],
-            ['nama' => 'Novayanti', 'jabatan' => 'Pramubakti', 'kelompok_jabatan_id' => $kelompokMap['PPNPN'] ?? 5],
+            ['nama' => 'Adi Irawan', 'jabatan' => 'Pengelola Umum Operasional', 'kelompok_jabatan_id' => $kelompokMap['Kesekretariatan'] ?? 4],
+            ['nama' => 'Najwa Hijriana, S.E.', 'jabatan' => 'Operator - Penata Layanan Operasional', 'kelompok_jabatan_id' => $kelompokMap['Kesekretariatan'] ?? 4],
+            ['nama' => 'Amin Nur', 'jabatan' => 'Operator Layanan Operasional', 'kelompok_jabatan_id' => $kelompokMap['Kesekretariatan'] ?? 4],
+            ['nama' => 'Damai Azizu, S.Kom', 'jabatan' => 'Operator - Penata Layanan Operasional', 'kelompok_jabatan_id' => $kelompokMap['Kesekretariatan'] ?? 4],
+            ['nama' => 'Ashar, S.H.', 'jabatan' => 'Operator - Penata Layanan Operasional', 'kelompok_jabatan_id' => $kelompokMap['Kesekretariatan'] ?? 4],
         ];
 
         $now = now();

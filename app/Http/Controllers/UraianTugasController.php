@@ -16,6 +16,7 @@ class UraianTugasController extends Controller
         'jenis_pegawai_id',
         'foto_url',
         'link_dokumen',
+        'uraian_tugas',
         'urutan',
     ];
 
@@ -86,12 +87,13 @@ class UraianTugasController extends Controller
             'jenis_pegawai_id'    => 'nullable|integer|exists:jenis_pegawai,id',
             'foto_url'            => 'nullable|url|max:500',
             'link_dokumen'        => 'nullable|url|max:500',
+            'uraian_tugas'        => 'nullable|string',
             'urutan'              => 'nullable|integer|min:0',
         ]);
 
         $data = $this->sanitizeInput(
             $request->only($this->allowedFields),
-            ['foto_url', 'link_dokumen']
+            ['foto_url', 'link_dokumen', 'uraian_tugas']
         );
 
         $item = UraianTugas::create($data);
@@ -126,12 +128,13 @@ class UraianTugasController extends Controller
             'jenis_pegawai_id'    => 'nullable|integer|exists:jenis_pegawai,id',
             'foto_url'            => 'nullable|url|max:500',
             'link_dokumen'        => 'nullable|url|max:500',
+            'uraian_tugas'        => 'nullable|string',
             'urutan'              => 'nullable|integer|min:0',
         ]);
 
         $data = $this->sanitizeInput(
             $request->only($this->allowedFields),
-            ['foto_url', 'link_dokumen']
+            ['foto_url', 'link_dokumen', 'uraian_tugas']
         );
 
         $item->fill($data);

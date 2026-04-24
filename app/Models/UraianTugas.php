@@ -16,6 +16,7 @@ class UraianTugas extends Model
         'jenis_pegawai_id',
         'foto_url',
         'link_dokumen',
+        'uraian_tugas',
         'urutan',
     ];
 
