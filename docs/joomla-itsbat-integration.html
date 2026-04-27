@@ -35,9 +35,12 @@ PENTING: Ganti API_URL dengan URL API Lumen Anda
 
     .itsbat-header p {
         margin: 0;
-        opacity: 0.9;
+        opacity: 0.95;
         font-size: 0.9rem;
         line-height: 1.4;
+        /* color: white !important supaya tidak ketimpa rule template Joomla
+           (article p, .item-page p, dll) yang biasanya force warna gelap. */
+        color: #fff !important;
     }
 
     .filter-section {
@@ -136,6 +139,97 @@ PENTING: Ganti API_URL dengan URL API Lumen Anda
             align-items: flex-start;
         }
     }
+
+    /* ===== DataTables wrapper namespace (itsb-*) =====
+       Class generik .top / .bottom diganti agar tidak ditimpa CSS template
+       Joomla (yang sering memberi clear/hidden pada .bottom -> pagination
+       hilang). */
+    .itsb-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 12px;
+        padding: 10px 12px;
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        border-radius: 8px;
+    }
+    .itsb-toolbar .dataTables_length label,
+    .itsb-toolbar .dataTables_filter label {
+        color: #14532d;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin: 0;
+    }
+    .itsb-toolbar .dataTables_length select,
+    .itsb-toolbar .dataTables_filter input {
+        padding: 6px 10px;
+        border: 1px solid #86efac;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        background: #fff;
+    }
+    .itsb-toolbar .dataTables_filter input { min-width: 200px; }
+
+    .itsb-foot {
+        display: flex !important;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 14px;
+        padding: 8px 4px;
+    }
+    .itsb-foot .dataTables_info {
+        color: #64748b;
+        font-size: 0.85rem;
+        padding-top: 0 !important;
+    }
+    .itsb-foot .dataTables_paginate {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .itsb-foot .dataTables_paginate .paginate_button {
+        display: inline-block;
+        padding: 6px 12px !important;
+        margin: 0 2px !important;
+        border: 1px solid #e2e8f0 !important;
+        background: #fff !important;
+        color: #334155 !important;
+        border-radius: 6px !important;
+        font-size: 0.85rem;
+        cursor: pointer;
+        text-decoration: none !important;
+    }
+    .itsb-foot .dataTables_paginate .paginate_button:hover {
+        background: #f0fdf4 !important;
+        border-color: #15803d !important;
+        color: #14532d !important;
+    }
+    .itsb-foot .dataTables_paginate .paginate_button.current,
+    .itsb-foot .dataTables_paginate .paginate_button.current:hover {
+        background: #15803d !important;
+        border-color: #15803d !important;
+        color: #fff !important;
+    }
+    .itsb-foot .dataTables_paginate .paginate_button.disabled,
+    .itsb-foot .dataTables_paginate .paginate_button.disabled:hover {
+        background: #f8fafc !important;
+        border-color: #e2e8f0 !important;
+        color: #cbd5e1 !important;
+        cursor: not-allowed;
+    }
+
+    @media (max-width: 640px) {
+        .itsb-toolbar { flex-direction: column; align-items: stretch; }
+        .itsb-toolbar .dataTables_filter input { min-width: auto; width: 100%; }
+        .itsb-foot { flex-direction: column; align-items: flex-start; }
+    }
 </style>
 
 <div class="itsbat-container">
@@ -150,15 +244,10 @@ PENTING: Ganti API_URL dengan URL API Lumen Anda
     </div>
 
     <div class="filter-section">
-        <label for="filterTahun">📅 Tahun Perkara:</label>
+        <label for="filterTahun">&#128197; Tahun Perkara:</label>
         <select id="filterTahun">
             <option value="">Semua Tahun</option>
-            <option value="2025" selected>2025</option>
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
-            <option value="2021">2021</option>
-            <option value="2020">2020</option>
+            <!-- Opsi tahun di-generate otomatis oleh JS (populateYearFilter) -->
         </select>
         <span style="margin-left: auto; font-size: 0.85rem; color: #64748b;" id="dataInfo">Memuat...</span>
     </div>
@@ -198,6 +287,22 @@ PENTING: Ganti API_URL dengan URL API Lumen Anda
         // ============================================
         const API_URL = 'https://web-api.pa-penajam.go.id/api/itsbat';
         // ============================================
+
+        // Populate dropdown tahun secara dinamis: dari tahun berjalan ke
+        // tahun MIN_YEAR. Tahun berjalan otomatis jadi pilihan default.
+        var MIN_YEAR = 2020;
+        function populateYearFilter() {
+            var select = document.getElementById('filterTahun');
+            if (!select) return;
+            var currentYear = new Date().getFullYear();
+            for (var y = currentYear; y >= MIN_YEAR; y--) {
+                var opt = document.createElement('option');
+                opt.value = String(y);
+                opt.text = String(y);
+                if (y === currentYear) opt.selected = true;
+                select.appendChild(opt);
+            }
+        }
 
         // Format tanggal ke Indonesia
         function formatTanggal(dateStr) {
@@ -252,7 +357,11 @@ PENTING: Ganti API_URL dengan URL API Lumen Anda
             }
 
             const tahun = document.getElementById('filterTahun').value;
-            const url = tahun ? `${API_URL}?tahun=${tahun}` : API_URL;
+            // limit=500 eksplisit supaya tidak tergantung default backend
+            // (yang sebelumnya 10 -> menyebabkan DataTables hanya nampak 1 halaman).
+            const url = tahun
+                ? `${API_URL}?tahun=${tahun}&limit=500`
+                : `${API_URL}?limit=500`;
 
             document.getElementById('dataInfo').textContent = 'Memuat...';
 
@@ -302,13 +411,38 @@ PENTING: Ganti API_URL dengan URL API Lumen Anda
                         target: 'tr'
                     }
                 },
+                // Bahasa Indonesia inline (hindari ketergantungan CDN id.json
+                // yang bisa gagal load di sebagian environment Joomla ->
+                // menyebabkan pagination muncul kosong / '???').
                 language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json'
+                    processing:     'Memproses...',
+                    search:         'Cari:',
+                    lengthMenu:     'Tampilkan _MENU_ entri',
+                    info:           'Menampilkan _START_ sampai _END_ dari _TOTAL_ entri',
+                    infoEmpty:      'Menampilkan 0 sampai 0 dari 0 entri',
+                    infoFiltered:   '(disaring dari _MAX_ entri keseluruhan)',
+                    loadingRecords: 'Memuat...',
+                    zeroRecords:    'Tidak ada data yang cocok dengan pencarian',
+                    emptyTable:     'Tidak ada data untuk ditampilkan',
+                    paginate: {
+                        first:    'Pertama',
+                        previous: 'Sebelumnya',
+                        next:     'Selanjutnya',
+                        last:     'Terakhir'
+                    },
+                    aria: {
+                        sortAscending:  ': aktifkan untuk mengurutkan kolom naik',
+                        sortDescending: ': aktifkan untuk mengurutkan kolom turun'
+                    }
                 },
-                pageLength: 25,
-                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Semua"]],
+                paging:     true,
+                processing: true,
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'Semua']],
                 order: [[5, 'desc']], // Sort by Tanggal Sidang Descending
-                dom: '<"top"lf>rt<"bottom"ip><"clear">',
+                // Pakai class namespaced 'itsb-*' biar tidak bentrok dengan style
+                // generik .top / .bottom dari template Joomla.
+                dom: '<"itsb-toolbar"lf>rt<"itsb-foot"ip>',
                 drawCallback: function () {
                     var api = this.api();
                     var start = api.page.info().start;
@@ -322,10 +456,17 @@ PENTING: Ganti API_URL dengan URL API Lumen Anda
 
         document.getElementById('filterTahun').addEventListener('change', initDataTable);
 
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initDataTable);
-        } else {
+        // populateYearFilter() WAJIB dipanggil dulu supaya value tahun
+        // berjalan sudah terpilih sebelum initDataTable() membaca
+        // filterTahun.value.
+        function bootstrap() {
+            populateYearFilter();
             initDataTable();
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', bootstrap);
+        } else {
+            bootstrap();
         }
     })();
 </script>

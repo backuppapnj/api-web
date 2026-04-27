@@ -29,7 +29,11 @@ class ItsbatNikahController extends Controller
         // Default Sort: Latest Sidang Date desc
         $query->orderBy('tanggal_sidang', 'desc');
 
-        $perPage = $request->input('limit', 10);
+        // SECURITY: Limit hasil untuk mencegah memory exhaustion.
+        // Default 500 dan Max 2000 (konsisten dengan PanggilanController) agar
+        // listing client-side (DataTables di Joomla) menerima seluruh data
+        // dalam satu response, bukan terpotong di 10 record.
+        $perPage = min((int) $request->input('limit', 500), 2000);
         $data = $query->paginate($perPage);
 
         return response()->json([
