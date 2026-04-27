@@ -30,6 +30,8 @@ class DatabaseSeeder extends Seeder
             KeuanganPerkaraSeeder::class,
             SisaPanjarSeeder::class,
             MediasiSeeder::class,
+            SurveyLaporanSeeder::class,
+            SurveyPekanSeeder::class,
         ]);
     }
 }

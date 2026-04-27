@@ -99,6 +99,16 @@ $router->group(['prefix' => 'api', 'middleware' => 'throttle:100,1'], function (
     // Uraian Tugas Routes
     $router->get('uraian-tugas', 'UraianTugasController@index');
     $router->get('uraian-tugas/{id:[0-9]+}', 'UraianTugasController@show');
+
+    // Survey Laporan Routes (IKM, IPAK, Tindak Lanjut)
+    $router->get('survey-laporan', 'SurveyLaporanController@index');
+    $router->get('survey-laporan/{id:[0-9]+}', 'SurveyLaporanController@show');
+    $router->get('survey-laporan/tahun/{tahun:[0-9]+}', 'SurveyLaporanController@byYear');
+
+    // Survey Pekan Routes (snapshot mingguan)
+    $router->get('survey-pekan', 'SurveyPekanController@index');
+    $router->get('survey-pekan/{id:[0-9]+}', 'SurveyPekanController@show');
+    $router->get('survey-pekan/tahun/{tahun:[0-9]+}', 'SurveyPekanController@byYear');
 });
 
 // SECURITY: Protected routes dengan API Key + rate limiting (100 request/menit)
@@ -228,4 +238,16 @@ $router->group(['prefix' => 'api', 'middleware' => ['api.key', 'throttle:100,1']
     $router->put('uraian-tugas/{id:[0-9]+}', 'UraianTugasController@update');
     $router->post('uraian-tugas/{id:[0-9]+}', 'UraianTugasController@update');
     $router->delete('uraian-tugas/{id:[0-9]+}', 'UraianTugasController@destroy');
+
+    // Survey Laporan
+    $router->post('survey-laporan', 'SurveyLaporanController@store');
+    $router->put('survey-laporan/{id:[0-9]+}', 'SurveyLaporanController@update');
+    $router->post('survey-laporan/{id:[0-9]+}', 'SurveyLaporanController@update');
+    $router->delete('survey-laporan/{id:[0-9]+}', 'SurveyLaporanController@destroy');
+
+    // Survey Pekan
+    $router->post('survey-pekan', 'SurveyPekanController@store');
+    $router->put('survey-pekan/{id:[0-9]+}', 'SurveyPekanController@update');
+    $router->post('survey-pekan/{id:[0-9]+}', 'SurveyPekanController@update');
+    $router->delete('survey-pekan/{id:[0-9]+}', 'SurveyPekanController@destroy');
 });
