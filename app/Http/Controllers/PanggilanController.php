@@ -40,8 +40,11 @@ class PanggilanController extends Controller
             }
         }
 
-        // SECURITY: Limit hasil untuk mencegah memory exhaustion (default for pagination)
-        $limit = min((int) $request->get('limit', 10), 100);
+        // SECURITY: Limit hasil untuk mencegah memory exhaustion.
+        // Default 500 dan Max 2000 (konsisten dengan PanggilanEcourtController)
+        // agar listing client-side (DataTables di Joomla) menerima seluruh data
+        // dalam satu response, bukan terpotong di 10 record.
+        $limit = min((int) $request->get('limit', 500), 2000);
 
         $data = $query->orderBy('created_at', 'desc')
             ->paginate($limit);

@@ -348,7 +348,11 @@
         }
 
         const tahun = document.getElementById('filterTahun').value;
-        const url = tahun ? `${API_URL}?tahun=${tahun}` : API_URL;
+        // limit=500 eksplisit supaya tidak tergantung default backend yang
+        // sebelumnya 10 -> menyebabkan DataTables hanya nampak 1 halaman.
+        const url = tahun
+            ? `${API_URL}?tahun=${tahun}&limit=500`
+            : `${API_URL}?limit=500`;
         
         document.getElementById('dataInfo').textContent = 'Memuat...';
 
