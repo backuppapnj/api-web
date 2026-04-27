@@ -278,13 +278,13 @@ PENTING: Ganti API_URL dengan URL API Lumen Anda
                         searchable: false,
                         orderable: false,
                         width: '40px',
-                        targets: 0
+                        render: function () { return ''; }
                     },
-                    { data: 'nomor_perkara', render: d => d || '-' },
-                    { data: 'pemohon_1', render: d => d || '-' },
-                    { data: 'pemohon_2', render: d => d || '-' },
-                    { data: 'tanggal_pengumuman', render: d => formatTanggal(d) },
-                    { data: 'tanggal_sidang', render: d => formatTanggal(d) },
+                    { data: 'nomor_perkara', render: function (d) { return d || '-'; } },
+                    { data: 'pemohon_1', render: function (d) { return d || '-'; } },
+                    { data: 'pemohon_2', render: function (d) { return d || '-'; } },
+                    { data: 'tanggal_pengumuman', render: function (d) { return formatTanggal(d); } },
+                    { data: 'tanggal_sidang', render: function (d) { return formatTanggal(d); } },
                     {
                         data: 'link_detail',
                         render: function (data) {
@@ -308,15 +308,16 @@ PENTING: Ganti API_URL dengan URL API Lumen Anda
                 pageLength: 25,
                 lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Semua"]],
                 order: [[5, 'desc']], // Sort by Tanggal Sidang Descending
-                dom: '<"top"lf>rt<"bottom"ip><"clear">'
+                dom: '<"top"lf>rt<"bottom"ip><"clear">',
+                drawCallback: function () {
+                    var api = this.api();
+                    var start = api.page.info().start;
+                    api.column(0, { page: 'current' }).nodes().each(function (cell, i) {
+                        cell.innerHTML = (start + i + 1) + '.';
+                    });
+                }
             });
 
-            // Dynamic numbering 1, 2, 3...
-            table.on('order.dt search.dt', function () {
-                table.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
-                    cell.innerHTML = i + 1 + '.';
-                });
-            }).draw();
         }
 
         document.getElementById('filterTahun').addEventListener('change', initDataTable);
