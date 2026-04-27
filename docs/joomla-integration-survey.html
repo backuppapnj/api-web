@@ -1,0 +1,1546 @@
+<style>
+    /* ==========================================================
+       SURVEY INTEGRATION v2 — Joomla 3 / ES5
+       Tanpa ketergantungan gambar: Score Card, Chart.js trend,
+       Tabel komparatif w/ progress bar, Sparkline SVG, PDF preview.
+       ========================================================== */
+
+    .survey-wrapper {
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        max-width: 1100px;
+        margin: 0 auto;
+        color: #1e293b;
+    }
+
+    .survey-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        padding: 2rem 1.25rem;
+        background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #ec4899 100%);
+        color: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.3);
+    }
+    .survey-header h2 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.7rem;
+        font-weight: 800;
+        color: white !important;
+        letter-spacing: 0.3px;
+    }
+    .survey-header p {
+        margin: 0;
+        opacity: 0.95;
+        font-size: 0.95rem;
+    }
+
+    /* ── Stat header dashboard ───────────────────────────── */
+    .survey-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin: 1.25rem 0 1.5rem 0;
+    }
+    .survey-stat-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 14px 12px;
+        text-align: center;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .survey-stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+    }
+    .survey-stat-num {
+        font-size: 1.6rem;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 4px;
+    }
+    .survey-stat-label {
+        font-size: 0.72rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        font-weight: 600;
+    }
+    .stat-ikm   { color: #c026d3; }
+    .stat-ipak  { color: #d97706; }
+    .stat-tlsv  { color: #059669; }
+    .stat-pekan { color: #4f46e5; }
+
+    /* ── Main Tab Navigation ─────────────────────────────── */
+    .survey-main-tabs {
+        display: flex;
+        gap: 6px;
+        background: #f1f5f9;
+        padding: 6px;
+        border-radius: 12px;
+        margin-bottom: 1.25rem;
+        overflow-x: auto;
+    }
+    .main-tab-btn {
+        flex: 1;
+        min-width: 140px;
+        padding: 12px 16px;
+        border: none;
+        background: transparent;
+        font-weight: 600;
+        color: #475569;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+        font-size: 0.9rem;
+    }
+    .main-tab-btn:hover { background: white; color: #1e293b; }
+    .main-tab-btn.active {
+        background: white;
+        color: #1e293b;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    .main-tab-btn.active.tab-ikm-active   { color: #c026d3; }
+    .main-tab-btn.active.tab-ipak-active  { color: #d97706; }
+    .main-tab-btn.active.tab-tlsv-active  { color: #059669; }
+    .main-tab-btn.active.tab-pekan-active { color: #4f46e5; }
+
+    .main-tab-pane {
+        display: none;
+        animation: surveyFade 0.4s ease-out;
+    }
+    .main-tab-pane.active { display: block; }
+    @keyframes surveyFade {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Section Info Banner ─────────────────────────────── */
+    .survey-section-info {
+        background: #faf5ff;
+        border-left: 4px solid #a855f7;
+        padding: 12px 16px;
+        border-radius: 0 8px 8px 0;
+        margin-bottom: 1rem;
+        font-size: 0.88rem;
+        line-height: 1.55;
+        color: #6b21a8;
+    }
+    .survey-section-info.ipak  { background: #fffbeb; border-left-color: #f59e0b; color: #92400e; }
+    .survey-section-info.tlsv  { background: #ecfdf5; border-left-color: #10b981; color: #065f46; }
+    .survey-section-info.pekan { background: #eef2ff; border-left-color: #6366f1; color: #3730a3; }
+
+    /* ── Year Sub-tabs ───────────────────────────────────── */
+    .survey-year-tabs {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
+    .year-tab-btn {
+        padding: 8px 18px;
+        border: 1.5px solid #e2e8f0;
+        background: white;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.2s;
+        font-size: 0.85rem;
+    }
+    .year-tab-btn:hover { border-color: #a855f7; color: #7c3aed; }
+    .year-tab-btn.active {
+        background: #7c3aed;
+        color: white;
+        border-color: #7c3aed;
+        box-shadow: 0 3px 8px rgba(124, 58, 237, 0.25);
+    }
+    .year-tab-btn.active.ipak  { background: #d97706; border-color: #d97706; box-shadow: 0 3px 8px rgba(217, 119, 6, 0.25); }
+    .year-tab-btn.active.tlsv  { background: #059669; border-color: #059669; box-shadow: 0 3px 8px rgba(5, 150, 105, 0.25); }
+    .year-tab-btn.active.pekan { background: #4f46e5; border-color: #4f46e5; box-shadow: 0 3px 8px rgba(79, 70, 229, 0.25); }
+
+    /* ── Section Title ───────────────────────────────────── */
+    .survey-section-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 1.5rem 0 0.75rem 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .survey-section-title:first-child { margin-top: 0; }
+    .survey-section-title .badge-count {
+        background: #f1f5f9;
+        color: #475569;
+        font-size: 0.7rem;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-weight: 600;
+    }
+
+    /* ── SCORE CARD (Big Number + Progress Bar) ──────────── */
+    .score-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 14px;
+        margin-bottom: 1.5rem;
+    }
+    .score-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        transition: transform 0.2s, box-shadow 0.2s;
+        position: relative;
+        overflow: hidden;
+    }
+    .score-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.12);
+    }
+    .score-card-period {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: #64748b;
+        margin: 0;
+        font-weight: 700;
+    }
+    .score-card-num {
+        font-size: 2.2rem;
+        font-weight: 800;
+        line-height: 1.05;
+        margin: 6px 0 4px 0;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -0.5px;
+    }
+    .score-card-num small {
+        font-size: 0.55em;
+        color: #94a3b8;
+        font-weight: 500;
+        margin-left: 3px;
+    }
+    .score-card-num.empty {
+        color: #cbd5e1;
+        font-size: 1.6rem;
+    }
+    .score-card-bar {
+        height: 6px;
+        background: #f1f5f9;
+        border-radius: 3px;
+        overflow: hidden;
+        margin: 8px 0 10px 0;
+    }
+    .score-card-bar-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .score-card-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+    }
+    .mutu-badge {
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 3px 9px;
+        border-radius: 6px;
+        letter-spacing: 0.3px;
+    }
+    .mutu-A { background: #dcfce7; color: #166534; }
+    .mutu-B { background: #dbeafe; color: #1e40af; }
+    .mutu-C { background: #fef3c7; color: #92400e; }
+    .mutu-D { background: #fee2e2; color: #991b1b; }
+    .mutu-NA { background: #f1f5f9; color: #64748b; }
+
+    .score-card-resp {
+        font-size: 0.72rem;
+        color: #64748b;
+        font-weight: 600;
+    }
+    .score-card-resp strong { color: #1e293b; font-weight: 700; }
+
+    .score-card-actions {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+    .score-btn {
+        flex: 1;
+        min-width: 80px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        padding: 6px 10px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: 6px;
+        text-decoration: none !important;
+        transition: all 0.2s;
+        border: 1px solid transparent;
+        cursor: pointer;
+    }
+    .score-btn-primary { background: #faf5ff; color: #9333ea !important; border-color: #e9d5ff; }
+    .score-btn-primary:hover { background: #9333ea; color: #fff !important; }
+    .score-btn-primary.ipak { background: #fffbeb; color: #b45309 !important; border-color: #fde68a; }
+    .score-btn-primary.ipak:hover { background: #d97706; color: #fff !important; }
+    .score-btn-primary.tlsv { background: #ecfdf5; color: #047857 !important; border-color: #a7f3d0; }
+    .score-btn-primary.tlsv:hover { background: #059669; color: #fff !important; }
+    .score-btn-secondary {
+        background: #f1f5f9;
+        color: #475569 !important;
+        border-color: #cbd5e1;
+    }
+    .score-btn-secondary:hover { background: #475569; color: #fff !important; }
+    .score-btn-disabled {
+        background: #f8fafc;
+        color: #94a3b8 !important;
+        border-color: #e2e8f0;
+        cursor: not-allowed;
+    }
+
+    /* ── Chart container ─────────────────────────────────── */
+    .chart-container {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+    .chart-canvas {
+        max-height: 320px !important;
+        height: 320px !important;
+    }
+
+    /* ── Comparative Table ───────────────────────────────── */
+    .comparative-table-wrap {
+        overflow-x: auto;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        background: white;
+        margin-bottom: 1.5rem;
+    }
+    .comparative-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+    }
+    .comparative-table thead th {
+        background: #f8fafc;
+        color: #475569;
+        font-weight: 700;
+        text-align: left;
+        padding: 10px 14px;
+        border-bottom: 1px solid #e2e8f0;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+    .comparative-table thead th.text-center { text-align: center; }
+    .comparative-table thead th.text-right { text-align: right; }
+    .comparative-table tbody td {
+        padding: 10px 14px;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+    .comparative-table tbody tr:last-child td { border-bottom: none; }
+    .comparative-table tbody tr:hover { background: #fafafa; }
+    .comparative-table .skor-cell {
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        text-align: right;
+    }
+    .comparative-table .bar-cell { width: 30%; min-width: 140px; }
+    .inline-bar {
+        height: 8px;
+        background: #f1f5f9;
+        border-radius: 4px;
+        overflow: hidden;
+        position: relative;
+    }
+    .inline-bar-fill {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .trend-arrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+    .trend-up    { color: #059669; }
+    .trend-down  { color: #dc2626; }
+    .trend-equal { color: #94a3b8; }
+
+    /* ── Insight List (Kesimpulan / Rekomendasi) ─────────── */
+    .insight-list {
+        display: grid;
+        gap: 12px;
+        margin-bottom: 1.5rem;
+    }
+    .insight-item {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 14px 16px;
+    }
+    .insight-item summary {
+        cursor: pointer;
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 0.95rem;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+    }
+    .insight-item summary::-webkit-details-marker { display: none; }
+    .insight-item summary::after {
+        content: '+';
+        font-size: 1.2rem;
+        color: #94a3b8;
+        font-weight: 400;
+        transition: transform 0.2s;
+    }
+    .insight-item[open] summary::after { content: '−'; }
+    .insight-body {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid #f1f5f9;
+        font-size: 0.88rem;
+        line-height: 1.65;
+        color: #475569;
+    }
+    .insight-body h4 {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        font-weight: 700;
+        color: #475569;
+        margin: 14px 0 6px 0;
+    }
+    .insight-body h4:first-child { margin-top: 0; }
+    .insight-body p { margin: 0 0 10px 0; }
+    .insight-body .unsur-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+    .unsur-pill {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 8px 12px;
+        border: 1px solid #e2e8f0;
+    }
+    .unsur-pill .label {
+        font-size: 0.7rem;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        font-weight: 600;
+    }
+    .unsur-pill .value {
+        font-size: 0.85rem;
+        color: #1e293b;
+        font-weight: 700;
+        margin-top: 2px;
+    }
+    .unsur-pill.tertinggi { border-color: #a7f3d0; background: #ecfdf5; }
+    .unsur-pill.tertinggi .value { color: #047857; }
+    .unsur-pill.terendah { border-color: #fecaca; background: #fef2f2; }
+    .unsur-pill.terendah .value { color: #b91c1c; }
+
+    /* ── PDF Preview ─────────────────────────────────────── */
+    .pdf-preview {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+    .pdf-preview-header {
+        padding: 12px 16px;
+        background: #faf5ff;
+        border-bottom: 1px solid #e9d5ff;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #6b21a8;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .pdf-preview iframe {
+        width: 100%;
+        height: 480px;
+        border: none;
+        display: block;
+    }
+
+    /* ── Pekan Survei ────────────────────────────────────── */
+    .pekan-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+        margin-bottom: 1.5rem;
+    }
+    .pekan-sum-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 14px;
+        text-align: center;
+    }
+    .pekan-sum-label {
+        font-size: 0.72rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        font-weight: 700;
+    }
+    .pekan-sum-value {
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin-top: 4px;
+        line-height: 1.1;
+        font-variant-numeric: tabular-nums;
+    }
+    .pekan-sum-value.ikm  { color: #c026d3; }
+    .pekan-sum-value.ipkp { color: #d97706; }
+    .pekan-sum-value.ipak { color: #059669; }
+
+    .sparkline {
+        display: block;
+        width: 100%;
+        height: 38px;
+    }
+
+    .pekan-table-wrap {
+        overflow-x: auto;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        background: white;
+    }
+    .pekan-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+    }
+    .pekan-table thead th {
+        background: #f8fafc;
+        color: #475569;
+        font-weight: 700;
+        text-align: left;
+        padding: 10px 14px;
+        border-bottom: 1px solid #e2e8f0;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+    .pekan-table thead th.text-center { text-align: center; }
+    .pekan-table thead th.text-right { text-align: right; }
+    .pekan-table tbody td {
+        padding: 10px 14px;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+    .pekan-table tbody tr:last-child td { border-bottom: none; }
+    .pekan-table tbody tr:hover { background: #fafafa; }
+    .skor-mini {
+        display: inline-block;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+    }
+    .skor-mini.ikm  { background: #faf5ff; color: #9333ea; }
+    .skor-mini.ipkp { background: #fffbeb; color: #b45309; }
+    .skor-mini.ipak { background: #ecfdf5; color: #047857; }
+    .skor-mini.empty { background: #f8fafc; color: #cbd5e1; }
+
+    /* ── Loading / Empty / Error states ──────────────────── */
+    .survey-loading, .survey-empty {
+        text-align: center;
+        padding: 48px 16px;
+        color: #94a3b8;
+        font-size: 0.95rem;
+    }
+    .survey-loading-spinner {
+        display: inline-block;
+        width: 28px;
+        height: 28px;
+        border: 3px solid #e2e8f0;
+        border-top-color: #7c3aed;
+        border-radius: 50%;
+        animation: surveySpin 0.8s linear infinite;
+        margin-bottom: 12px;
+    }
+    @keyframes surveySpin { to { transform: rotate(360deg); } }
+    .survey-error {
+        text-align: center;
+        padding: 32px 16px;
+        color: #dc2626;
+        font-weight: 600;
+        background: #fef2f2;
+        border-radius: 8px;
+    }
+
+    /* ── Mobile ──────────────────────────────────────────── */
+    @media (max-width: 768px) {
+        .survey-header { padding: 1.5rem 1rem; }
+        .survey-header h2 { font-size: 1.3rem; }
+        .survey-stats { grid-template-columns: repeat(2, 1fr); }
+        .main-tab-btn { min-width: 110px; padding: 10px 12px; font-size: 0.82rem; }
+        .score-grid { grid-template-columns: 1fr; }
+        .score-card-num { font-size: 1.9rem; }
+        .insight-body .unsur-grid { grid-template-columns: 1fr; }
+        .pdf-preview iframe { height: 360px; }
+    }
+</style>
+
+<div class="survey-wrapper">
+    <div class="survey-header">
+        <h2>&#128202; Hasil Survei Pelayanan</h2>
+        <p>Pengadilan Agama Penajam &mdash; Indeks Kepuasan Masyarakat, Persepsi Anti Korupsi, Tindak Lanjut & Pekan Survei</p>
+    </div>
+
+    <div class="survey-stats" id="surveyStats">
+        <div class="survey-stat-card"><div class="survey-stat-num stat-ikm" id="statIkm">0</div><div class="survey-stat-label">Laporan IKM</div></div>
+        <div class="survey-stat-card"><div class="survey-stat-num stat-ipak" id="statIpak">0</div><div class="survey-stat-label">Laporan IPAK</div></div>
+        <div class="survey-stat-card"><div class="survey-stat-num stat-tlsv" id="statTlsv">0</div><div class="survey-stat-label">Tindak Lanjut</div></div>
+        <div class="survey-stat-card"><div class="survey-stat-num stat-pekan" id="statPekan">0</div><div class="survey-stat-label">Pekan Survei</div></div>
+    </div>
+
+    <div class="survey-main-tabs" id="surveyMainTabs">
+        <button type="button" class="main-tab-btn active tab-ikm-active" data-tab="ikm">&#128516; Survei Kepuasan Masyarakat</button>
+        <button type="button" class="main-tab-btn" data-tab="ipak">&#9878; Indeks Anti Korupsi</button>
+        <button type="button" class="main-tab-btn" data-tab="tlsv">&#128221; Tindak Lanjut</button>
+        <button type="button" class="main-tab-btn" data-tab="pekan">&#128197; Pekan Survei</button>
+    </div>
+
+    <div id="tab-ikm" class="main-tab-pane active">
+        <div class="survey-section-info">
+            <strong>Survei Kepuasan Masyarakat (IKM)</strong> &mdash; mengukur tingkat kepuasan masyarakat atas penyelenggaraan pelayanan publik di Pengadilan Agama Penajam, dilaporkan setiap triwulan sesuai PermenPAN-RB 14/2017.
+        </div>
+        <div class="survey-year-tabs" id="yearTabsIkm"></div>
+        <div id="contentIkm"><div class="survey-loading"><div class="survey-loading-spinner"></div>Memuat data IKM&hellip;</div></div>
+    </div>
+
+    <div id="tab-ipak" class="main-tab-pane">
+        <div class="survey-section-info ipak">
+            <strong>Indeks Persepsi Anti Korupsi (IPAK)</strong> &mdash; mengukur persepsi masyarakat terhadap praktik anti korupsi dalam pelayanan publik di Pengadilan Agama Penajam, dilaporkan setiap triwulan.
+        </div>
+        <div class="survey-year-tabs" id="yearTabsIpak"></div>
+        <div id="contentIpak"><div class="survey-loading"><div class="survey-loading-spinner"></div>Memuat data IPAK&hellip;</div></div>
+    </div>
+
+    <div id="tab-tlsv" class="main-tab-pane">
+        <div class="survey-section-info tlsv">
+            <strong>Tindak Lanjut Hasil Survei</strong> &mdash; laporan tindak lanjut atas hasil temuan dan rekomendasi dari Survei Kepuasan Masyarakat dan IPAK, sebagai bukti continuous improvement pelayanan publik.
+        </div>
+        <div class="survey-year-tabs" id="yearTabsTlsv"></div>
+        <div id="contentTlsv"><div class="survey-loading"><div class="survey-loading-spinner"></div>Memuat data Tindak Lanjut&hellip;</div></div>
+    </div>
+
+    <div id="tab-pekan" class="main-tab-pane">
+        <div class="survey-section-info pekan">
+            <strong>Pekan Survei (Snapshot Mingguan)</strong> &mdash; rekap mingguan tiga indikator: <em>IKM</em>, <em>IPKP</em> (Indeks Persepsi Kualitas Pelayanan), dan <em>IPAK</em>.
+        </div>
+        <div class="survey-year-tabs" id="yearTabsPekan"></div>
+        <div id="contentPekan"><div class="survey-loading"><div class="survey-loading-spinner"></div>Memuat data Pekan Survei&hellip;</div></div>
+    </div>
+</div>
+
+<script>
+(function () {
+    'use strict';
+
+    // ════════════════════════════════════════════════════════════
+    // CONFIG
+    // ════════════════════════════════════════════════════════════
+    var API_BASE = 'https://web-api.pa-penajam.go.id';
+    var API_LAPORAN = API_BASE + '/api/survey-laporan';
+    var API_PEKAN   = API_BASE + '/api/survey-pekan';
+    var CHARTJS_CDN = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+
+    var KATEGORI_MAP = {
+        ikm:  { apiKey: 'IKM',           label: 'IKM',           color: '#9333ea', colorRgba: 'rgba(147,51,234,', btnClass: '',     yearClass: '',      btnPrimary: 'score-btn-primary' },
+        ipak: { apiKey: 'IPAK',          label: 'IPAK',          color: '#d97706', colorRgba: 'rgba(217,119,6,',  btnClass: 'ipak', yearClass: 'ipak',  btnPrimary: 'score-btn-primary ipak' },
+        tlsv: { apiKey: 'TINDAK_LANJUT', label: 'Tindak Lanjut', color: '#059669', colorRgba: 'rgba(5,150,105,',  btnClass: 'tlsv', yearClass: 'tlsv',  btnPrimary: 'score-btn-primary tlsv' }
+    };
+
+    var BULAN_ID = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+    /**
+     * State cache untuk hindari fetch berulang.
+     */
+    var dataCache = {
+        ikm:   { loaded: false, data: [], yearActive: null },
+        ipak:  { loaded: false, data: [], yearActive: null },
+        tlsv:  { loaded: false, data: [], yearActive: null },
+        pekan: { loaded: false, data: [], yearActive: null }
+    };
+
+    /**
+     * Cache instance Chart.js per canvas id.
+     */
+    var chartInstances = {};
+
+    /**
+     * Promise-like loader untuk Chart.js (lazy CDN).
+     */
+    var chartJsLoading = null;
+    function loadChartJs(callback) {
+        if (window.Chart) { callback(); return; }
+        if (chartJsLoading) {
+            chartJsLoading.push(callback);
+            return;
+        }
+        chartJsLoading = [callback];
+        var script = document.createElement('script');
+        script.src = CHARTJS_CDN;
+        script.async = true;
+        script.onload = function () {
+            for (var i = 0; i < chartJsLoading.length; i++) chartJsLoading[i]();
+            chartJsLoading = null;
+        };
+        script.onerror = function () { chartJsLoading = null; };
+        document.head.appendChild(script);
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // UTILS
+    // ════════════════════════════════════════════════════════════
+    function escapeHtml(text) {
+        if (text === null || text === undefined) return '';
+        return String(text)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function nl2br(text) {
+        if (!text) return '';
+        return escapeHtml(text).replace(/\n/g, '<br>');
+    }
+
+    function formatTanggalRange(start, end) {
+        if (!start || !end) return '-';
+        var sParts = String(start).split('T')[0].split('-');
+        var eParts = String(end).split('T')[0].split('-');
+        if (sParts.length < 3 || eParts.length < 3) return start + ' s/d ' + end;
+        var sY = parseInt(sParts[0], 10), sM = parseInt(sParts[1], 10) - 1, sD = parseInt(sParts[2], 10);
+        var eY = parseInt(eParts[0], 10), eM = parseInt(eParts[1], 10) - 1, eD = parseInt(eParts[2], 10);
+        if (isNaN(sY) || isNaN(sM) || isNaN(sD) || isNaN(eY) || isNaN(eM) || isNaN(eD)) {
+            return start + ' s/d ' + end;
+        }
+        if (sY === eY && sM === eM) return sD + ' - ' + eD + ' ' + BULAN_ID[sM] + ' ' + sY;
+        if (sY === eY) return sD + ' ' + BULAN_ID[sM] + ' - ' + eD + ' ' + BULAN_ID[eM] + ' ' + sY;
+        return sD + ' ' + BULAN_ID[sM] + ' ' + sY + ' - ' + eD + ' ' + BULAN_ID[eM] + ' ' + eY;
+    }
+
+    function formatTanggalSingkat(d) {
+        if (!d) return '-';
+        var parts = String(d).split('T')[0].split('-');
+        if (parts.length < 3) return d;
+        var dd = parseInt(parts[2], 10);
+        var mm = parseInt(parts[1], 10) - 1;
+        if (isNaN(dd) || isNaN(mm)) return d;
+        return dd + ' ' + BULAN_ID[mm].substring(0, 3);
+    }
+
+    function formatNum(n, digits) {
+        if (n === null || n === undefined) return '—';
+        var x = Number(n);
+        if (isNaN(x)) return '—';
+        digits = (digits === undefined) ? 2 : digits;
+        return x.toFixed(digits);
+    }
+
+    function safeNum(n) {
+        if (n === null || n === undefined) return null;
+        var x = Number(n);
+        return isNaN(x) ? null : x;
+    }
+
+    /**
+     * Tentukan kategori mutu A/B/C/D berdasarkan nilai indeks (0-100).
+     * Bila kategori_mutu sudah dari API, gunakan itu.
+     */
+    function deriveMutu(item) {
+        if (item && item.kategori_mutu) {
+            var k = String(item.kategori_mutu).toUpperCase().charAt(0);
+            if (k === 'A' || k === 'B' || k === 'C' || k === 'D') return k;
+        }
+        var n = safeNum(item ? item.nilai_indeks : null);
+        if (n === null) return null;
+        if (n >= 88.31) return 'A';
+        if (n >= 76.61) return 'B';
+        if (n >= 65.00) return 'C';
+        return 'D';
+    }
+
+    function mutuLabel(m) {
+        if (m === 'A') return 'A &mdash; Sangat Baik';
+        if (m === 'B') return 'B &mdash; Baik';
+        if (m === 'C') return 'C &mdash; Kurang Baik';
+        if (m === 'D') return 'D &mdash; Tidak Baik';
+        return 'Belum dinilai';
+    }
+
+    function colorByMutu(m) {
+        if (m === 'A') return '#22c55e';
+        if (m === 'B') return '#3b82f6';
+        if (m === 'C') return '#f59e0b';
+        if (m === 'D') return '#ef4444';
+        return '#cbd5e1';
+    }
+
+    /**
+     * Konversi URL Google Drive ke embed/preview URL.
+     */
+    function processDocUrl(url) {
+        if (!url) return '';
+        if (url.indexOf('drive.google.com/file/d/') >= 0) {
+            return url
+                .replace('/view?usp=sharing', '/preview')
+                .replace('/view?usp=drive_link', '/preview')
+                .replace('/view', '/preview');
+        }
+        return url;
+    }
+
+    function isDrivePreview(url) {
+        return !!url && url.indexOf('drive.google.com/file/d/') >= 0;
+    }
+
+    /**
+     * Group items by year, returns sorted years desc + map year->items.
+     */
+    function groupByYear(items, yearField) {
+        var groups = {};
+        for (var i = 0; i < items.length; i++) {
+            var t = items[i][yearField];
+            if (!groups[t]) groups[t] = [];
+            groups[t].push(items[i]);
+        }
+        var years = [];
+        for (var k in groups) {
+            if (Object.prototype.hasOwnProperty.call(groups, k)) years.push(parseInt(k, 10));
+        }
+        years.sort(function (a, b) { return b - a; });
+        return { years: years, byYear: groups };
+    }
+
+    function renderYearTabs(years, activeYear, containerId, yearClass) {
+        var html = '';
+        for (var i = 0; i < years.length; i++) {
+            var cls = 'year-tab-btn' + (years[i] === activeYear ? ' active ' + (yearClass || '') : '');
+            html += '<button type="button" class="' + cls + '" data-year="' + years[i] + '">' + years[i] + '</button>';
+        }
+        document.getElementById(containerId).innerHTML = html;
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // RENDER: SCORE CARD untuk Laporan
+    // ════════════════════════════════════════════════════════════
+    function renderScoreCard(item, kategoriKey) {
+        var meta = KATEGORI_MAP[kategoriKey];
+        var nilai = safeNum(item.nilai_indeks);
+        var mutu  = deriveMutu(item);
+        var resp  = safeNum(item.jumlah_responden);
+        var doc   = item.link_dokumen || '';
+
+        var html = '<div class="score-card">';
+        html += '<p class="score-card-period">' + escapeHtml(item.periode || '-') + '</p>';
+
+        if (nilai !== null) {
+            html += '<div class="score-card-num" style="color:' + colorByMutu(mutu) + '">' +
+                     formatNum(nilai, 2) + '<small>/100</small></div>';
+            var pct = Math.max(0, Math.min(100, nilai));
+            html += '<div class="score-card-bar"><div class="score-card-bar-fill" style="width:' +
+                     pct.toFixed(1) + '%;background:' + colorByMutu(mutu) + '"></div></div>';
+        } else {
+            html += '<div class="score-card-num empty">—</div>';
+            html += '<div class="score-card-bar"><div class="score-card-bar-fill" style="width:0%"></div></div>';
+        }
+
+        html += '<div class="score-card-meta">';
+        if (mutu) {
+            html += '<span class="mutu-badge mutu-' + mutu + '">' + mutuLabel(mutu) + '</span>';
+        } else {
+            html += '<span class="mutu-badge mutu-NA">Tanpa Skor</span>';
+        }
+        if (resp !== null) {
+            html += '<span class="score-card-resp"><strong>' + resp.toLocaleString('id-ID') + '</strong> responden</span>';
+        }
+        html += '</div>';
+
+        // Tombol aksi
+        html += '<div class="score-card-actions">';
+        if (doc) {
+            html += '<a class="score-btn ' + meta.btnPrimary + '" href="' + escapeHtml(doc) +
+                     '" target="_blank" rel="noopener noreferrer">&#128196; Dokumen</a>';
+            if (item.kesimpulan || item.rekomendasi || item.unsur_terendah || item.unsur_tertinggi) {
+                html += '<button type="button" class="score-btn score-btn-secondary" data-detail-target="' +
+                         item.id + '">Detail</button>';
+            }
+        } else if (item.kesimpulan || item.rekomendasi) {
+            html += '<button type="button" class="score-btn ' + meta.btnPrimary + '" data-detail-target="' +
+                     item.id + '">Lihat Detail</button>';
+        } else {
+            html += '<span class="score-btn score-btn-disabled">Belum tersedia</span>';
+        }
+        html += '</div>';
+
+        html += '</div>';
+        return html;
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // RENDER: COMPARATIVE TABLE
+    // ════════════════════════════════════════════════════════════
+    function renderTrenArrow(curr, prev) {
+        if (curr === null || prev === null) return '<span class="trend-equal">—</span>';
+        var diff = curr - prev;
+        if (Math.abs(diff) < 0.005) return '<span class="trend-equal">&#9135; 0,00</span>';
+        var sign = diff > 0 ? '↗' : '↘';
+        var cls = diff > 0 ? 'trend-up' : 'trend-down';
+        var sgn = diff > 0 ? '+' : '';
+        return '<span class="trend-arrow ' + cls + '">' + sign + ' ' + sgn + formatNum(diff, 2) + '</span>';
+    }
+
+    function renderComparativeTable(items, kategoriKey) {
+        if (!items || items.length === 0) return '';
+        // Sort by urutan ascending
+        var sorted = items.slice().sort(function (a, b) {
+            return (a.urutan || 0) - (b.urutan || 0);
+        });
+
+        var html = '<div class="comparative-table-wrap"><table class="comparative-table">';
+        html += '<thead><tr>' +
+                '<th>Periode</th>' +
+                '<th class="text-right">Nilai</th>' +
+                '<th class="bar-cell">Visualisasi</th>' +
+                '<th class="text-center">Mutu</th>' +
+                '<th class="text-right">Responden</th>' +
+                '<th class="text-center">Tren</th>' +
+                '<th class="text-center">Dokumen</th>' +
+            '</tr></thead><tbody>';
+
+        for (var i = 0; i < sorted.length; i++) {
+            var it = sorted[i];
+            var n = safeNum(it.nilai_indeks);
+            var prevN = i > 0 ? safeNum(sorted[i - 1].nilai_indeks) : null;
+            var mutu = deriveMutu(it);
+            var resp = safeNum(it.jumlah_responden);
+            var pct = n !== null ? Math.max(0, Math.min(100, n)) : 0;
+            var color = colorByMutu(mutu);
+
+            html += '<tr>';
+            html += '<td><strong>' + escapeHtml(it.periode || '-') + '</strong></td>';
+            html += '<td class="skor-cell" style="color:' + (n !== null ? color : '#cbd5e1') + '">' +
+                     (n !== null ? formatNum(n, 2) : '—') + '</td>';
+            html += '<td class="bar-cell"><div class="inline-bar"><div class="inline-bar-fill" style="width:' +
+                     pct.toFixed(1) + '%;background:' + color + '"></div></div></td>';
+            html += '<td class="text-center">' + (mutu
+                ? '<span class="mutu-badge mutu-' + mutu + '">' + mutu + '</span>'
+                : '<span style="color:#cbd5e1">—</span>') + '</td>';
+            html += '<td class="text-right" style="font-variant-numeric:tabular-nums">' +
+                     (resp !== null ? resp.toLocaleString('id-ID') : '<span style="color:#cbd5e1">—</span>') + '</td>';
+            html += '<td class="text-center">' + renderTrenArrow(n, prevN) + '</td>';
+            html += '<td class="text-center">' + (it.link_dokumen
+                ? '<a href="' + escapeHtml(it.link_dokumen) + '" target="_blank" rel="noopener noreferrer" style="color:' +
+                  KATEGORI_MAP[kategoriKey].color + ';font-weight:600;text-decoration:none;">&#128196;</a>'
+                : '<span style="color:#cbd5e1">—</span>') + '</td>';
+            html += '</tr>';
+        }
+        html += '</tbody></table></div>';
+        return html;
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // RENDER: INSIGHT (Kesimpulan / Rekomendasi / Unsur)
+    // ════════════════════════════════════════════════════════════
+    function renderInsightItem(item) {
+        var hasInsight = item.kesimpulan || item.rekomendasi || item.unsur_terendah || item.unsur_tertinggi;
+        if (!hasInsight) return '';
+
+        var html = '<details class="insight-item" id="insight-' + item.id + '">';
+        html += '<summary>' + escapeHtml(item.periode || '-') +
+                 '<span style="font-weight:500;color:#94a3b8;font-size:0.85rem;">Klik untuk detail</span></summary>';
+        html += '<div class="insight-body">';
+
+        if (item.unsur_tertinggi || item.unsur_terendah) {
+            html += '<div class="unsur-grid">';
+            if (item.unsur_tertinggi) {
+                html += '<div class="unsur-pill tertinggi">' +
+                         '<div class="label">&#11014; Unsur Tertinggi</div>' +
+                         '<div class="value">' + escapeHtml(item.unsur_tertinggi) + '</div></div>';
+            }
+            if (item.unsur_terendah) {
+                html += '<div class="unsur-pill terendah">' +
+                         '<div class="label">&#11015; Unsur Terendah</div>' +
+                         '<div class="value">' + escapeHtml(item.unsur_terendah) + '</div></div>';
+            }
+            html += '</div>';
+        }
+
+        if (item.kesimpulan) {
+            html += '<h4>Kesimpulan</h4><p>' + nl2br(item.kesimpulan) + '</p>';
+        }
+        if (item.rekomendasi) {
+            html += '<h4>Rekomendasi</h4><p>' + nl2br(item.rekomendasi) + '</p>';
+        }
+
+        // PDF preview kalau Google Drive
+        if (isDrivePreview(item.link_dokumen)) {
+            html += '<h4>Pratinjau Dokumen</h4>';
+            html += '<div class="pdf-preview">';
+            html += '<div class="pdf-preview-header"><span>' + escapeHtml(item.periode || '') +
+                     ' &mdash; Dokumen Lengkap</span>' +
+                     '<a href="' + escapeHtml(item.link_dokumen) +
+                     '" target="_blank" rel="noopener noreferrer" style="font-size:0.78rem;color:#7c3aed;text-decoration:none;font-weight:600;">&#128279; Buka di tab baru</a></div>';
+            html += '<iframe src="' + escapeHtml(processDocUrl(item.link_dokumen)) +
+                     '" loading="lazy" allowfullscreen></iframe>';
+            html += '</div>';
+        }
+
+        html += '</div></details>';
+        return html;
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // CHART.JS: Trend Antar Tahun (multi-line per tahun)
+    // ════════════════════════════════════════════════════════════
+    function renderTrendChart(canvasId, kategoriKey, allItems) {
+        loadChartJs(function () {
+            // Pivot data: { tahun: { urutan: nilai } }
+            var byTahun = {};
+            for (var i = 0; i < allItems.length; i++) {
+                var it = allItems[i];
+                var n = safeNum(it.nilai_indeks);
+                if (n === null) continue;
+                if (!byTahun[it.tahun]) byTahun[it.tahun] = {};
+                byTahun[it.tahun][it.urutan || 1] = n;
+            }
+            var tahunList = [];
+            for (var k in byTahun) if (Object.prototype.hasOwnProperty.call(byTahun, k)) tahunList.push(parseInt(k, 10));
+            tahunList.sort(function (a, b) { return a - b; });
+
+            if (tahunList.length === 0) return; // tidak ada data skor
+
+            var labels = ['TW I', 'TW II', 'TW III', 'TW IV'];
+            var meta = KATEGORI_MAP[kategoriKey];
+
+            // Generate distinct colors per year (palet sederhana)
+            var palette = ['#cbd5e1', '#94a3b8', '#64748b', meta.color, meta.colorRgba + '0.7)'];
+            var datasets = [];
+            for (var t = 0; t < tahunList.length; t++) {
+                var th = tahunList[t];
+                var col = (t === tahunList.length - 1) ? meta.color : palette[t % palette.length];
+                var dataPoints = [];
+                for (var u = 1; u <= 4; u++) {
+                    dataPoints.push(byTahun[th][u] != null ? byTahun[th][u] : null);
+                }
+                datasets.push({
+                    label: String(th),
+                    data: dataPoints,
+                    borderColor: col,
+                    backgroundColor: col,
+                    borderWidth: t === tahunList.length - 1 ? 3 : 2,
+                    fill: false,
+                    tension: 0.25,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    spanGaps: true
+                });
+            }
+
+            var ctx = document.getElementById(canvasId);
+            if (!ctx) return;
+            if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
+
+            chartInstances[canvasId] = new window.Chart(ctx, {
+                type: 'line',
+                data: { labels: labels, datasets: datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'nearest', intersect: false },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12, font: { size: 11 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function (ctx2) {
+                                    return ctx2.dataset.label + ': ' + (ctx2.parsed.y !== null ? ctx2.parsed.y.toFixed(2) : '—');
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 0, max: 100,
+                            ticks: { stepSize: 20, font: { size: 11 } },
+                            grid: { color: '#f1f5f9' }
+                        },
+                        x: { grid: { display: false }, ticks: { font: { size: 11 } } }
+                    }
+                }
+            });
+        });
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // RENDER: TAB CONTENT — LAPORAN (IKM/IPAK/TLSV)
+    // ════════════════════════════════════════════════════════════
+    function renderLaporanTabContent(kategoriKey) {
+        var cache = dataCache[kategoriKey];
+        var meta = KATEGORI_MAP[kategoriKey];
+        var contentId = 'content' + kategoriKey.charAt(0).toUpperCase() + kategoriKey.slice(1);
+        var yearTabsId = 'yearTabs' + kategoriKey.charAt(0).toUpperCase() + kategoriKey.slice(1);
+        var contentEl = document.getElementById(contentId);
+
+        if (!cache.data || cache.data.length === 0) {
+            document.getElementById(yearTabsId).innerHTML = '';
+            contentEl.innerHTML = '<div class="survey-empty">Belum ada data laporan ' + meta.label + '.</div>';
+            return;
+        }
+
+        var grouped = groupByYear(cache.data, 'tahun');
+        if (!cache.yearActive || grouped.byYear[cache.yearActive] === undefined) {
+            cache.yearActive = grouped.years[0];
+        }
+        renderYearTabs(grouped.years, cache.yearActive, yearTabsId, meta.yearClass);
+
+        var items = (grouped.byYear[cache.yearActive] || []).slice();
+        items.sort(function (a, b) { return (a.urutan || 0) - (b.urutan || 0); });
+
+        if (items.length === 0) {
+            contentEl.innerHTML = '<div class="survey-empty">Tidak ada data untuk tahun ' + cache.yearActive + '.</div>';
+            return;
+        }
+
+        var hasScore = false;
+        for (var i = 0; i < cache.data.length; i++) {
+            if (safeNum(cache.data[i].nilai_indeks) !== null) { hasScore = true; break; }
+        }
+
+        var html = '';
+
+        // ── Section 1: Score Cards (highlights tahun aktif) ────
+        html += '<h3 class="survey-section-title">&#127942; Highlights Tahun ' + cache.yearActive +
+                 ' <span class="badge-count">' + items.length + ' periode</span></h3>';
+        html += '<div class="score-grid">';
+        for (var j = 0; j < items.length; j++) {
+            html += renderScoreCard(items[j], kategoriKey);
+        }
+        html += '</div>';
+
+        // ── Section 2: Trend Chart Antar Tahun ─────────────────
+        if (hasScore) {
+            var canvasId = 'chart-' + kategoriKey;
+            html += '<h3 class="survey-section-title">&#128200; Tren Skor Antar Tahun</h3>';
+            html += '<div class="chart-container"><canvas id="' + canvasId + '" class="chart-canvas"></canvas></div>';
+        }
+
+        // ── Section 3: Comparative Table (tahun aktif) ─────────
+        if (hasScore) {
+            html += '<h3 class="survey-section-title">&#128203; Detail per Periode &mdash; Tahun ' + cache.yearActive + '</h3>';
+            html += renderComparativeTable(items, kategoriKey);
+        }
+
+        // ── Section 4: Insight List (Kesimpulan/Rekomendasi) ───
+        var insightHtml = '';
+        for (var k = 0; k < items.length; k++) {
+            insightHtml += renderInsightItem(items[k]);
+        }
+        if (insightHtml) {
+            html += '<h3 class="survey-section-title">&#128221; Kesimpulan, Rekomendasi & Pratinjau Dokumen</h3>';
+            html += '<div class="insight-list">' + insightHtml + '</div>';
+        }
+
+        contentEl.innerHTML = html;
+
+        // Render chart setelah HTML dipasang
+        if (hasScore) {
+            renderTrendChart('chart-' + kategoriKey, kategoriKey, cache.data);
+        }
+    }
+
+    function loadLaporan(kategoriKey) {
+        var cache = dataCache[kategoriKey];
+        var meta = KATEGORI_MAP[kategoriKey];
+        if (cache.loaded) {
+            renderLaporanTabContent(kategoriKey);
+            return;
+        }
+        var contentId = 'content' + kategoriKey.charAt(0).toUpperCase() + kategoriKey.slice(1);
+        var contentEl = document.getElementById(contentId);
+
+        fetch(API_LAPORAN + '?kategori=' + meta.apiKey)
+            .then(function (r) { return r.json(); })
+            .then(function (json) {
+                cache.data = (json && json.success && json.data) ? json.data : [];
+                cache.loaded = true;
+                updateStat(kategoriKey, cache.data.length);
+                renderLaporanTabContent(kategoriKey);
+            })
+            .catch(function () {
+                contentEl.innerHTML = '<div class="survey-error">Gagal memuat data ' + meta.label + ' dari server. Periksa koneksi Anda.</div>';
+            });
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // SPARKLINE SVG (untuk Pekan Survei)
+    // ════════════════════════════════════════════════════════════
+    function renderSparkline(values, color) {
+        // values: array of (number|null)
+        if (!values || values.length === 0) return '';
+        var W = 280, H = 38, P = 2;
+        // Filter null untuk min/max calc
+        var nums = [];
+        for (var i = 0; i < values.length; i++) if (values[i] !== null && values[i] !== undefined) nums.push(values[i]);
+        if (nums.length === 0) return '<svg class="sparkline" viewBox="0 0 ' + W + ' ' + H + '"></svg>';
+
+        var min = Math.min.apply(null, nums);
+        var max = Math.max.apply(null, nums);
+        var range = max - min;
+        if (range < 1) range = 1;
+
+        var step = (W - P * 2) / Math.max(1, values.length - 1);
+        var pathPoints = [];
+        var areaPoints = [];
+
+        for (var j = 0; j < values.length; j++) {
+            var v = values[j];
+            if (v === null || v === undefined) continue;
+            var x = P + j * step;
+            var y = H - P - ((v - min) / range) * (H - P * 2);
+            pathPoints.push(x.toFixed(1) + ',' + y.toFixed(1));
+        }
+        if (pathPoints.length < 2) {
+            // Single point: render dot only
+            if (pathPoints.length === 1) {
+                var p1 = pathPoints[0].split(',');
+                return '<svg class="sparkline" viewBox="0 0 ' + W + ' ' + H + '">' +
+                        '<circle cx="' + p1[0] + '" cy="' + p1[1] + '" r="2.5" fill="' + color + '"/></svg>';
+            }
+            return '<svg class="sparkline" viewBox="0 0 ' + W + ' ' + H + '"></svg>';
+        }
+
+        var path = 'M ' + pathPoints.join(' L ');
+        // Area fill
+        var firstX = pathPoints[0].split(',')[0];
+        var lastX = pathPoints[pathPoints.length - 1].split(',')[0];
+        var areaPath = path + ' L ' + lastX + ',' + (H - P) + ' L ' + firstX + ',' + (H - P) + ' Z';
+
+        return '<svg class="sparkline" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none">' +
+                '<path d="' + areaPath + '" fill="' + color + '" opacity="0.15"/>' +
+                '<path d="' + path + '" fill="none" stroke="' + color + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+                '</svg>';
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // RENDER: PEKAN SURVEI
+    // ════════════════════════════════════════════════════════════
+    function renderPekanTabContent() {
+        var cache = dataCache.pekan;
+        var contentEl = document.getElementById('contentPekan');
+
+        if (!cache.data || cache.data.length === 0) {
+            document.getElementById('yearTabsPekan').innerHTML = '';
+            contentEl.innerHTML = '<div class="survey-empty">Belum ada data Pekan Survei.</div>';
+            return;
+        }
+
+        var grouped = groupByYear(cache.data, 'tahun');
+        if (!cache.yearActive || grouped.byYear[cache.yearActive] === undefined) {
+            cache.yearActive = grouped.years[0];
+        }
+        renderYearTabs(grouped.years, cache.yearActive, 'yearTabsPekan', 'pekan');
+
+        var items = (grouped.byYear[cache.yearActive] || []).slice();
+        // Sort ascending tanggal_mulai untuk chart, descending untuk tabel
+        items.sort(function (a, b) {
+            return (a.tanggal_mulai || '').localeCompare(b.tanggal_mulai || '');
+        });
+
+        if (items.length === 0) {
+            contentEl.innerHTML = '<div class="survey-empty">Tidak ada data untuk tahun ' + cache.yearActive + '.</div>';
+            return;
+        }
+
+        // Stat summary
+        var sumIkm = 0, cntIkm = 0, sumIpkp = 0, cntIpkp = 0, sumIpak = 0, cntIpak = 0, totalResp = 0;
+        var arrIkm = [], arrIpkp = [], arrIpak = [];
+        for (var i = 0; i < items.length; i++) {
+            var v;
+            v = safeNum(items[i].nilai_ikm);  arrIkm.push(v);  if (v !== null) { sumIkm += v;  cntIkm++; }
+            v = safeNum(items[i].nilai_ipkp); arrIpkp.push(v); if (v !== null) { sumIpkp += v; cntIpkp++; }
+            v = safeNum(items[i].nilai_ipak); arrIpak.push(v); if (v !== null) { sumIpak += v; cntIpak++; }
+            var resp = safeNum(items[i].total_responden);
+            if (resp !== null) totalResp += resp;
+        }
+        var avgIkm  = cntIkm  ? sumIkm  / cntIkm  : null;
+        var avgIpkp = cntIpkp ? sumIpkp / cntIpkp : null;
+        var avgIpak = cntIpak ? sumIpak / cntIpak : null;
+
+        var html = '';
+
+        // ── Section 1: Stat Summary cards ─────────────────────
+        html += '<h3 class="survey-section-title">&#128202; Ringkasan Tahun ' + cache.yearActive +
+                 ' <span class="badge-count">' + items.length + ' pekan</span></h3>';
+        html += '<div class="pekan-summary">';
+        html += '<div class="pekan-sum-card"><div class="pekan-sum-label">Total Pekan</div><div class="pekan-sum-value" style="color:#4f46e5">' +
+                 items.length + '</div></div>';
+        html += '<div class="pekan-sum-card"><div class="pekan-sum-label">Total Responden</div><div class="pekan-sum-value" style="color:#1e293b">' +
+                 totalResp.toLocaleString('id-ID') + '</div></div>';
+        html += '<div class="pekan-sum-card"><div class="pekan-sum-label">Rata-rata IKM</div>' +
+                 '<div class="pekan-sum-value ikm">' + (avgIkm !== null ? formatNum(avgIkm, 2) : '—') + '</div>' +
+                 renderSparkline(arrIkm, '#9333ea') + '</div>';
+        html += '<div class="pekan-sum-card"><div class="pekan-sum-label">Rata-rata IPKP</div>' +
+                 '<div class="pekan-sum-value ipkp">' + (avgIpkp !== null ? formatNum(avgIpkp, 2) : '—') + '</div>' +
+                 renderSparkline(arrIpkp, '#d97706') + '</div>';
+        html += '<div class="pekan-sum-card"><div class="pekan-sum-label">Rata-rata IPAK</div>' +
+                 '<div class="pekan-sum-value ipak">' + (avgIpak !== null ? formatNum(avgIpak, 2) : '—') + '</div>' +
+                 renderSparkline(arrIpak, '#059669') + '</div>';
+        html += '</div>';
+
+        // ── Section 2: Chart Mingguan (Chart.js) ──────────────
+        var hasPekanScore = (cntIkm + cntIpkp + cntIpak) > 0;
+        if (hasPekanScore) {
+            html += '<h3 class="survey-section-title">&#128200; Tren Mingguan IKM / IPKP / IPAK</h3>';
+            html += '<div class="chart-container"><canvas id="chart-pekan" class="chart-canvas"></canvas></div>';
+        }
+
+        // ── Section 3: Tabel Mingguan ─────────────────────────
+        var displayItems = items.slice().reverse(); // descending untuk tampilan tabel
+        html += '<h3 class="survey-section-title">&#128203; Detail Mingguan</h3>';
+        html += '<div class="pekan-table-wrap"><table class="pekan-table">';
+        html += '<thead><tr>' +
+                '<th>Periode</th>' +
+                '<th class="text-right">Resp.</th>' +
+                '<th class="text-center">IKM</th>' +
+                '<th class="text-center">IPKP</th>' +
+                '<th class="text-center">IPAK</th>' +
+                '<th>Catatan</th>' +
+                '</tr></thead><tbody>';
+
+        for (var r = 0; r < displayItems.length; r++) {
+            var it = displayItems[r];
+            var nIkm  = safeNum(it.nilai_ikm);
+            var nIpkp = safeNum(it.nilai_ipkp);
+            var nIpak = safeNum(it.nilai_ipak);
+            var resp2 = safeNum(it.total_responden);
+
+            html += '<tr>';
+            html += '<td><strong>' + escapeHtml(formatTanggalRange(it.tanggal_mulai, it.tanggal_selesai)) + '</strong></td>';
+            html += '<td class="text-right" style="font-variant-numeric:tabular-nums">' +
+                     (resp2 !== null ? resp2.toLocaleString('id-ID') : '<span style="color:#cbd5e1">—</span>') + '</td>';
+            html += '<td class="text-center">' + (nIkm  !== null ? '<span class="skor-mini ikm">'  + formatNum(nIkm, 2)  + '</span>' : '<span class="skor-mini empty">—</span>') + '</td>';
+            html += '<td class="text-center">' + (nIpkp !== null ? '<span class="skor-mini ipkp">' + formatNum(nIpkp, 2) + '</span>' : '<span class="skor-mini empty">—</span>') + '</td>';
+            html += '<td class="text-center">' + (nIpak !== null ? '<span class="skor-mini ipak">' + formatNum(nIpak, 2) + '</span>' : '<span class="skor-mini empty">—</span>') + '</td>';
+            html += '<td style="color:#64748b;font-size:0.82rem;">' + (it.catatan ? escapeHtml(it.catatan) : '<span style="color:#cbd5e1">—</span>') + '</td>';
+            html += '</tr>';
+        }
+        html += '</tbody></table></div>';
+
+        contentEl.innerHTML = html;
+
+        // Render chart pekan
+        if (hasPekanScore) {
+            renderPekanChart('chart-pekan', items);
+        }
+    }
+
+    function renderPekanChart(canvasId, items) {
+        loadChartJs(function () {
+            var labels = [];
+            var dIkm = [], dIpkp = [], dIpak = [];
+            for (var i = 0; i < items.length; i++) {
+                labels.push(formatTanggalSingkat(items[i].tanggal_mulai));
+                dIkm.push(safeNum(items[i].nilai_ikm));
+                dIpkp.push(safeNum(items[i].nilai_ipkp));
+                dIpak.push(safeNum(items[i].nilai_ipak));
+            }
+
+            var ctx = document.getElementById(canvasId);
+            if (!ctx) return;
+            if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
+
+            chartInstances[canvasId] = new window.Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'IKM',  data: dIkm,  borderColor: '#9333ea', backgroundColor: 'rgba(147,51,234,0.08)', borderWidth: 2, fill: true,  tension: 0.3, spanGaps: true, pointRadius: 3, pointHoverRadius: 5 },
+                        { label: 'IPKP', data: dIpkp, borderColor: '#d97706', backgroundColor: 'rgba(217,119,6,0.08)',  borderWidth: 2, fill: false, tension: 0.3, spanGaps: true, pointRadius: 3, pointHoverRadius: 5 },
+                        { label: 'IPAK', data: dIpak, borderColor: '#059669', backgroundColor: 'rgba(5,150,105,0.08)',  borderWidth: 2, fill: false, tension: 0.3, spanGaps: true, pointRadius: 3, pointHoverRadius: 5 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12, font: { size: 11 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function (ctx2) {
+                                    return ctx2.dataset.label + ': ' + (ctx2.parsed.y !== null ? ctx2.parsed.y.toFixed(2) : '—');
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { min: 0, max: 100, ticks: { stepSize: 20, font: { size: 11 } }, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false }, ticks: { font: { size: 10 }, maxRotation: 45, minRotation: 0 } }
+                    }
+                }
+            });
+        });
+    }
+
+    function loadPekan() {
+        var cache = dataCache.pekan;
+        if (cache.loaded) { renderPekanTabContent(); return; }
+        var contentEl = document.getElementById('contentPekan');
+
+        fetch(API_PEKAN)
+            .then(function (r) { return r.json(); })
+            .then(function (json) {
+                cache.data = (json && json.success && json.data) ? json.data : [];
+                cache.loaded = true;
+                updateStat('pekan', cache.data.length);
+                renderPekanTabContent();
+            })
+            .catch(function () {
+                contentEl.innerHTML = '<div class="survey-error">Gagal memuat data Pekan Survei dari server. Periksa koneksi Anda.</div>';
+            });
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // STATS
+    // ════════════════════════════════════════════════════════════
+    function updateStat(kategoriKey, count) {
+        var map = { ikm: 'statIkm', ipak: 'statIpak', tlsv: 'statTlsv', pekan: 'statPekan' };
+        var el = document.getElementById(map[kategoriKey]);
+        if (el) animateCounter(el, count);
+    }
+    function animateCounter(el, target) {
+        var duration = 900;
+        var startTime = null;
+        function step(ts) {
+            if (!startTime) startTime = ts;
+            var prog = Math.min((ts - startTime) / duration, 1);
+            var ease = 1 - Math.pow(1 - prog, 3);
+            el.textContent = Math.floor(ease * target);
+            if (prog < 1) requestAnimationFrame(step);
+            else el.textContent = target;
+        }
+        if (window.requestAnimationFrame) requestAnimationFrame(step);
+        else el.textContent = target;
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // TAB & EVENT HANDLERS
+    // ════════════════════════════════════════════════════════════
+    var mainTabsEl = document.getElementById('surveyMainTabs');
+
+    function activateMainTab(tabKey) {
+        var btns = mainTabsEl.querySelectorAll('.main-tab-btn');
+        for (var i = 0; i < btns.length; i++) {
+            if (btns[i].getAttribute('data-tab') === tabKey) {
+                btns[i].className = 'main-tab-btn active tab-' + tabKey + '-active';
+            } else {
+                btns[i].className = 'main-tab-btn';
+            }
+        }
+        var panes = document.querySelectorAll('.main-tab-pane');
+        for (var j = 0; j < panes.length; j++) panes[j].className = 'main-tab-pane';
+        var pane = document.getElementById('tab-' + tabKey);
+        if (pane) pane.className = 'main-tab-pane active';
+
+        if (tabKey === 'pekan') loadPekan();
+        else if (KATEGORI_MAP[tabKey]) loadLaporan(tabKey);
+    }
+
+    mainTabsEl.addEventListener('click', function (e) {
+        var btn = e.target;
+        while (btn && btn !== mainTabsEl && !(btn.classList && btn.classList.contains('main-tab-btn'))) {
+            btn = btn.parentNode;
+        }
+        if (!btn || btn === mainTabsEl || !btn.classList.contains('main-tab-btn')) return;
+        var key = btn.getAttribute('data-tab');
+        if (key) activateMainTab(key);
+    });
+
+    // Year tab click handler (delegated)
+    document.addEventListener('click', function (e) {
+        var btn = e.target;
+        while (btn && btn !== document && !(btn.classList && btn.classList.contains('year-tab-btn'))) {
+            btn = btn.parentNode;
+        }
+        if (!btn || btn === document || !btn.classList.contains('year-tab-btn')) return;
+
+        var year = parseInt(btn.getAttribute('data-year'), 10);
+        if (!year) return;
+
+        var parent = btn.parentNode;
+        if (!parent) return;
+        var parentId = parent.id;
+        var kategoriKey = null;
+        if (parentId === 'yearTabsIkm')   kategoriKey = 'ikm';
+        else if (parentId === 'yearTabsIpak')  kategoriKey = 'ipak';
+        else if (parentId === 'yearTabsTlsv')  kategoriKey = 'tlsv';
+        else if (parentId === 'yearTabsPekan') kategoriKey = 'pekan';
+        if (!kategoriKey) return;
+
+        dataCache[kategoriKey].yearActive = year;
+        if (kategoriKey === 'pekan') renderPekanTabContent();
+        else renderLaporanTabContent(kategoriKey);
+    });
+
+    // "Detail" button click → buka <details> insight item
+    document.addEventListener('click', function (e) {
+        var btn = e.target;
+        while (btn && btn !== document && !(btn.getAttribute && btn.getAttribute('data-detail-target'))) {
+            btn = btn.parentNode;
+        }
+        if (!btn || btn === document) return;
+        var targetId = btn.getAttribute('data-detail-target');
+        if (!targetId) return;
+        var detailEl = document.getElementById('insight-' + targetId);
+        if (!detailEl) return;
+        detailEl.open = true;
+        // Smooth scroll
+        try { detailEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (err) { detailEl.scrollIntoView(); }
+    });
+
+    // ════════════════════════════════════════════════════════════
+    // INIT
+    // ════════════════════════════════════════════════════════════
+    loadLaporan('ikm');
+    setTimeout(function () { loadLaporan('ipak'); }, 200);
+    setTimeout(function () { loadLaporan('tlsv'); }, 400);
+    setTimeout(function () { loadPekan();         }, 600);
+})();
+</script>

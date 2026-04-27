@@ -14,10 +14,26 @@ class SurveyPekanController extends Controller
         'tanggal_selesai',
         'gambar_ikm',
         'link_ikm',
+        'nilai_ikm',
         'gambar_ipkp',
         'link_ipkp',
+        'nilai_ipkp',
         'gambar_ipak',
         'link_ipak',
+        'nilai_ipak',
+        'total_responden',
+        'catatan',
+    ];
+
+    /**
+     * Validasi field skor mingguan, dipakai di store & update.
+     */
+    private array $scoreValidation = [
+        'nilai_ikm'        => 'nullable|numeric|min:0|max:100',
+        'nilai_ipkp'       => 'nullable|numeric|min:0|max:100',
+        'nilai_ipak'       => 'nullable|numeric|min:0|max:100',
+        'total_responden'  => 'nullable|integer|min:0|max:100000',
+        'catatan'          => 'nullable|string|max:5000',
     ];
 
     /**
@@ -106,7 +122,7 @@ class SurveyPekanController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $this->validate($request, [
+        $rules = array_merge([
             'tahun'           => 'required|integer|min:2000|max:2100',
             'tanggal_mulai'   => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
@@ -119,7 +135,8 @@ class SurveyPekanController extends Controller
             'file_gambar_ikm'  => 'nullable|file|mimes:jpg,jpeg,png,webp|max:5120',
             'file_gambar_ipkp' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:5120',
             'file_gambar_ipak' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:5120',
-        ]);
+        ], $this->scoreValidation);
+        $this->validate($request, $rules);
 
         $data = $this->sanitizeInput($request->only($this->allowedFields));
 
@@ -166,7 +183,7 @@ class SurveyPekanController extends Controller
             ], 404);
         }
 
-        $this->validate($request, [
+        $rules = array_merge([
             'tahun'           => 'sometimes|required|integer|min:2000|max:2100',
             'tanggal_mulai'   => 'sometimes|required|date',
             'tanggal_selesai' => 'sometimes|required|date|after_or_equal:tanggal_mulai',
@@ -179,7 +196,8 @@ class SurveyPekanController extends Controller
             'file_gambar_ikm'  => 'nullable|file|mimes:jpg,jpeg,png,webp|max:5120',
             'file_gambar_ipkp' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:5120',
             'file_gambar_ipak' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:5120',
-        ]);
+        ], $this->scoreValidation);
+        $this->validate($request, $rules);
 
         $data = $this->sanitizeInput($request->only($this->allowedFields));
 

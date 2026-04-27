@@ -22,8 +22,28 @@ class SurveyLaporanController extends Controller
         'tahun',
         'periode',
         'urutan',
+        'nilai_indeks',
+        'kategori_mutu',
+        'jumlah_responden',
+        'unsur_terendah',
+        'unsur_tertinggi',
+        'kesimpulan',
+        'rekomendasi',
         'gambar_url',
         'link_dokumen',
+    ];
+
+    /**
+     * Validasi field tambahan yang dipakai di store & update.
+     */
+    private array $scoreValidation = [
+        'nilai_indeks'     => 'nullable|numeric|min:0|max:100',
+        'kategori_mutu'    => 'nullable|string|max:30',
+        'jumlah_responden' => 'nullable|integer|min:0|max:100000',
+        'unsur_terendah'   => 'nullable|string|max:255',
+        'unsur_tertinggi'  => 'nullable|string|max:255',
+        'kesimpulan'       => 'nullable|string|max:5000',
+        'rekomendasi'      => 'nullable|string|max:5000',
     ];
 
     /**
@@ -114,7 +134,7 @@ class SurveyLaporanController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $this->validate($request, [
+        $rules = array_merge([
             'kategori'     => 'required|string',
             'tahun'        => 'required|integer|min:2000|max:2100',
             'periode'      => 'required|string|max:100',
@@ -123,7 +143,8 @@ class SurveyLaporanController extends Controller
             'link_dokumen' => 'nullable|string|max:500',
             'file_gambar'  => 'nullable|file|mimes:jpg,jpeg,png,webp|max:5120',
             'file_dokumen' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:20480',
-        ]);
+        ], $this->scoreValidation);
+        $this->validate($request, $rules);
 
         if (!in_array($request->kategori, self::KATEGORI)) {
             return response()->json([
@@ -177,7 +198,7 @@ class SurveyLaporanController extends Controller
             ], 404);
         }
 
-        $this->validate($request, [
+        $rules = array_merge([
             'kategori'     => 'sometimes|required|string',
             'tahun'        => 'sometimes|required|integer|min:2000|max:2100',
             'periode'      => 'sometimes|required|string|max:100',
@@ -186,7 +207,8 @@ class SurveyLaporanController extends Controller
             'link_dokumen' => 'nullable|string|max:500',
             'file_gambar'  => 'nullable|file|mimes:jpg,jpeg,png,webp|max:5120',
             'file_dokumen' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:20480',
-        ]);
+        ], $this->scoreValidation);
+        $this->validate($request, $rules);
 
         if ($request->has('kategori') && !in_array($request->kategori, self::KATEGORI)) {
             return response()->json([
