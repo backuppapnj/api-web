@@ -16,6 +16,7 @@
       .comparative-table / .inline-bar / .trend-arrow / .skor-cell
       .insight-list / .insight-item / .insight-body / .unsur-pill
       .pdf-preview / .pekan-summary / .pekan-table / .skor-mini
+      .skor-mini-link (anchor wrapper untuk skor clickable ke dokumen)
       .sparkline / .survey-loading / .survey-empty / .survey-error
     ============================================================
 -->
@@ -183,6 +184,28 @@
         if (n === null || n === undefined) return null;
         var x = Number(n);
         return isNaN(x) ? null : x;
+    }
+
+    /**
+     * Render satu cell skor untuk tabel Pekan Survei.
+     * Skor + link → badge clickable membuka dokumen di tab baru.
+     * Tidak ada skor + ada link/gambar → tampilkan ikon dokumen kecil.
+     * Tidak ada apa-apa → em-dash redup.
+     */
+    function pekanScoreCell(value, link, gambar, kelas, alt) {
+        var docUrl = link || gambar || '';
+        var inner;
+        if (value !== null) {
+            inner = '<span class="skor-mini ' + kelas + '">' + formatNum(value, 2) + '</span>';
+        } else if (docUrl) {
+            inner = '<span class="skor-mini ' + kelas + '">&#128196;</span>';
+        } else {
+            return '<span class="skor-mini empty">—</span>';
+        }
+        if (docUrl) {
+            return '<a href="' + escapeHtml(docUrl) + '" target="_blank" rel="noopener noreferrer" class="skor-mini-link" title="Buka dokumen ' + alt + '">' + inner + '</a>';
+        }
+        return inner;
     }
 
     /**
@@ -760,9 +783,9 @@
             html += '<td><strong>' + escapeHtml(formatTanggalRange(it.tanggal_mulai, it.tanggal_selesai)) + '</strong></td>';
             html += '<td class="text-right" style="font-variant-numeric:tabular-nums">' +
                      (resp2 !== null ? resp2.toLocaleString('id-ID') : '<span style="color:#cbd5e1">—</span>') + '</td>';
-            html += '<td class="text-center">' + (nIkm  !== null ? '<span class="skor-mini ikm">'  + formatNum(nIkm, 2)  + '</span>' : '<span class="skor-mini empty">—</span>') + '</td>';
-            html += '<td class="text-center">' + (nIpkp !== null ? '<span class="skor-mini ipkp">' + formatNum(nIpkp, 2) + '</span>' : '<span class="skor-mini empty">—</span>') + '</td>';
-            html += '<td class="text-center">' + (nIpak !== null ? '<span class="skor-mini ipak">' + formatNum(nIpak, 2) + '</span>' : '<span class="skor-mini empty">—</span>') + '</td>';
+            html += '<td class="text-center">' + pekanScoreCell(nIkm,  it.link_ikm,  it.gambar_ikm,  'ikm',  'IKM')  + '</td>';
+            html += '<td class="text-center">' + pekanScoreCell(nIpkp, it.link_ipkp, it.gambar_ipkp, 'ipkp', 'IPKP') + '</td>';
+            html += '<td class="text-center">' + pekanScoreCell(nIpak, it.link_ipak, it.gambar_ipak, 'ipak', 'IPAK') + '</td>';
             html += '<td style="color:#64748b;font-size:0.82rem;">' + (it.catatan ? escapeHtml(it.catatan) : '<span style="color:#cbd5e1">—</span>') + '</td>';
             html += '</tr>';
         }
