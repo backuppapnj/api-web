@@ -1,3 +1,81 @@
+<style>
+/* ===== BASE ===== */
+.ut-wrapper { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 1200px; margin: 0 auto; }
+.ut-title { text-align: center; font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; }
+.ut-divider { border: 0; height: 3px; background: linear-gradient(90deg, transparent, #0d9488, transparent); margin-bottom: 1.5rem; }
+
+/* ===== TOOLBAR & SEARCH ===== */
+.ut-toolbar { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-bottom: 1.5rem; }
+.ut-search-box { display: flex; align-items: center; gap: 0.5rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.5rem 0.75rem; flex: 1; min-width: 220px; }
+.ut-search-input { border: none; background: transparent; outline: none; font-size: 0.9rem; width: 100%; color: #334155; }
+
+/* ===== TABS ===== */
+.ut-tabs-nav { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.ut-tab-btn { padding: 0.5rem 1rem; border: 1px solid #e2e8f0; background: #ffffff; border-radius: 20px; cursor: pointer; font-size: 0.85rem; color: #64748b; transition: all 0.2s; }
+.ut-tab-btn:hover { border-color: #0d9488; color: #0d9488; }
+.ut-tab-btn.active { background: #0d9488; color: #ffffff; border-color: #0d9488; }
+.ut-tab-pane { display: none; }
+.ut-tab-pane.active { display: block; }
+
+/* ===== GRID & CARDS ===== */
+.ut-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+.ut-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; text-align: center; transition: box-shadow 0.2s, transform 0.2s; position: relative; }
+.ut-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
+.ut-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; margin: 0 auto 0.75rem; display: block; }
+.ut-avatar-initials { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #0d9488, #14b8a6); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; margin: 0 auto 0.75rem; }
+.ut-card-nama { font-weight: 700; color: #1e293b; font-size: 0.95rem; margin-bottom: 0.25rem; }
+.ut-card-nama-tba { font-weight: 600; color: #94a3b8; font-size: 0.9rem; margin-bottom: 0.25rem; font-style: italic; }
+.ut-card-jabatan { color: #64748b; font-size: 0.8rem; margin-bottom: 0.5rem; }
+.ut-badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem; }
+.ut-badge-PNS { background: #dbeafe; color: #1e40af; }
+.ut-badge-PPNPN { background: #fef3c7; color: #92400e; }
+.ut-badge-CASN { background: #d1fae5; color: #065f46; }
+.ut-btn-download { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.8rem; background: #f1f5f9; color: #334155; border-radius: 6px; font-size: 0.75rem; text-decoration: none; transition: background 0.2s; }
+.ut-btn-download:hover { background: #e2e8f0; }
+.ut-card.has-detail { cursor: pointer; }
+.ut-card.has-detail::after { content: ''; position: absolute; top: 12px; right: 12px; width: 8px; height: 8px; background: #0d9488; border-radius: 50%; }
+.ut-no-data { text-align: center; color: #94a3b8; padding: 40px; font-size: 0.9rem; }
+
+/* ===== SKELETON ===== */
+.ut-skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+.ut-skeleton-card { height: 180px; background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 200% 100%; animation: ut-skeleton 1.2s infinite; border-radius: 12px; }
+@keyframes ut-skeleton { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ===== MODAL ===== */
+.ut-modal-overlay { display: none !important; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
+.ut-modal-overlay.active { display: flex !important; }
+.ut-modal { background: #ffffff; border-radius: 16px; max-width: 800px; width: 100%; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: ut-modalIn 0.25s ease-out; }
+@keyframes ut-modalIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.ut-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-bottom: 1px solid #e2e8f0; }
+.ut-modal-title { font-size: 17px; font-weight: 700; color: #1e293b; }
+.ut-modal-close { background: none; border: none; cursor: pointer; padding: 4px; color: #64748b; transition: color 0.2s; }
+.ut-modal-close:hover { color: #0f766e; }
+.ut-modal-body { padding: 0; overflow-y: auto; font-size: 14px; line-height: 1.7; color: #334155; }
+
+/* ===== MODAL CONTENT STYLING ===== */
+.ut-detail { padding: 24px; }
+.ut-meta { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px 20px; margin-bottom: 20px; }
+.ut-meta p { margin: 0 0 6px 0; font-size: 13px; color: #475569; }
+.ut-meta p:last-child { margin-bottom: 0; }
+.ut-meta strong { color: #1e293b; }
+.ut-section { margin-bottom: 24px; }
+.ut-section:last-child { margin-bottom: 0; }
+.ut-section h4 { font-size: 15px; font-weight: 700; color: #0f766e; margin: 0 0 10px 0; padding-bottom: 6px; border-bottom: 2px solid #ccfbf1; }
+.ut-section p { margin: 0 0 10px 0; text-align: justify; }
+.ut-section ol { margin: 0; padding-left: 22px; }
+.ut-section ol li { margin-bottom: 8px; padding-left: 4px; }
+.ut-section ol li:last-child { margin-bottom: 0; }
+.ut-tambahan { background: #fffbeb; border: 1px solid #fef3c7; border-radius: 10px; padding: 16px 20px; }
+.ut-tambahan h4 { color: #92400e; border-bottom-color: #fde68a; }
+.ut-dasar { font-size: 12px; color: #78716c; margin-bottom: 10px; font-style: italic; }
+.ut-modal-body h1, .ut-modal-body h2, .ut-modal-body h3 { margin-top: 0; color: #1e293b; }
+.ut-modal-body ul, .ut-modal-body ol { padding-left: 20px; }
+.ut-modal-body a { color: #0d9488; text-decoration: underline; }
+
+/* ===== SCROLL LOCK ===== */
+.ut-no-scroll { overflow: hidden !important; }
+</style>
+
 <div class="ut-wrapper">
     <h2 class="ut-title">Uraian Tugas</h2>
     <hr class="ut-divider" />
