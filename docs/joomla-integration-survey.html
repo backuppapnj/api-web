@@ -1,26 +1,3 @@
-<!--
-    ============================================================
-    SURVEY INTEGRATION v2 — Joomla 3 / ES5
-    ============================================================
-    CSS untuk modul ini SUDAH dipindah ke template custom.css
-    (section "SURVEY INTEGRATION v2"). Pastikan custom.css aktif
-    di template Joomla. Kelas yang dipakai:
-      .survey-wrapper / .survey-header / .survey-stats
-      .survey-main-tabs / .main-tab-btn / .main-tab-pane
-      .survey-section-info (.ipak/.tlsv/.pekan)
-      .survey-year-tabs / .year-tab-btn
-      .survey-section-title / .badge-count
-      .score-grid / .score-card / .score-card-* / .score-btn-*
-      .mutu-badge / .mutu-A..D / .mutu-NA
-      .chart-container / .chart-canvas
-      .comparative-table / .inline-bar / .trend-arrow / .skor-cell
-      .insight-list / .insight-item / .insight-body / .unsur-pill
-      .pdf-preview / .pekan-summary / .pekan-table / .skor-mini
-      .skor-mini-link (anchor wrapper untuk skor clickable ke dokumen)
-      .sparkline / .survey-loading / .survey-empty / .survey-error
-    ============================================================
--->
-
 <div class="survey-wrapper">
     <div class="survey-header">
         <h2>&#128202; Hasil Survei Pelayanan</h2>
@@ -41,7 +18,7 @@
         <button type="button" class="main-tab-btn" data-tab="pekan">&#128197; Pekan Survei</button>
     </div>
 
-    <div id="tab-ikm" class="main-tab-pane active">
+    <div id="tab-ikm" class="main-tab-pane active">a
         <div class="survey-section-info">
             <strong>Survei Kepuasan Masyarakat (IKM)</strong> &mdash; mengukur tingkat kepuasan masyarakat atas penyelenggaraan pelayanan publik di Pengadilan Agama Penajam, dilaporkan setiap triwulan sesuai PermenPAN-RB 14/2017.
         </div>
@@ -184,6 +161,79 @@
         if (n === null || n === undefined) return null;
         var x = Number(n);
         return isNaN(x) ? null : x;
+    }
+
+    /**
+     * Pilih konfigurasi sumbu Y Chart.js secara adaptif (zoom-to-data):
+     *   1. Hitung min/max data, kasih padding ~25% (minimal 0.05)
+     *      supaya garis tidak menempel ke tepi chart.
+     *   2. Snap min/max ke kelipatan stepSize biar grid rapi.
+     *   3. Pilih stepSize & jumlah desimal berdasar span:
+     *        span <= 0.4 -> step 0.05 (2 desimal)
+     *        span <= 1   -> step 0.10 (2 desimal)
+     *        span <= 2   -> step 0.25 (2 desimal)
+     *        span <= 5   -> step 0.5  (1 desimal)
+     *        span <= 20  -> step 2    (integer)
+     *        span <= 100 -> step 10   (integer)
+     *        else        -> step ~span/10 (integer)
+     *   4. Floor di 0 kalau semua data non-negatif (skor IKM tidak negatif).
+     *
+     * Hasilnya: data 3.21..3.28 akan tampil di axis ~3.15..3.30 dengan
+     * grid 0.05, jadi perbedaan kecil antar titik benar-benar terlihat.
+     * Data NIK 70..90 tetap tampil rapi dengan grid 2 atau 5.
+     */
+    function pickYScale(allValues) {
+        var nums = [];
+        for (var i = 0; i < allValues.length; i++) {
+            var v = allValues[i];
+            if (v != null && !isNaN(v)) nums.push(Number(v));
+        }
+        var grid = { color: '#f1f5f9' };
+
+        if (nums.length === 0) {
+            // Belum ada data: pakai skala mentah IKM default 0-4.
+            return {
+                min: 0, max: 4,
+                ticks: {
+                    stepSize: 0.5, font: { size: 11 },
+                    callback: function (val) { return Number(val).toFixed(1); }
+                },
+                grid: grid
+            };
+        }
+
+        var minVal = Math.min.apply(null, nums);
+        var maxVal = Math.max.apply(null, nums);
+        var range = maxVal - minVal;
+        var pad = Math.max(range * 0.25, 0.05);
+        var span = range + pad * 2;
+
+        var stepSize, decimals;
+        if (span <= 0.4)      { stepSize = 0.05; decimals = 2; }
+        else if (span <= 1)   { stepSize = 0.1;  decimals = 2; }
+        else if (span <= 2)   { stepSize = 0.25; decimals = 2; }
+        else if (span <= 5)   { stepSize = 0.5;  decimals = 1; }
+        else if (span <= 20)  { stepSize = 2;    decimals = 0; }
+        else if (span <= 100) { stepSize = 10;   decimals = 0; }
+        else                  { stepSize = Math.ceil(span / 10); decimals = 0; }
+
+        // Snap ke kelipatan stepSize supaya grid bersih.
+        var lo = Math.floor((minVal - pad) / stepSize) * stepSize;
+        var hi = Math.ceil((maxVal + pad) / stepSize) * stepSize;
+        if (lo < 0 && minVal >= 0) lo = 0;
+        // Hindari lo == hi (kalau cuma 1 titik unik & padding kecil).
+        if (hi - lo < stepSize) hi = lo + stepSize * 2;
+
+        return {
+            min: lo,
+            max: hi,
+            ticks: {
+                stepSize: stepSize,
+                font: { size: 11 },
+                callback: function (val) { return Number(val).toFixed(decimals); }
+            },
+            grid: grid
+        };
     }
 
     /**
@@ -475,7 +525,11 @@
 
             if (tahunList.length === 0) return; // tidak ada data skor
 
-            var labels = ['TW I', 'TW II', 'TW III', 'TW IV'];
+            // Sumbu X = 12 bulan. Data triwulan diplot di bulan AKHIR tiap TW
+            // (PermenPAN-RB 14/2017): TW I -> Mar, TW II -> Jun, TW III -> Sep,
+            // TW IV -> Des. Bulan lain di-null kan -> spanGaps menyambungkan
+            // garis melewati gap.
+            var labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
             var meta = KATEGORI_MAP[kategoriKey];
 
             // Generate distinct colors per year (palet sederhana)
@@ -484,9 +538,13 @@
             for (var t = 0; t < tahunList.length; t++) {
                 var th = tahunList[t];
                 var col = (t === tahunList.length - 1) ? meta.color : palette[t % palette.length];
-                var dataPoints = [];
+                // 12 slot bulan, default null
+                var dataPoints = [null, null, null, null, null, null, null, null, null, null, null, null];
                 for (var u = 1; u <= 4; u++) {
-                    dataPoints.push(byTahun[th][u] != null ? byTahun[th][u] : null);
+                    if (byTahun[th][u] != null) {
+                        // urutan 1 -> idx 2 (Mar), 2 -> 5 (Jun), 3 -> 8 (Sep), 4 -> 11 (Des)
+                        dataPoints[u * 3 - 1] = byTahun[th][u];
+                    }
                 }
                 datasets.push({
                     label: String(th),
@@ -506,6 +564,15 @@
             if (!ctx) return;
             if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
 
+            // Flatten data point untuk auto-detect rentang sumbu Y
+            // (skala mentah IKM 1-4 vs skala NIK 25-100).
+            var allVals = [];
+            for (var d = 0; d < datasets.length; d++) {
+                for (var dp = 0; dp < datasets[d].data.length; dp++) {
+                    allVals.push(datasets[d].data[dp]);
+                }
+            }
+
             chartInstances[canvasId] = new window.Chart(ctx, {
                 type: 'line',
                 data: { labels: labels, datasets: datasets },
@@ -524,12 +591,13 @@
                         }
                     },
                     scales: {
-                        y: {
-                            min: 0, max: 100,
-                            ticks: { stepSize: 20, font: { size: 11 } },
-                            grid: { color: '#f1f5f9' }
-                        },
-                        x: { grid: { display: false }, ticks: { font: { size: 11 } } }
+                        y: pickYScale(allVals),
+                        x: {
+                            grid: { display: false },
+                            // autoSkip: false -> jangan sembunyikan label bulan
+                            // walau sempit; supaya 12 bulan Jan..Des tampil semua.
+                            ticks: { font: { size: 10 }, autoSkip: false, maxRotation: 0, minRotation: 0 }
+                        }
                     }
                 }
             });
@@ -839,7 +907,9 @@
                         }
                     },
                     scales: {
-                        y: { min: 0, max: 100, ticks: { stepSize: 20, font: { size: 11 } }, grid: { color: '#f1f5f9' } },
+                        // Auto-detect skala (IKM 1-4 atau NIK 25-100) berdasar
+                        // gabungan semua data series IKM/IPKP/IPAK.
+                        y: pickYScale(dIkm.concat(dIpkp).concat(dIpak)),
                         x: { grid: { display: false }, ticks: { font: { size: 10 }, maxRotation: 45, minRotation: 0 } }
                     }
                 }
