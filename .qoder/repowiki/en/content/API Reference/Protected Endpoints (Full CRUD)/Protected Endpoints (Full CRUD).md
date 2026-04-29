@@ -14,7 +14,19 @@
 - [app/Http/Controllers/LaporanPengaduanController.php](file://app/Http/Controllers/LaporanPengaduanController.php)
 - [app/Http/Controllers/KeuanganPerkaraController.php](file://app/Http/Controllers/KeuanganPerkaraController.php)
 - [app/Http/Controllers/SisaPanjarController.php](file://app/Http/Controllers/SisaPanjarController.php)
+- [app/Http/Controllers/InovasiController.php](file://app/Http/Controllers/InovasiController.php)
+- [app/Http/Controllers/SkInovasiController.php](file://app/Http/Controllers/SkInovasiController.php)
+- [app/Models/Inovasi.php](file://app/Models/Inovasi.php)
+- [app/Models/SkInovasi.php](file://app/Models/SkInovasi.php)
 </cite>
+
+## Update Summary
+**Changes Made**
+- Added Innovation Management module documentation with full CRUD operations
+- Documented InovasiController endpoints for innovation records
+- Documented SkInovasiController endpoints for innovation regulations/documents
+- Updated endpoint catalog with innovation management sections
+- Added validation rules and file upload capabilities for innovation modules
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -582,6 +594,95 @@ CTRL-->>C : "JSON response"
 - [routes/web.php:160-164](file://routes/web.php#L160-L164)
 - [app/Http/Controllers/LraReportController.php:1-200](file://app/Http/Controllers/LraReportController.php#L1-L200)
 
+#### Module: Innovation Management
+- URL Patterns
+  - GET /api/inovasi
+  - GET /api/inovasi/{id}
+  - POST /api/inovasi
+  - PUT/POST /api/inovasi/{id}
+  - DELETE /api/inovasi/{id}
+- Request Body (POST/PUT)
+  - Fields: nama_inovasi, deskripsi, kategori, link_dokumen, urutan, file_dokumen
+  - file_dokumen: PDF, DOC, DOCX, JPG, JPEG, PNG; max 20MB
+- Response
+  - Success: { success: true, data: ... }
+  - Errors: { success: false, message: string }
+- Validation Rules
+  - nama_inovasi: required, string, max 255
+  - deskripsi: required, string
+  - kategori: required, string, max 100
+  - link_dokumen: nullable, string, max 500
+  - urutan: nullable, integer, min 0
+  - file_dokumen: nullable file with allowed MIME types
+- Duplicate Prevention
+  - Prevents duplicate combinations of nama_inovasi and kategori
+- Example Requests
+  - Create:
+    - curl -X POST "$BASE_URL/api/inovasi" \
+      -H "X-API-Key: YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{"nama_inovasi":"Digital Transformation","deskripsi":"Inovasi digital untuk layanan publik","kategori":"Teknologi","urutan":1}'
+  - Update:
+    - curl -X PUT "$BASE_URL/api/inovasi/1" \
+      -H "X-API-Key: YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{"deskripsi":"Updated description","file_dokumen":"@/path/to/document.pdf"}'
+  - Delete:
+    - curl -X DELETE "$BASE_URL/api/inovasi/1" \
+      -H "X-API-Key: YOUR_API_KEY"
+
+**Updated** Added Innovation Management module with full CRUD operations including file upload capabilities and duplicate prevention
+
+**Section sources**
+- [routes/web.php:87-90](file://routes/web.php#L87-L90)
+- [routes/web.php:196-201](file://routes/web.php#L196-L201)
+- [app/Http/Controllers/InovasiController.php:22-202](file://app/Http/Controllers/InovasiController.php#L22-L202)
+- [app/Models/Inovasi.php:9-24](file://app/Models/Inovasi.php#L9-L24)
+
+#### Module: Innovation Regulations/Decrees
+- URL Patterns
+  - GET /api/sk-inovasi
+  - GET /api/sk-inovasi/{id}
+  - POST /api/sk-inovasi
+  - PUT/POST /api/sk-inovasi/{id}
+  - DELETE /api/sk-inovasi/{id}
+- Request Body (POST/PUT)
+  - Fields: tahun, nomor_sk, tentang, file, file_url, is_active
+  - file: PDF, DOC, DOCX; max 5MB
+  - file_url: URL string for external documents
+- Response
+  - Success: { success: true, data: ... }
+  - Errors: { success: false, message: string }
+- Validation Rules
+  - tahun: required, integer, 2000–2100
+  - nomor_sk: required, string, max 255
+  - tentang: required, string
+  - file: nullable file with allowed MIME types
+  - file_url: nullable URL string
+  - is_active: boolean, defaults to true
+- Example Requests
+  - Create:
+    - curl -X POST "$BASE_URL/api/sk-inovasi" \
+      -H "X-API-Key: YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{"tahun":2025,"nomor_sk":"SK-001/2025","tentang":"Pedoman Inovasi","is_active":true}'
+  - Update:
+    - curl -X PUT "$BASE_URL/api/sk-inovasi/1" \
+      -H "X-API-Key: YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{"file_url":"https://example.com/document.pdf"}'
+  - Delete:
+    - curl -X DELETE "$BASE_URL/api/sk-inovasi/1" \
+      -H "X-API-Key: YOUR_API_KEY"
+
+**Updated** Added Innovation Regulations/Decrees module with document management capabilities
+
+**Section sources**
+- [routes/web.php:83-86](file://routes/web.php#L83-L86)
+- [routes/web.php:190-195](file://routes/web.php#L190-L195)
+- [app/Http/Controllers/SkInovasiController.php:11-161](file://app/Http/Controllers/SkInovasiController.php#L11-L161)
+- [app/Models/SkInovasi.php:7-39](file://app/Models/SkInovasi.php#L7-L39)
+
 ### Authentication Flow
 ```mermaid
 sequenceDiagram
@@ -621,6 +722,8 @@ MW --> C8["KeuanganPerkaraController"]
 MW --> C9["SisaPanjarController"]
 MW --> C10["MouController"]
 MW --> C11["LraReportController"]
+MW --> C12["InovasiController"]
+MW --> C13["SkInovasiController"]
 ```
 
 **Diagram sources**
@@ -634,8 +737,7 @@ MW --> C11["LraReportController"]
 - Rate Limiting: Throttling set to 100 requests per minute per IP to protect resources.
 - File Upload Limits: Reasonable max sizes to prevent oversized payloads.
 - Master Data Overrides: Realisasi Anggaran recalculates pagu/sisa/persentase from master configuration on read/update.
-
-[No sources needed since this section provides general guidance]
+- Innovation Modules: File uploads up to 20MB for innovation records, 5MB for regulations/documents.
 
 ## Troubleshooting Guide
 Common Issues and Resolutions:
@@ -654,6 +756,9 @@ Common Issues and Resolutions:
 - 500 Internal Server Error (File Upload)
   - Cause: Failure to upload to Google Drive and fallback to local storage also failed.
   - Resolution: Check storage permissions and disk availability.
+- Innovation Module Specific
+  - Duplicate Prevention: When creating/updating innovation records, ensure unique combination of nama_inovasi and kategori.
+  - File Upload Issues: Check file size limits (20MB for innovation records, 5MB for regulations).
 
 **Section sources**
 - [app/Http/Middleware/ApiKeyMiddleware.php:20-36](file://app/Http/Middleware/ApiKeyMiddleware.php#L20-L36)
@@ -663,11 +768,10 @@ Common Issues and Resolutions:
 - [app/Http/Controllers/LaporanPengaduanController.php:93-100](file://app/Http/Controllers/LaporanPengaduanController.php#L93-L100)
 - [app/Http/Controllers/KeuanganPerkaraController.php:70-76](file://app/Http/Controllers/KeuanganPerkaraController.php#L70-L76)
 - [app/Http/Controllers/SisaPanjarController.php:135-139](file://app/Http/Controllers/SisaPanjarController.php#L135-L139)
+- [app/Http/Controllers/InovasiController.php:86-95](file://app/Http/Controllers/InovasiController.php#L86-L95)
 
 ## Conclusion
-The protected endpoints provide a consistent, secure, and validated interface for managing various datasets. Authentication via API key, robust validation, and safe file handling ensure reliable operation. Use the provided request patterns and validation rules to integrate effectively.
-
-[No sources needed since this section summarizes without analyzing specific files]
+The protected endpoints provide a consistent, secure, and validated interface for managing various datasets. Authentication via API key, robust validation, and safe file handling ensure reliable operation. The addition of innovation management modules expands the API's capabilities to handle innovation records and regulations with full CRUD operations and file upload support.
 
 ## Appendices
 
@@ -676,7 +780,9 @@ The protected endpoints provide a consistent, secure, and validated interface fo
 
 ### File Upload MIME Types
 - Allowed: PDF, DOC, DOCX, XLS, XLSX, JPG, JPEG, PNG
-- Maximum Size: Varies by endpoint (commonly 5MB–10MB)
+- Maximum Size: Varies by endpoint (commonly 5MB–20MB)
+  - Innovation Records: Up to 20MB
+  - Innovation Regulations/Documents: Up to 5MB
 
 ### Validation Flow
 ```mermaid
@@ -687,10 +793,15 @@ KeyValid --> |No| Return401["Return 401 Unauthorized"]
 KeyValid --> |Yes| ValidateBody["Validate Request Body"]
 ValidateBody --> BodyValid{"Body Valid?"}
 BodyValid --> |No| Return422["Return 422 Unprocessable Entity"]
-BodyValid --> |Yes| Persist["Persist to Database"]
-Persist --> Return200["Return 200/201 with JSON"]
+BodyValid --> |Yes| CheckDuplicate["Check for Duplicates (if applicable)"]
+CheckDuplicate --> DupValid{"Duplicate Exists?"}
+DupValid --> |Yes| Return422Dup["Return 422 Duplicate Error"]
+DupValid --> |No| Persist["Persist to Database"]
+Persist --> UploadFile["Handle File Upload (if present)"]
+UploadFile --> Return200["Return 200/201 with JSON"]
 ```
 
 **Diagram sources**
 - [app/Http/Middleware/ApiKeyMiddleware.php:14-39](file://app/Http/Middleware/ApiKeyMiddleware.php#L14-L39)
 - [app/Http/Controllers/PanggilanController.php:118-130](file://app/Http/Controllers/PanggilanController.php#L118-L130)
+- [app/Http/Controllers/InovasiController.php:86-95](file://app/Http/Controllers/InovasiController.php#L86-L95)

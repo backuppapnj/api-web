@@ -11,9 +11,11 @@
 - [ItsbatNikahController.php](file://app/Http/Controllers/ItsbatNikahController.php)
 - [LhkpnController.php](file://app/Http/Controllers/LhkpnController.php)
 - [LraReportController.php](file://app/Http/Controllers/LraReportController.php)
+- [SkInovasiController.php](file://app/Http/Controllers/SkInovasiController.php)
 - [Panggilan.php](file://app/Models/Panggilan.php)
 - [ItsbatNikah.php](file://app/Models/ItsbatNikah.php)
 - [LhkpnReport.php](file://app/Models/LhkpnReport.php)
+- [SkInovasi.php](file://app/Models/SkInovasi.php)
 - [GoogleDriveService.php](file://app/Services/GoogleDriveService.php)
 - [composer.json](file://composer.json)
 </cite>
@@ -35,7 +37,7 @@ This document provides comprehensive API documentation for the Lumen RESTful API
 - Authentication and security headers
 - Rate limiting behavior (100 requests per minute)
 - CORS configuration for cross-origin requests
-- Public read-only endpoints for modules such as Panggilan Ghaib, Itsbat Nikah, and LHKPN Reports
+- Public read-only endpoints for modules such as Panggilan Ghaib, Itsbat Nikah, LHKPN Reports, and SK Inovasi
 - Protected CRUD endpoints requiring an API key
 - Standardized JSON response formats, pagination, and common error codes
 - Parameter validation and sanitization
@@ -63,14 +65,13 @@ ControllersProtected --> GoogleDrive["GoogleDriveService"]
 ```
 
 **Diagram sources**
-- [routes/web.php:13-76](file://routes/web.php#L13-L76)
-- [routes/web.php:78-164](file://routes/web.php#L78-L164)
+- [routes/web.php:13-202](file://routes/web.php#L13-L202)
 - [CorsMiddleware.php:14-62](file://app/Http/Middleware/CorsMiddleware.php#L14-L62)
 - [ApiKeyMiddleware.php:14-39](file://app/Http/Middleware/ApiKeyMiddleware.php#L14-L39)
 - [RateLimitMiddleware.php:15-39](file://app/Http/Middleware/RateLimitMiddleware.php#L15-L39)
 
 **Section sources**
-- [routes/web.php:13-164](file://routes/web.php#L13-L164)
+- [routes/web.php:13-202](file://routes/web.php#L13-L202)
 
 ## Core Components
 - Authentication
@@ -129,7 +130,7 @@ CTRL-->>C : JSON Response
 ```
 
 **Diagram sources**
-- [routes/web.php:13-164](file://routes/web.php#L13-L164)
+- [routes/web.php:13-202](file://routes/web.php#L13-L202)
 - [RateLimitMiddleware.php:15-39](file://app/Http/Middleware/RateLimitMiddleware.php#L15-L39)
 - [ApiKeyMiddleware.php:14-39](file://app/Http/Middleware/ApiKeyMiddleware.php#L14-L39)
 - [LraReportController.php:198-232](file://app/Http/Controllers/LraReportController.php#L198-L232)
@@ -173,6 +174,7 @@ Headers:
 - [ItsbatNikahController.php:35-42](file://app/Http/Controllers/ItsbatNikahController.php#L35-L42)
 - [LhkpnController.php:45-52](file://app/Http/Controllers/LhkpnController.php#L45-L52)
 - [LraReportController.php:47-54](file://app/Http/Controllers/LraReportController.php#L47-L54)
+- [SkInovasiController.php:25-46](file://app/Http/Controllers/SkInovasiController.php#L25-L46)
 - [RateLimitMiddleware.php:36-38](file://app/Http/Middleware/RateLimitMiddleware.php#L36-L38)
 
 ### Public Read-Only Endpoints (100 requests/minute)
@@ -253,20 +255,23 @@ These endpoints are available without authentication and are throttled globally.
   - GET /api/lra
   - GET /api/lra/{id}
 
+- SK Inovasi
+  - GET /api/sk-inovasi
+    - Query parameters: tahun (integer), active (boolean)
+    - Response: array of SK Inovasi records ordered by year descending
+  - GET /api/sk-inovasi/{id}
+    - Path parameter: id (positive integer)
+    - Response: single SK Inovasi record
+
 Curl examples (public):
-- List Panggilan Ghaib with pagination:
-  - curl -s "https://dataweb.pa-penajam.go.id/api/panggilan?limit=10"
-- Get a specific record:
-  - curl -s "https://dataweb.pa-penajam.go.id/api/panggilan/1"
-- Search Itsbat Nikah:
-  - curl -s "https://dataweb.pa-penajam.go.id/api/itsbat?q=perkara&limit=5"
+- List SK Inovasi with filtering:
+  - curl -s "https://dataweb.pa-penajam.go.id/api/sk-inovasi?tahun=2026&active=true"
+- Get a specific SK Inovasi record:
+  - curl -s "https://dataweb.pa-penajam.go.id/api/sk-inovasi/1"
 
 **Section sources**
-- [routes/web.php:13-76](file://routes/web.php#L13-L76)
-- [PanggilanController.php:31-82](file://app/Http/Controllers/PanggilanController.php#L31-L82)
-- [ItsbatNikahController.php:10-43](file://app/Http/Controllers/ItsbatNikahController.php#L10-L43)
-- [LhkpnController.php:11-53](file://app/Http/Controllers/LhkpnController.php#L11-L53)
-- [LraReportController.php:20-78](file://app/Http/Controllers/LraReportController.php#L20-L78)
+- [routes/web.php:13-90](file://routes/web.php#L13-L90)
+- [SkInovasiController.php:11-46](file://app/Http/Controllers/SkInovasiController.php#L11-L46)
 
 ### Protected CRUD Endpoints (Requires X-API-Key)
 All protected endpoints require the X-API-Key header and are throttled at 100 requests/minute.
@@ -348,24 +353,47 @@ All protected endpoints require the X-API-Key header and are throttled at 100 re
   - PUT /api/lra/{id}
   - DELETE /api/lra/{id}
 
+- SK Inovasi
+  - POST /api/sk-inovasi
+    - Request body fields:
+      - tahun (required, integer, 2000-2100)
+      - nomor_sk (required, string, max 255)
+      - tentang (required, string)
+      - file (optional, file, PDF/DOC/DOCX, max 5MB)
+      - file_url (optional, URL)
+      - is_active (optional, boolean, defaults to true)
+    - Response: created SK Inovasi record with success message
+  - PUT /api/sk-inovasi/{id}
+    - Path parameter: id (positive integer)
+    - Request body fields (all optional):
+      - tahun (integer, 2000-2100)
+      - nomor_sk (string, max 255)
+      - tentang (string)
+      - file (optional, file, PDF/DOC/DOCX, max 5MB)
+      - file_url (optional, URL)
+      - is_active (boolean)
+    - Response: updated SK Inovasi record with success message
+  - DELETE /api/sk-inovasi/{id}
+    - Path parameter: id (positive integer)
+    - Response: deletion confirmation message
+
 Curl examples (protected):
-- Create a new Panggilan Ghaib record:
-  - curl -s -X POST "https://dataweb.pa-penajam.go.id/api/panggilan" -H "X-API-Key: YOUR_API_KEY" -F "field=value" -F "file_upload=@/path/to/file.pdf"
-- Update an existing record:
-  - curl -s -X PUT "https://dataweb.pa-penajam.go.id/api/panggilan/1" -H "X-API-Key: YOUR_API_KEY" -F "field=new_value"
-- Delete a record:
-  - curl -s -X DELETE "https://dataweb.pa-penajam.go.id/api/panggilan/1" -H "X-API-Key: YOUR_API_KEY"
+- Create a new SK Inovasi record with file upload:
+  - curl -s -X POST "https://dataweb.pa-penajam.go.id/api/sk-inovasi" -H "X-API-Key: YOUR_API_KEY" -F "tahun=2026" -F "nomor_sk=1297/KPA.W17-A8/OT1.6/XII/2025" -F "tentang=Penetapan Inovasi dan Aplikasi Tahun 2026" -F "file=@/path/to/document.pdf"
+- Update an existing SK Inovasi record with URL:
+  - curl -s -X PUT "https://dataweb.pa-penajam.go.id/api/sk-inovasi/1" -H "X-API-Key: YOUR_API_KEY" -F "is_active=false" -F "file_url=https://example.com/document.pdf"
+- Delete a SK Inovasi record:
+  - curl -s -X DELETE "https://dataweb.pa-penajam.go.id/api/sk-inovasi/1" -H "X-API-Key: YOUR_API_KEY"
 
 Notes:
 - Replace YOUR_API_KEY with your configured API key
 - For file uploads, use multipart/form-data with appropriate field names as per endpoint validation rules
+- File upload supports PDF, DOC, and DOCX formats with maximum 5MB size
+- Either file upload OR file_url is required for creating/updating records
 
 **Section sources**
-- [routes/web.php:78-164](file://routes/web.php#L78-L164)
-- [PanggilanController.php:115-330](file://app/Http/Controllers/PanggilanController.php#L115-L330)
-- [ItsbatNikahController.php:45-224](file://app/Http/Controllers/ItsbatNikahController.php#L45-L224)
-- [LhkpnController.php:55-144](file://app/Http/Controllers/LhkpnController.php#L55-L144)
-- [LraReportController.php:80-196](file://app/Http/Controllers/LraReportController.php#L80-L196)
+- [routes/web.php:92-202](file://routes/web.php#L92-L202)
+- [SkInovasiController.php:48-160](file://app/Http/Controllers/SkInovasiController.php#L48-L160)
 
 ### Parameter Validation and Sanitization
 - Validation rules are enforced per endpoint using framework validation mechanisms
@@ -374,10 +402,8 @@ Notes:
 - File uploads validated by MIME type based on content, not extension
 
 **Section sources**
-- [PanggilanController.php:118-136](file://app/Http/Controllers/PanggilanController.php#L118-L136)
-- [ItsbatNikahController.php:47-53](file://app/Http/Controllers/ItsbatNikahController.php#L47-L53)
-- [LhkpnController.php:57-68](file://app/Http/Controllers/LhkpnController.php#L57-L68)
-- [LraReportController.php:82-89](file://app/Http/Controllers/LraReportController.php#L82-L89)
+- [SkInovasiController.php:50-57](file://app/Http/Controllers/SkInovasiController.php#L50-L57)
+- [SkInovasiController.php:97-104](file://app/Http/Controllers/SkInovasiController.php#L97-L104)
 - [Controller.php:18-29](file://app/Http/Controllers/Controller.php#L18-L29)
 
 ### File Upload Behavior
@@ -440,6 +466,8 @@ Reject --> End
 **Section sources**
 - [ApiKeyMiddleware.php:20-36](file://app/Http/Middleware/ApiKeyMiddleware.php#L20-L36)
 - [RateLimitMiddleware.php:22-28](file://app/Http/Middleware/RateLimitMiddleware.php#L22-L28)
+- [SkInovasiController.php:35-40](file://app/Http/Controllers/SkInovasiController.php#L35-L40)
+- [SkInovasiController.php:90-95](file://app/Http/Controllers/SkInovasiController.php#L90-L95)
 - [PanggilanController.php:65-104](file://app/Http/Controllers/PanggilanController.php#L65-L104)
 - [ItsbatNikahController.php:123-136](file://app/Http/Controllers/ItsbatNikahController.php#L123-L136)
 - [LhkpnController.php:94-102](file://app/Http/Controllers/LhkpnController.php#L94-L102)
@@ -462,11 +490,11 @@ ProtectedControllers --> Models
 ```
 
 **Diagram sources**
-- [routes/web.php:13-164](file://routes/web.php#L13-L164)
+- [routes/web.php:13-202](file://routes/web.php#L13-L202)
 - [GoogleDriveService.php:38-82](file://app/Services/GoogleDriveService.php#L38-L82)
 
 **Section sources**
-- [routes/web.php:13-164](file://routes/web.php#L13-L164)
+- [routes/web.php:13-202](file://routes/web.php#L13-L202)
 - [composer.json:11-14](file://composer.json#L11-L14)
 
 ## Performance Considerations
@@ -474,8 +502,6 @@ ProtectedControllers --> Models
 - Pagination limits reduce payload sizes and memory usage
 - File uploads are validated by MIME type to avoid oversized or malicious content
 - Google Drive fallback reduces local disk I/O and improves scalability
-
-[No sources needed since this section provides general guidance]
 
 ## Troubleshooting Guide
 - 401 Unauthorized: Verify X-API-Key header matches configured API_KEY
@@ -488,6 +514,7 @@ Common checks:
 - Confirm CORS allowlist includes your Origin
 - Ensure file MIME types are permitted
 - Validate numeric ranges and formats for date and integer fields
+- For SK Inovasi, verify either file upload or file_url is provided
 
 **Section sources**
 - [ApiKeyMiddleware.php:20-36](file://app/Http/Middleware/ApiKeyMiddleware.php#L20-L36)
@@ -496,8 +523,6 @@ Common checks:
 
 ## Conclusion
 This API provides a secure, rate-limited, and CORS-aware interface for accessing legal and administrative datasets. Public endpoints offer read-only access with pagination and search capabilities, while protected endpoints enable full CRUD operations with robust validation, sanitization, and resilient file handling.
-
-[No sources needed since this section summarizes without analyzing specific files]
 
 ## Appendices
 
@@ -611,6 +636,13 @@ This API provides a secure, rate-limited, and CORS-aware interface for accessing
   - PUT /api/lra/{id} (protected)
   - DELETE /api/lra/{id} (protected)
 
+- SK Inovasi
+  - GET /api/sk-inovasi
+  - GET /api/sk-inovasi/{id}
+  - POST /api/sk-inovasi (protected)
+  - PUT /api/sk-inovasi/{id} (protected)
+  - DELETE /api/sk-inovasi/{id} (protected)
+
 ### Data Models Overview
 ```mermaid
 erDiagram
@@ -653,9 +685,21 @@ string link_pengumuman
 string link_spt
 string link_dokumen_pendukung
 }
+SK_INOVASI {
+int id PK
+int tahun
+string nomor_sk
+string tentang
+string file_path
+string file_url
+boolean is_active
+datetime created_at
+datetime updated_at
+}
 ```
 
 **Diagram sources**
 - [Panggilan.php:11-32](file://app/Models/Panggilan.php#L11-L32)
 - [ItsbatNikah.php:11-24](file://app/Models/ItsbatNikah.php#L11-L24)
 - [LhkpnReport.php:11-27](file://app/Models/LhkpnReport.php#L11-L27)
+- [SkInovasi.php:7-39](file://app/Models/SkInovasi.php#L7-L39)

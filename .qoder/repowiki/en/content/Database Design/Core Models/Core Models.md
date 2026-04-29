@@ -11,6 +11,10 @@
 - [LraReport.php](file://app/Models/LraReport.php)
 - [Sakip.php](file://app/Models/Sakip.php)
 - [AsetBmn.php](file://app/Models/AsetBmn.php)
+- [Inovasi.php](file://app/Models/Inovasi.php)
+- [SkInovasi.php](file://app/Models/SkInovasi.php)
+- [InovasiController.php](file://app/Http/Controllers/InovasiController.php)
+- [SkInovasiController.php](file://app/Http/Controllers/SkInovasiController.php)
 - [create_panggilan_ghaib_table.php](file://database/migrations/2026_01_21_000001_create_panggilan_ghaib_table.php)
 - [create_realisasi_anggaran_table.php](file://database/migrations/2026_02_10_000000_create_realisasi_anggaran_table.php)
 - [update_realisasi_anggaran_add_month.php](file://database/migrations/2026_02_10_000001_update_realisasi_anggaran_add_month.php)
@@ -18,7 +22,17 @@
 - [create_lhkpn_reports_table.php](file://database/migrations/2026_02_02_162040_create_lhkpn_reports_table.php)
 - [update_lhkpn_reports_add_links.php](file://database/migrations/2026_02_10_000003_update_lhkpn_reports_add_links.php)
 - [rename_spt_to_lhkasn.php](file://database/migrations/2026_02_10_000004_rename_spt_to_lhkasn.php)
+- [create_inovasi_table.php](file://database/migrations/2026_04_08_000001_create_inovasi_table.php)
+- [create_sk_inovasi_table.php](file://database/migrations/2026_04_08_011152_create_sk_inovasi_table.php)
 </cite>
+
+## Update Summary
+**Changes Made**
+- Added new innovation management models section covering Inovasi and SkInovasi
+- Updated project structure diagram to include new models
+- Added detailed documentation for innovation management functionality
+- Updated architecture overview to include innovation models
+- Enhanced dependency analysis with new model relationships
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -36,16 +50,17 @@ This document describes the core data models that represent primary business ent
 - Panggilan (primary case management for absent parties)
 - RealisasiAnggaran (budget execution tracking)
 - LhkpnReport (asset declarations)
+- **Inovasi and SkInovasi (innovation management system)**
 - Supporting models such as PaguAnggaran, PanggilanEcourt, AgendaPimpinan, LraReport, Sakip, and AsetBmn
 
 For each model, we document field definitions, data types, validation rules, business logic, Eloquent relationships, scopes and query builders, lifecycle hooks, attribute casting, serialization patterns, polymorphic relationships, shared behaviors, common queries, data transformations, and performance considerations.
 
 ## Project Structure
-The models are located under app/Models and correspond to Laravel migration files under database/migrations. Each migration defines the database schema and indexes for the respective model.
+The models are located under app/Models and correspond to Laravel migration files under database/migrations. Each migration defines the database schema and indexes for the respective model. The addition of innovation management models expands the system's capabilities for tracking and managing organizational innovations.
 
 ```mermaid
 graph TB
-subgraph "Models"
+subgraph "Core Models"
 P["Panggilan"]
 RA["RealisasiAnggaran"]
 PA["PaguAnggaran"]
@@ -55,6 +70,8 @@ AP["AgendaPimpinan"]
 LRA["LraReport"]
 SK["Sakip"]
 AB["AsetBmn"]
+IN["Inovasi"]
+SIN["SkInovasi"]
 end
 subgraph "Migrations"
 MP["create_panggilan_ghaib_table.php"]
@@ -64,6 +81,8 @@ MPA["create_pagu_anggaran_table.php"]
 MLR["create_lhkpn_reports_table.php"]
 MLR2["update_lhkpn_reports_add_links.php"]
 MLR3["rename_spt_to_lhkasn.php"]
+MIN["create_inovasi_table.php"]
+MSIN["create_sk_inovasi_table.php"]
 end
 P --- MP
 RA --- MRA
@@ -72,6 +91,8 @@ PA --- MPA
 LR --- MLR
 LR --- MLR2
 LR --- MLR3
+IN --- MIN
+SIN --- MSIN
 PE --- MP
 AP --- MP
 LRA --- MP
@@ -89,6 +110,8 @@ AB --- MP
 - [LraReport.php:1-24](file://app/Models/LraReport.php#L1-L24)
 - [Sakip.php:1-24](file://app/Models/Sakip.php#L1-L24)
 - [AsetBmn.php:1-21](file://app/Models/AsetBmn.php#L1-L21)
+- [Inovasi.php:1-25](file://app/Models/Inovasi.php#L1-L25)
+- [SkInovasi.php:1-40](file://app/Models/SkInovasi.php#L1-L40)
 - [create_panggilan_ghaib_table.php:1-42](file://database/migrations/2026_01_21_000001_create_panggilan_ghaib_table.php#L1-L42)
 - [create_realisasi_anggaran_table.php:1-36](file://database/migrations/2026_02_10_000000_create_realisasi_anggaran_table.php#L1-L36)
 - [update_realisasi_anggaran_add_month.php:1-30](file://database/migrations/2026_02_10_000001_update_realisasi_anggaran_add_month.php#L1-L30)
@@ -96,6 +119,8 @@ AB --- MP
 - [create_lhkpn_reports_table.php:1-36](file://database/migrations/2026_02_02_162040_create_lhkpn_reports_table.php#L1-L36)
 - [update_lhkpn_reports_add_links.php:1-30](file://database/migrations/2026_02_10_000003_update_lhkpn_reports_add_links.php#L1-L30)
 - [rename_spt_to_lhkasn.php:1-31](file://database/migrations/2026_02_10_000004_rename_spt_to_lhkasn.php#L1-L31)
+- [create_inovasi_table.php:1-30](file://database/migrations/2026_04_08_000001_create_inovasi_table.php#L1-L30)
+- [create_sk_inovasi_table.php:1-34](file://database/migrations/2026_04_08_011152_create_sk_inovasi_table.php#L1-L34)
 
 **Section sources**
 - [Panggilan.php:1-55](file://app/Models/Panggilan.php#L1-L55)
@@ -107,6 +132,8 @@ AB --- MP
 - [LraReport.php:1-24](file://app/Models/LraReport.php#L1-L24)
 - [Sakip.php:1-24](file://app/Models/Sakip.php#L1-L24)
 - [AsetBmn.php:1-21](file://app/Models/AsetBmn.php#L1-L21)
+- [Inovasi.php:1-25](file://app/Models/Inovasi.php#L1-L25)
+- [SkInovasi.php:1-40](file://app/Models/SkInovasi.php#L1-L40)
 - [create_panggilan_ghaib_table.php:1-42](file://database/migrations/2026_01_21_000001_create_panggilan_ghaib_table.php#L1-L42)
 - [create_realisasi_anggaran_table.php:1-36](file://database/migrations/2026_02_10_000000_create_realisasi_anggaran_table.php#L1-L36)
 - [update_realisasi_anggaran_add_month.php:1-30](file://database/migrations/2026_02_10_000001_update_realisasi_anggaran_add_month.php#L1-L30)
@@ -114,6 +141,8 @@ AB --- MP
 - [create_lhkpn_reports_table.php:1-36](file://database/migrations/2026_02_02_162040_create_lhkpn_reports_table.php#L1-L36)
 - [update_lhkpn_reports_add_links.php:1-30](file://database/migrations/2026_02_10_000003_update_lhkpn_reports_add_links.php#L1-L30)
 - [rename_spt_to_lhkasn.php:1-31](file://database/migrations/2026_02_10_000004_rename_spt_to_lhkasn.php#L1-L31)
+- [create_inovasi_table.php:1-30](file://database/migrations/2026_04_08_000001_create_inovasi_table.php#L1-L30)
+- [create_sk_inovasi_table.php:1-34](file://database/migrations/2026_04_08_011152_create_sk_inovasi_table.php#L1-L34)
 
 ## Core Components
 This section summarizes the primary models and their roles in the system.
@@ -122,6 +151,8 @@ This section summarizes the primary models and their roles in the system.
 - RealisasiAnggaran: Tracks budget execution per DIPA, category, month, and year, linked to PaguAnggaran via composite keys.
 - PaguAnggaran: Master budget records per DIPA and category per year with unique constraint.
 - LhkpnReport: Asset declaration records with links to supporting documents and report types.
+- **Inovasi: Innovation tracking system for recording and categorizing organizational innovations with document links and ordering.**
+- **SkInovasi: Innovation directive management for storing official directives (SK) related to innovation programs with active status tracking.**
 - Supporting models: PanggilanEcourt, AgendaPimpinan, LraReport, Sakip, AsetBmn for related administrative and reporting needs.
 
 **Section sources**
@@ -134,9 +165,11 @@ This section summarizes the primary models and their roles in the system.
 - [LraReport.php:1-24](file://app/Models/LraReport.php#L1-L24)
 - [Sakip.php:1-24](file://app/Models/Sakip.php#L1-L24)
 - [AsetBmn.php:1-21](file://app/Models/AsetBmn.php#L1-L21)
+- [Inovasi.php:1-25](file://app/Models/Inovasi.php#L1-L25)
+- [SkInovasi.php:1-40](file://app/Models/SkInovasi.php#L1-L40)
 
 ## Architecture Overview
-The models form a cohesive domain layer with explicit relationships and constraints. RealisasiAnggaran references PaguAnggaran through a composite foreign key relationship, ensuring budget tracking aligns with master budgets. LhkpnReport supports multiple document links and standardized report types. Panggilan and related models capture procedural and administrative events.
+The models form a cohesive domain layer with explicit relationships and constraints. RealisasiAnggaran references PaguAnggaran through a composite foreign key relationship, ensuring budget tracking aligns with master budgets. LhkpnReport supports multiple document links and standardized report types. Inovasi and SkInovasi provide innovation management capabilities with distinct purposes - tracking individual innovations and managing official directives. Panggilan and related models capture procedural and administrative events.
 
 ```mermaid
 classDiagram
@@ -159,6 +192,24 @@ class RealisasiAnggaran {
 +string link_dokumen
 +paguMaster()
 }
+class Inovasi {
++string nama_inovasi
++text deskripsi
++string kategori
++string link_dokumen
++integer urutan
+}
+class SkInovasi {
++integer tahun
++string nomor_sk
++string tentang
++string file_path
++string file_url
++boolean is_active
++active()
++byTahun()
++latestYear()
+}
 class LhkpnReport {
 +string nip
 +string nama
@@ -178,9 +229,13 @@ note for PaguAnggaran "Unique constraint on (dipa, kategori, tahun)"
 **Diagram sources**
 - [PaguAnggaran.php:1-30](file://app/Models/PaguAnggaran.php#L1-L30)
 - [RealisasiAnggaran.php:1-46](file://app/Models/RealisasiAnggaran.php#L1-L46)
+- [Inovasi.php:1-25](file://app/Models/Inovasi.php#L1-L25)
+- [SkInovasi.php:1-40](file://app/Models/SkInovasi.php#L1-L40)
 - [create_pagu_anggaran_table.php:1-33](file://database/migrations/2026_02_10_000002_create_pagu_anggaran_table.php#L1-L33)
 - [create_realisasi_anggaran_table.php:1-36](file://database/migrations/2026_02_10_000000_create_realisasi_anggaran_table.php#L1-L36)
 - [update_realisasi_anggaran_add_month.php:1-30](file://database/migrations/2026_02_10_000001_update_realisasi_anggaran_add_month.php#L1-L30)
+- [create_inovasi_table.php:1-30](file://database/migrations/2026_04_08_000001_create_inovasi_table.php#L1-L30)
+- [create_sk_inovasi_table.php:1-34](file://database/migrations/2026_04_08_011152_create_sk_inovasi_table.php#L1-L34)
 
 ## Detailed Component Analysis
 
@@ -277,6 +332,55 @@ note for PaguAnggaran "Unique constraint on (dipa, kategori, tahun)"
 - [update_lhkpn_reports_add_links.php:1-30](file://database/migrations/2026_02_10_000003_update_lhkpn_reports_add_links.php#L1-L30)
 - [rename_spt_to_lhkasn.php:1-31](file://database/migrations/2026_02_10_000004_rename_spt_to_lhkasn.php#L1-L31)
 
+### Innovation Management Models
+
+#### Inovasi (Innovation Tracking)
+- Purpose: Record and manage organizational innovations with categorization, documentation, and ordering.
+- Table: inovasi
+- Fillable fields: nama_inovasi, deskripsi, kategori, link_dokumen, urutan.
+- Attribute casting: urutan as integer; timestamps as datetime.
+- Unique constraints: combination of nama_inovasi and kategori prevents duplicate innovations within the same category.
+- Indexes: kategori indexed for fast filtering; unique composite index on (nama_inovasi, kategori).
+- Validation rules: nama_inovasi required and max 255 chars; deskripsi required; kategori required and max 100 chars; urutan nullable integer >= 0; link_dokumen nullable URL up to 500 chars.
+- Business logic: supports innovation categorization and ordering; handles document uploads for innovation details.
+- Lifecycle hooks: none defined; relies on timestamps managed by Eloquent.
+- Serialization: defaults to array; integer casting ensures proper numeric representation.
+- Polymorphic relationships: not used; standalone innovation record.
+- Common queries:
+  - Filter by category: `$inovasi = Inovasi::where('kategori', $kategori)->get();`
+  - Get ordered innovations: `$inovasi = Inovasi::orderBy('urutan')->orderBy('nama_inovasi')->get();`
+  - Find duplicates: `$exists = Inovasi::where(['nama_inovasi' => $name, 'kategori' => $category])->first();`
+- Data transformations: integer casting for urutan ensures consistent numeric handling.
+- Performance considerations: unique index on (nama_inovasi, kategori) prevents duplicates; kategori index speeds up filtering.
+
+**Section sources**
+- [Inovasi.php:1-25](file://app/Models/Inovasi.php#L1-L25)
+- [InovasiController.php:1-204](file://app/Http/Controllers/InovasiController.php#L1-L204)
+- [create_inovasi_table.php:1-30](file://database/migrations/2026_04_08_000001_create_inovasi_table.php#L1-L30)
+
+#### SkInovasi (Innovation Directive Management)
+- Purpose: Manage official directives (SK) related to innovation programs with active status tracking and file management.
+- Table: sk_inovasi
+- Fillable fields: tahun, nomor_sk, tentang, file_path, file_url, is_active.
+- Attribute casting: tahun as integer; is_active as boolean.
+- Query scopes: active(), byTahun(), latestYear() for filtering and ordering.
+- Validation rules: tahun required integer between 2000-2100; nomor_sk required up to 255 chars; tentang required; file_url optional URL; is_active boolean.
+- Business logic: manages innovation directives with active status; supports both file uploads and external URLs.
+- Lifecycle hooks: none defined; relies on timestamps managed by Eloquent.
+- Serialization: defaults to array; boolean casting ensures proper boolean representation.
+- Polymorphic relationships: not used; standalone directive record.
+- Common queries:
+  - Get active directives: `$directives = SkInovasi::active()->get();`
+  - Filter by year: `$directives = SkInovasi::byTahun(2024)->get();`
+  - Get latest year: `$latest = SkInovasi::latestYear()->first();`
+- Data transformations: boolean casting for is_active ensures consistent boolean handling.
+- Performance considerations: no specific indexes defined; consider adding indexes on tahun and is_active for frequent queries.
+
+**Section sources**
+- [SkInovasi.php:1-40](file://app/Models/SkInovasi.php#L1-L40)
+- [SkInovasiController.php:1-162](file://app/Http/Controllers/SkInovasiController.php#L1-L162)
+- [create_sk_inovasi_table.php:1-34](file://database/migrations/2026_04_08_011152_create_sk_inovasi_table.php#L1-L34)
+
 ### Supporting Models
 
 #### PanggilanEcourt
@@ -316,40 +420,53 @@ note for PaguAnggaran "Unique constraint on (dipa, kategori, tahun)"
 - [AsetBmn.php:1-21](file://app/Models/AsetBmn.php#L1-L21)
 
 ## Dependency Analysis
-The following diagram illustrates the primary dependency between RealisasiAnggaran and PaguAnggaran, along with the enum normalization for LhkpnReport.
+The following diagram illustrates the primary dependency between RealisasiAnggaran and PaguAnggaran, along with the enum normalization for LhkpnReport and the new innovation management models.
 
 ```mermaid
 graph LR
 PA["PaguAnggaran"] --> RA["RealisasiAnggaran"]
 LR["LhkpnReport"] --> LR2["Enum Normalization<br/>rename_spt_to_lhkasn"]
+IN["Inovasi"] --> INCONT["InovasiController"]
+SIN["SkInovasi"] --> SINCONT["SkInovasiController"]
 ```
 
 **Diagram sources**
 - [RealisasiAnggaran.php:1-46](file://app/Models/RealisasiAnggaran.php#L1-L46)
 - [PaguAnggaran.php:1-30](file://app/Models/PaguAnggaran.php#L1-L30)
 - [rename_spt_to_lhkasn.php:1-31](file://database/migrations/2026_02_10_000004_rename_spt_to_lhkasn.php#L1-L31)
+- [Inovasi.php:1-25](file://app/Models/Inovasi.php#L1-L25)
+- [SkInovasi.php:1-40](file://app/Models/SkInovasi.php#L1-L40)
+- [InovasiController.php:1-204](file://app/Http/Controllers/InovasiController.php#L1-L204)
+- [SkInovasiController.php:1-162](file://app/Http/Controllers/SkInovasiController.php#L1-L162)
 
 **Section sources**
 - [RealisasiAnggaran.php:1-46](file://app/Models/RealisasiAnggaran.php#L1-L46)
 - [PaguAnggaran.php:1-30](file://app/Models/PaguAnggaran.php#L1-L30)
 - [rename_spt_to_lhkasn.php:1-31](file://database/migrations/2026_02_10_000004_rename_spt_to_lhkasn.php#L1-L31)
+- [Inovasi.php:1-25](file://app/Models/Inovasi.php#L1-L25)
+- [SkInovasi.php:1-40](file://app/Models/SkInovasi.php#L1-L40)
+- [InovasiController.php:1-204](file://app/Http/Controllers/InovasiController.php#L1-L204)
+- [SkInovasiController.php:1-162](file://app/Http/Controllers/SkInovasiController.php#L1-L162)
 
 ## Performance Considerations
 - Indexing strategy:
   - Panggilan: index on year and case number to accelerate filtering and sorting.
   - RealisasiAnggaran: index on DIPA; consider composite index on (dipa, tahun, kategori) to optimize joins.
   - LhkpnReport: index on NIP for efficient lookups.
+  - **Inovasi: unique index on (nama_inovasi, kategori) prevents duplicates; kategori index speeds up filtering.**
+  - **SkInovasi: consider adding indexes on tahun and is_active for frequent queries.**
 - Numeric precision:
   - PaguAnggaran jumlah_pagu stored as string with accessor returning float prevents overflow while maintaining precision.
   - RealisasiAnggaran numeric fields cast to float for arithmetic operations.
+  - **Inovasi urutan cast to integer ensures proper ordering.**
 - Query patterns:
   - Prefer filtered queries with indexed columns.
   - Use select only required columns to reduce payload size.
   - Batch reads for trend analysis to minimize round trips.
+  - **Utilize query scopes for complex filtering patterns (e.g., SkInovasi::active()).**
 - Storage considerations:
   - Text fields for document links; ensure URLs are validated and sanitized at ingestion.
-
-[No sources needed since this section provides general guidance]
+  - **File uploads handled through controller logic with proper validation and storage management.**
 
 ## Troubleshooting Guide
 - Date casting anomalies:
@@ -360,14 +477,24 @@ LR["LhkpnReport"] --> LR2["Enum Normalization<br/>rename_spt_to_lhkasn"]
   - Ensure composite keys (dipa, kategori, tahun) match between RealisasiAnggaran and PaguAnggaran.
 - Numeric precision errors:
   - Validate numeric casts and ensure consistent handling of decimals across models.
+- **Innovation model issues:**
+  - **Verify unique constraint on (nama_inovasi, kategori) prevents duplicate entries.**
+  - **Check query scopes are properly applied (active, byTahun, latestYear).**
+  - **Ensure file upload validation and storage paths are correctly configured.**
+- **File upload problems:**
+  - **Verify storage disk configuration for public file access.**
+  - **Check file size limits and MIME type validation.**
+  - **Ensure proper cleanup of old files during updates.**
 
 **Section sources**
 - [Panggilan.php:35-53](file://app/Models/Panggilan.php#L35-L53)
 - [rename_spt_to_lhkasn.php:1-31](file://database/migrations/2026_02_10_000004_rename_spt_to_lhkasn.php#L1-L31)
 - [RealisasiAnggaran.php:37-44](file://app/Models/RealisasiAnggaran.php#L37-L44)
 - [PaguAnggaran.php:16-28](file://app/Models/PaguAnggaran.php#L16-L28)
+- [Inovasi.php:19-23](file://app/Models/Inovasi.php#L19-L23)
+- [SkInovasi.php:20-28](file://app/Models/SkInovasi.php#L20-L28)
+- [InovasiController.php:77-95](file://app/Http/Controllers/InovasiController.php#L77-L95)
+- [SkInovasiController.php:48-84](file://app/Http/Controllers/SkInovasiController.php#L48-L84)
 
 ## Conclusion
-The core models define a robust domain layer for case management, budget execution, and asset declarations. Clear relationships, casting, and schema constraints enable reliable data operations. Extending indexes and adopting consistent validation patterns will further enhance performance and maintainability.
-
-[No sources needed since this section summarizes without analyzing specific files]
+The core models define a robust domain layer for case management, budget execution, asset declarations, and **innovation management**. Clear relationships, casting, and schema constraints enable reliable data operations. The addition of Inovasi and SkInovasi models enhances the system's capability to track and manage organizational innovations alongside official directives. Extending indexes and adopting consistent validation patterns will further enhance performance and maintainability across all models.

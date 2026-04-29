@@ -20,9 +20,22 @@
 - [SisaPanjarController.php](file://app/Http/Controllers/SisaPanjarController.php)
 - [MouController.php](file://app/Http/Controllers/MouController.php)
 - [LraReportController.php](file://app/Http/Controllers/LraReportController.php)
+- [MediasiSkController.php](file://app/Http/Controllers/MediasiSkController.php)
+- [MediatorBannerController.php](file://app/Http/Controllers/MediatorBannerController.php)
+- [InovasiController.php](file://app/Http/Controllers/InovasiController.php)
+- [SkInovasiController.php](file://app/Http/Controllers/SkInovasiController.php)
 - [Panggilan.php](file://app/Models/Panggilan.php)
 - [ItsbatNikah.php](file://app/Models/ItsbatNikah.php)
+- [Inovasi.php](file://app/Models/Inovasi.php)
+- [SkInovasi.php](file://app/Models/SkInovasi.php)
 </cite>
+
+## Update Summary
+**Changes Made**
+- Added new Innovation Data endpoints section covering Inovasi and SkInovasi resources
+- Updated architecture overview to include innovation endpoints
+- Added detailed documentation for innovation records and directives
+- Updated dependency analysis to include new innovation controllers
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -39,7 +52,7 @@
 This document describes all public read-only endpoints exposed by the API. These endpoints are secured with a global rate limiter of 100 requests per minute per client IP. Each endpoint group covers:
 - Base listing endpoint
 - Individual record retrieval
-- Specialized year-based filtering where applicable
+- Specialized filtering where applicable
 - Query parameters, pagination, and response schemas
 - Example curl commands and notes on search/filtering and validation
 
@@ -50,29 +63,33 @@ Public endpoints are grouped under the api prefix and protected by a throttle mi
 graph TB
 Client["Client"] --> Router["Lumen Router<br/>routes/web.php"]
 Router --> Throttle["Rate Limit Middleware<br/>100/minute/IP"]
-Throttle --> CtrlPanggilan["PanggilanController@index/show/byYear"]
+Throttle --> CtrlPanggilan["PanggilanController@index/show"]
 Throttle --> CtrlItsbat["ItsbatNikahController@index/show"]
-Throttle --> CtrlEcourt["PanggilanEcourtController@index/show/byYear"]
+Throttle --> CtrlEcourt["PanggilanEcourtController@index/show"]
 Throttle --> CtrlAgenda["AgendaPimpinanController@index/show"]
 Throttle --> CtrlLhkpn["LhkpnController@index/show"]
 Throttle --> CtrlAnggaran["RealisasiAnggaranController@index/show"]
 Throttle --> CtrlPagu["PaguAnggaranController@index"]
 Throttle --> CtrlDipa["DipaPokController@index/show"]
 Throttle --> CtrlBmn["AsetBmnController@index/show"]
-Throttle --> CtrlSakip["SakipController@index/show/byYear"]
-Throttle --> CtrlPengaduan["LaporanPengaduanController@index/show/byYear"]
-Throttle --> CtrlKeu["KeuanganPerkaraController@index/show/byYear"]
-Throttle --> CtrlPanjar["SisaPanjarController@index/show/byYear"]
+Throttle --> CtrlSakip["SakipController@index/show"]
+Throttle --> CtrlPengaduan["LaporanPengaduanController@index/show"]
+Throttle --> CtrlKeu["KeuanganPerkaraController@index/show"]
+Throttle --> CtrlPanjar["SisaPanjarController@index/show"]
 Throttle --> CtrlMou["MouController@index/show"]
 Throttle --> CtrlLra["LraReportController@index/show"]
+Throttle --> CtrlMediasi["MediasiSkController@index/show"]
+Throttle --> CtrlBanners["MediatorBannerController@index/show"]
+Throttle --> CtrlInovasi["InovasiController@index/show"]
+Throttle --> CtrlSkInovasi["SkInovasiController@index/show"]
 ```
 
 **Diagram sources**
-- [routes/web.php:13-76](file://routes/web.php#L13-L76)
+- [routes/web.php:13-90](file://routes/web.php#L13-L90)
 - [RateLimitMiddleware.php:15-39](file://app/Http/Middleware/RateLimitMiddleware.php#L15-L39)
 
 **Section sources**
-- [routes/web.php:13-76](file://routes/web.php#L13-L76)
+- [routes/web.php:13-90](file://routes/web.php#L13-L90)
 
 ## Core Components
 - Route Group: All public endpoints live under /api with middleware throttle:100,1 applied globally.
@@ -85,7 +102,7 @@ Key behaviors:
 - Search and Filters: Some endpoints support query parameters for filtering and keyword search.
 
 **Section sources**
-- [routes/web.php:13-76](file://routes/web.php#L13-L76)
+- [routes/web.php:13-90](file://routes/web.php#L13-L90)
 - [RateLimitMiddleware.php:15-39](file://app/Http/Middleware/RateLimitMiddleware.php#L15-L39)
 - [Controller.php:18-29](file://app/Http/Controllers/Controller.php#L18-L29)
 
@@ -93,7 +110,7 @@ Key behaviors:
 The public API follows a simple pattern:
 - HTTP GET to /api/<resource> returns paginated lists
 - HTTP GET to /api/<resource>/<id> returns a single record
-- HTTP GET to /api/<resource>/tahun/<year> filters by year where supported
+- HTTP GET to /api/<resource>?filter=value filters by specified criteria where supported
 - Responses include rate limit headers and standardized envelopes
 
 ```mermaid
@@ -106,14 +123,14 @@ participant DB as "Eloquent Model"
 C->>R : GET /api/resource
 R->>M : Apply throttle(100/minute)
 M-->>R : Allow or 429
-R->>CTRL : Dispatch index()
-CTRL->>DB : Query + paginate
+R->>CTRL : Dispatch index()/show()
+CTRL->>DB : Query + filter + sort
 DB-->>CTRL : Items
 CTRL-->>C : JSON envelope {success,data,...} + X-RateLimit-* headers
 ```
 
 **Diagram sources**
-- [routes/web.php:13-76](file://routes/web.php#L13-L76)
+- [routes/web.php:13-90](file://routes/web.php#L13-L90)
 - [RateLimitMiddleware.php:15-39](file://app/Http/Middleware/RateLimitMiddleware.php#L15-L39)
 
 ## Detailed Component Analysis
@@ -490,6 +507,93 @@ Example curl:
 **Section sources**
 - [routes/web.php:74-75](file://routes/web.php#L74-L75)
 
+### Resource: Mediasi SK
+- Base Path: /api/mediasi-sk
+- Methods:
+  - GET /api/mediasi-sk
+    - Query params:
+      - tahun (optional)
+    - Sorting: Descending by created_at
+    - Response: success, data[], pagination fields
+  - GET /api/mediasi-sk/{id}
+    - Response: success, data
+- Notes: Year filtering supported via query parameter.
+
+Example curl:
+- List: curl "https://host/api/mediasi-sk?tahun=2025&limit=20"
+- Detail: curl "https://host/api/mediasi-sk/12001"
+
+**Section sources**
+- [routes/web.php:78-79](file://routes/web.php#L78-L79)
+- [MediasiSkController.php:1-200](file://app/Http/Controllers/MediasiSkController.php#L1-L200)
+
+### Resource: Mediator Banners
+- Base Path: /api/mediator-banners
+- Methods:
+  - GET /api/mediator-banners
+    - Response: success, data[]
+  - GET /api/mediator-banners/{id}
+    - Response: success, data
+- Notes: Simple resource with no filtering parameters.
+
+Example curl:
+- List: curl "https://host/api/mediator-banners?limit=15"
+- Detail: curl "https://host/api/mediator-banners/13001"
+
+**Section sources**
+- [routes/web.php:80-81](file://routes/web.php#L80-L81)
+- [MediatorBannerController.php:1-200](file://app/Http/Controllers/MediatorBannerController.php#L1-L200)
+
+### Resource: Innovation Records
+- Base Path: /api/inovasi
+- Methods:
+  - GET /api/inovasi
+    - Query params:
+      - kategori (optional string filter)
+    - Sorting: Ascending by urutan, then ascending by nama_inovasi
+    - Response: success, data[], total
+  - GET /api/inovasi/{id}
+    - Validates positive integer id
+    - Response: success, data
+- Notes: Read-only endpoint for innovation records with category filtering and ordered display.
+
+Example curl:
+- List: curl "https://host/api/inovasi?kategori=Inovasi Layanan&limit=50"
+- Detail: curl "https://host/api/inovasi/14001"
+
+**Updated** Added new innovation records endpoint
+
+**Section sources**
+- [routes/web.php:88-89](file://routes/web.php#L88-L89)
+- [InovasiController.php:22-44](file://app/Http/Controllers/InovasiController.php#L22-L44)
+- [InovasiController.php:49-70](file://app/Http/Controllers/InovasiController.php#L49-L70)
+- [Inovasi.php:11-23](file://app/Models/Inovasi.php#L11-L23)
+
+### Resource: Innovation Directives/SK
+- Base Path: /api/sk-inovasi
+- Methods:
+  - GET /api/sk-inovasi
+    - Query params:
+      - tahun (optional integer filter)
+      - active (optional boolean filter)
+    - Sorting: Descending by tahun (latest first)
+    - Response: success, data[]
+  - GET /api/sk-inovasi/{id}
+    - Response: success, data
+- Notes: Read-only endpoint for innovation directives with year and active status filtering.
+
+Example curl:
+- List: curl "https://host/api/sk-inovasi?tahun=2025&active=1&limit=20"
+- Detail: curl "https://host/api/sk-inovasi/15001"
+
+**Updated** Added new innovation directives endpoint
+
+**Section sources**
+- [routes/web.php:84-85](file://routes/web.php#L84-L85)
+- [SkInovasiController.php:11-29](file://app/Http/Controllers/SkInovasiController.php#L11-L29)
+- [SkInovasiController.php:31-46](file://app/Http/Controllers/SkInovasiController.php#L31-L46)
+- [SkInovasi.php:25-38](file://app/Models/SkInovasi.php#L25-L38)
+
 ## Dependency Analysis
 - Routing depends on Lumen router and middleware stack.
 - Controllers depend on Eloquent models and shared base controller utilities.
@@ -513,14 +617,18 @@ MW --> C12["KeuanganPerkaraController"]
 MW --> C13["SisaPanjarController"]
 MW --> C14["MouController"]
 MW --> C15["LraReportController"]
+MW --> C16["MediasiSkController"]
+MW --> C17["MediatorBannerController"]
+MW --> C18["InovasiController"]
+MW --> C19["SkInovasiController"]
 ```
 
 **Diagram sources**
-- [routes/web.php:13-76](file://routes/web.php#L13-L76)
+- [routes/web.php:13-90](file://routes/web.php#L13-L90)
 - [RateLimitMiddleware.php:15-39](file://app/Http/Middleware/RateLimitMiddleware.php#L15-L39)
 
 **Section sources**
-- [routes/web.php:13-76](file://routes/web.php#L13-L76)
+- [routes/web.php:13-90](file://routes/web.php#L13-L90)
 - [RateLimitMiddleware.php:15-39](file://app/Http/Middleware/RateLimitMiddleware.php#L15-L39)
 
 ## Performance Considerations
@@ -528,11 +636,10 @@ MW --> C15["LraReportController"]
 - Pagination defaults: Many endpoints default to small per_page values; use limit/ per_page thoughtfully.
 - Data volume caps:
   - Sisa Panjar enforces a maximum limit of 500 items for public listing and year queries.
-  - Some year endpoints cap results to 500 to avoid heavy loads.
+  - Some endpoints cap results to 500 to avoid heavy loads.
 - File uploads: Uploads are handled with fallback to local storage if cloud service fails; this impacts latency and availability.
 - Dynamic computations: Some endpoints compute status or derived metrics on-the-fly; prefer filtering and sorting at the database level where possible.
-
-[No sources needed since this section provides general guidance]
+- Innovation endpoints: Both Inovasi and SkInovasi endpoints are designed for efficient read-only access with minimal processing overhead.
 
 ## Troubleshooting Guide
 Common issues and resolutions:
@@ -558,4 +665,6 @@ Common issues and resolutions:
 - [SisaPanjarController.php:87-92](file://app/Http/Controllers/SisaPanjarController.php#L87-L92)
 
 ## Conclusion
-The public read-only API provides consistent, paginated access to multiple datasets with standardized JSON responses and robust validation. A global rate limit of 100 requests per minute protects the system from abuse. Use the documented query parameters, pagination controls, and year-based filters to efficiently retrieve data. For bulk retrieval, consider batching and respecting rate limits to avoid throttling.
+The public read-only API provides consistent, paginated access to multiple datasets with standardized JSON responses and robust validation. A global rate limit of 100 requests per minute protects the system from abuse. Use the documented query parameters, pagination controls, and filtering options to efficiently retrieve data. For bulk retrieval, consider batching and respecting rate limits to avoid throttling.
+
+The addition of innovation data endpoints (Inovasi and SkInovasi) enhances the API's capability to expose institutional innovation initiatives and directives, providing clients with comprehensive access to innovation-related information through standardized RESTful interfaces.
