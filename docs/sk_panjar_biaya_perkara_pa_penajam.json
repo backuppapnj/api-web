@@ -1,0 +1,514 @@
+{
+  "metadata": {
+    "jenis_dokumen": "Keputusan Ketua Pengadilan Agama",
+    "instansi": "Pengadilan Agama Penajam",
+    "nomor_sk": "1307/KPA.W17-A8/HK1.2.5/XII/2025",
+    "tentang": "Panjar Biaya Perkara Perdata pada Pengadilan Agama Penajam",
+    "tanggal_ditetapkan": "2025-12-31",
+    "tempat_ditetapkan": "Penajam",
+    "ditandatangani_oleh": {
+      "nama": "Fattahurridlo Al Ghany",
+      "jabatan": "Ketua Pengadilan Agama Penajam",
+      "nip": "198505092009041006"
+    },
+    "mencabut_sk": "W17-A8/744.a/HK.05/VIII/2024",
+    "rekening_pembayaran": {
+      "nama_rekening": "RPL 047 PDT PA PNJ",
+      "nomor_rekening": "2210201877",
+      "bank": "BSI Cabang Penajam"
+    }
+  },
+  "dasar_hukum": {
+    "undang_undang": [
+      "UU No. 48 Tahun 2009 tentang Kekuasaan Kehakiman",
+      "UU No. 3 Tahun 2009 tentang Perubahan Kedua atas UU No. 14 Tahun 1985 tentang Mahkamah Agung",
+      "UU No. 50 Tahun 2009 tentang Perubahan Kedua atas UU No. 7 Tahun 1989 tentang Peradilan Agama",
+      "UU No. 10 Tahun 2020 tentang Bea Meterai",
+      "Pasal 148, 149 dan 150 Rechtreglement voor de Buitengewesten"
+    ],
+    "peraturan_pemerintah": [
+      "PP No. 5 Tahun 2019 tentang Jenis dan Tarif atas Jenis PNBP yang Berlaku pada MA dan Badan Peradilan"
+    ],
+    "perma": [
+      "PERMA No. 3 Tahun 2012 tentang Biaya Proses Penyelesaian Perkara",
+      "PERMA No. 1 Tahun 2016 tentang Prosedur Mediasi di Pengadilan",
+      "PERMA No. 5 Tahun 2019 tentang Tata Cara Penyelesaian Gugatan Sederhana",
+      "PERMA No. 3 Tahun 2022 tentang Mediasi di Pengadilan secara Elektronik",
+      "PERMA No. 7 Tahun 2022 tentang Administrasi Perkara dan Persidangan di Pengadilan secara Elektronik"
+    ],
+    "sema": [
+      "SEMA No. 4 Tahun 2008 tentang Pemungutan Biaya Perkara",
+      "SEMA No. 1 Tahun 2023 tentang Tata Cara Panggilan dan Pemberitahuan Melalui Surat Tercatat"
+    ],
+    "kma": [
+      "KMA No. 363/KMA/SK/XII/2022 tentang Petunjuk Teknis Administrasi dan Persidangan Perkara secara Elektronik",
+      "KMA No. KMA/032/SK/IV/2006 tentang Pemberlakuan Buku II Pedoman Pelaksanaan Tugas dan Administrasi Peradilan",
+      "KMA No. KMA/080/SK/VIII/2006 tentang Pedoman Pelaksanaan Pengawasan",
+      "KMA No. 140/KMA/SK.HK2/VIII/2025 tentang Perubahan Besaran Biaya Proses Penyelesaian Perkara pada MA",
+      "KMA No. 57/KMA/SK/III/2019 tentang Petunjuk Pelaksanaan Pengelolaan PNBP"
+    ],
+    "lainnya": [
+      "Surat Dinas Panitera MA No. 907/PAN/HK2/VIII/2025",
+      "Keputusan Dirjen Badilag MA No. 1465/DJA/HK.05/SK/IX/2023",
+      "Surat Dinas Dirjen Badilag MA No. 055/DjA/RA1/I/2024"
+    ]
+  },
+  "ketentuan_umum": {
+    "kesatu": "Mencabut SK Ketua PA Penajam No. W17-A8/744.a/HK.05/VIII/2024 tentang Panjar Biaya Perkara Tahun 2024",
+    "kedua": "Penaksiran panjar biaya perkara dengan rumusan tercantum pada lampiran",
+    "ketiga": "Apabila panjar biaya habis namun perkara belum selesai, dapat diminta tambahan panjar dari Penggugat/Pemohon sesuai kebutuhan",
+    "keempat": "Panjar biaya yang lebih dikembalikan kepada Penggugat/Pemohon melalui mekanisme non-tunai pada hari putus atau sidang ikrar talak",
+    "kelima": "Penyetoran melalui rekening RPL 047 PDT PA PNJ No. 2210201877 Bank BSI Cabang Penajam",
+    "keenam": "SK berlaku efektif sejak tanggal ditetapkan"
+  },
+  "lampiran_1_klasifikasi_radius": {
+    "judul": "Klasifikasi Radius Wilayah Hukum Pengadilan Agama Penajam",
+    "kecamatan": [
+      {
+        "nama_kecamatan": "Penajam",
+        "wilayah": [
+          { "kelurahan_desa": "Penajam", "radius": "I", "biaya": 100000 },
+          { "kelurahan_desa": "Gunung Steleng", "radius": "I", "biaya": 100000 },
+          { "kelurahan_desa": "Nenang", "radius": "I", "biaya": 100000 },
+          { "kelurahan_desa": "Giri Mukti", "radius": "I", "biaya": 100000 },
+          { "kelurahan_desa": "Lawe-Lawe", "radius": "I", "biaya": 100000 },
+          { "kelurahan_desa": "Nipah-Nipah", "radius": "I", "biaya": 100000 },
+          { "kelurahan_desa": "Giri Purwa", "radius": "I", "biaya": 150000 },
+          { "kelurahan_desa": "Giri Purwa (Majapahit)", "radius": "I", "biaya": 300000 },
+          { "kelurahan_desa": "Tanjung Tengah", "radius": "I", "biaya": 150000 },
+          { "kelurahan_desa": "Saloloang", "radius": "I", "biaya": 150000 },
+          { "kelurahan_desa": "Pejala", "radius": "I", "biaya": 150000 },
+          { "kelurahan_desa": "Kampung Baru", "radius": "I", "biaya": 150000 },
+          { "kelurahan_desa": "Sesumpu", "radius": "I", "biaya": 150000 },
+          { "kelurahan_desa": "Sei Parit", "radius": "I", "biaya": 100000 },
+          { "kelurahan_desa": "Petung", "radius": "I", "biaya": 150000 },
+          { "kelurahan_desa": "Sidorejo", "radius": "I", "biaya": 200000 },
+          { "kelurahan_desa": "Sotek", "radius": "II", "biaya": 250000 },
+          { "kelurahan_desa": "Bulu Minung", "radius": "II", "biaya": 250000 },
+          { "kelurahan_desa": "Riko", "radius": "II", "biaya": 300000 },
+          { "kelurahan_desa": "Bukit Subur", "radius": "II", "biaya": 350000 },
+          { "kelurahan_desa": "Sepan", "radius": "II", "biaya": 250000 },
+          { "kelurahan_desa": "Jenebora", "radius": "IV Khusus", "biaya": 500000 },
+          { "kelurahan_desa": "Pantai Lango", "radius": "IV Khusus", "biaya": 500000 },
+          { "kelurahan_desa": "Gersik", "radius": "II", "biaya": 500000 }
+        ]
+      },
+      {
+        "nama_kecamatan": "Waru",
+        "wilayah": [
+          { "kelurahan_desa": "Waru", "radius": "II", "biaya": 200000 },
+          { "kelurahan_desa": "Waru (WKP)", "radius": "II", "biaya": 300000 },
+          { "kelurahan_desa": "Bangun Mulyo", "radius": "II", "biaya": 300000 },
+          { "kelurahan_desa": "Sesulu", "radius": "II", "biaya": 200000 },
+          { "kelurahan_desa": "Api-Api", "radius": "II", "biaya": 200000 }
+        ]
+      },
+      {
+        "nama_kecamatan": "Babulu",
+        "wilayah": [
+          { "kelurahan_desa": "Babulu Darat", "radius": "II", "biaya": 250000 },
+          { "kelurahan_desa": "Babulu Laut", "radius": "III", "biaya": 300000 },
+          { "kelurahan_desa": "Labangka", "radius": "II", "biaya": 200000 },
+          { "kelurahan_desa": "Labangka Barat", "radius": "II", "biaya": 200000 },
+          { "kelurahan_desa": "Gunung Intan", "radius": "III", "biaya": 250000 },
+          { "kelurahan_desa": "Gunung Mulia", "radius": "III", "biaya": 250000 },
+          { "kelurahan_desa": "Gunung Makmur", "radius": "III", "biaya": 300000 },
+          { "kelurahan_desa": "Labangka (STN)", "radius": "III", "biaya": 300000 },
+          { "kelurahan_desa": "Rintik", "radius": "III", "biaya": 300000 },
+          { "kelurahan_desa": "Rintik (GMK)", "radius": "III", "biaya": 400000 },
+          { "kelurahan_desa": "Sebakung Jaya", "radius": "III", "biaya": 350000 },
+          { "kelurahan_desa": "Sri Raharja", "radius": "III", "biaya": 350000 },
+          { "kelurahan_desa": "Sumber Sari", "radius": "III", "biaya": 350000 },
+          { "kelurahan_desa": "Rawa Mulia", "radius": "III", "biaya": 350000 }
+        ]
+      },
+      {
+        "nama_kecamatan": "Sepaku",
+        "wilayah": [
+          { "kelurahan_desa": "Sepaku", "radius": "IV", "biaya": 400000 },
+          { "kelurahan_desa": "Argo Mulyo", "radius": "IV", "biaya": 450000 },
+          { "kelurahan_desa": "Bukit Raya", "radius": "IV", "biaya": 400000 },
+          { "kelurahan_desa": "Bumi Harapan", "radius": "IV", "biaya": 400000 },
+          { "kelurahan_desa": "Binuang", "radius": "III", "biaya": 350000 },
+          { "kelurahan_desa": "Pemaluan", "radius": "III", "biaya": 300000 },
+          { "kelurahan_desa": "Karang Jinawi", "radius": "IV", "biaya": 500000 },
+          { "kelurahan_desa": "Semoi 2", "radius": "IV", "biaya": 450000 },
+          { "kelurahan_desa": "Suka Raja", "radius": "IV", "biaya": 400000 },
+          { "kelurahan_desa": "Sukomulyo", "radius": "IV", "biaya": 350000 },
+          { "kelurahan_desa": "Telemow", "radius": "III", "biaya": 350000 },
+          { "kelurahan_desa": "Tengin Baru", "radius": "IV", "biaya": 400000 },
+          { "kelurahan_desa": "Wonosari", "radius": "IV", "biaya": 500000 },
+          { "kelurahan_desa": "Maridan", "radius": "III", "biaya": 350000 },
+          { "kelurahan_desa": "Mentawir", "radius": "IV Khusus", "biaya": 500000 }
+        ]
+      }
+    ],
+    "biaya_lain_lain": {
+      "sewa_mobil_transportasi": {
+        "keperluan": "Pelaksanaan Sidang Pemeriksaan Setempat (Decente), Sita, dan Eksekusi",
+        "biaya_per_hari": 1100000,
+        "keterangan": "Per-hari, termasuk jasa sopir dan bahan bakar (BBM)"
+      },
+      "biaya_e_court": 0,
+      "biaya_surat_tercatat": "Sesuai resi Pos",
+      "biaya_panggilan_umum": {
+        "via_radio_idc_balikpapan": {
+          "keterangan": "Pengadilan Negeri Penajam Kelas II melalui Radio IDC Balikpapan",
+          "biaya": 300000
+        },
+        "via_papan_pengumuman": {
+          "keterangan": "Pengadilan Agama Penajam Kelas II melalui Papan Pengumuman Pemkab Penajam Paser Utara",
+          "biaya": 100000
+        }
+      }
+    }
+  },
+  "lampiran_2_komponen_panjar_biaya": {
+    "A_panjar_manual": {
+      "1_permohonan_voluntair": {
+        "pnbp_pendaftaran": 30000,
+        "biaya_proses_atk": 75000,
+        "pnbp_surat_kuasa": 10000,
+        "biaya_panggilan_pemohon_2x": "Sesuaikan Radius",
+        "pnbp_panggilan_pertama": 10000,
+        "redaksi": 10000,
+        "materai": 10000,
+        "pnbp_pencabutan": 10000
+      },
+      "2_gugatan_contentius_perceraian": {
+        "pnbp_pendaftaran": 30000,
+        "biaya_proses_atk": 75000,
+        "pnbp_surat_kuasa": 10000,
+        "biaya_panggilan_penggugat_2x": "Sesuaikan Radius",
+        "biaya_panggilan_tergugat_3x": "Sesuaikan Radius",
+        "pnbp_panggilan_pertama_penggugat": 10000,
+        "pnbp_panggilan_pertama_tergugat": 10000,
+        "redaksi": 10000,
+        "materai": 10000,
+        "biaya_pemberitahuan_putusan_penggugat_tergugat": "Sesuaikan Radius",
+        "pnbp_pemberitahuan_putusan_penggugat": 10000,
+        "pnbp_pemberitahuan_putusan_tergugat": 10000,
+        "pnbp_pencabutan": 10000,
+        "tambahan_cerai_talak": {
+          "biaya_panggilan_ikrar_pemohon": "Sesuaikan Radius",
+          "biaya_panggilan_ikrar_termohon": "Sesuaikan Radius"
+        }
+      },
+      "3_gugatan_non_perceraian_sederhana_perlawanan": {
+        "pnbp_pendaftaran": 30000,
+        "biaya_proses_atk": 75000,
+        "pnbp_surat_kuasa": 10000,
+        "biaya_panggilan_penggugat_2x": "Sesuaikan Radius",
+        "biaya_panggilan_tergugat_3x": "Sesuaikan Radius",
+        "pnbp_panggilan_pertama_penggugat": 10000,
+        "pnbp_panggilan_pertama_tergugat": 10000,
+        "redaksi": 10000,
+        "materai": 10000,
+        "biaya_pemberitahuan_putusan_penggugat_tergugat": "Sesuaikan Radius",
+        "pnbp_pemberitahuan_putusan_penggugat": 10000,
+        "pnbp_pemberitahuan_putusan_tergugat": 10000,
+        "pnbp_pencabutan": 10000
+      },
+      "4_banding": {
+        "pnbp_pendaftaran": 50000,
+        "pnbp_akta_pernyataan_banding": 10000,
+        "biaya_proses_disetor_pta": 150000,
+        "pnbp_surat_kuasa": 10000,
+        "biaya_pemberitahuan_banding": "Sesuaikan Radius",
+        "pnbp_pemberitahuan_banding": 10000,
+        "biaya_pemberitahuan_memori_banding": "Sesuaikan Radius",
+        "pnbp_pemberitahuan_memori_banding": 10000,
+        "biaya_pemberitahuan_kontra_memori_banding": "Sesuaikan Radius",
+        "pnbp_pemberitahuan_kontra_memori_banding": 10000,
+        "biaya_pemberitahuan_inzage_pembanding": "Sesuaikan Radius",
+        "pnbp_pemberitahuan_inzage_pembanding": 10000,
+        "biaya_pemberitahuan_inzage_terbanding": "Sesuaikan Radius",
+        "pnbp_pemberitahuan_inzage_terbanding": 10000,
+        "penggandaan_dan_pemberkasan": 300000,
+        "biaya_pengiriman_berkas": 200000,
+        "biaya_pemberitahuan_putusan_sela_pembanding": "Sesuaikan Radius",
+        "pnbp_putusan_sela_pembanding": 10000,
+        "biaya_pemberitahuan_putusan_sela_terbanding": "Sesuaikan Radius",
+        "pnbp_putusan_sela_terbanding": 10000,
+        "pemanggilan_pembanding_putusan_sela_pta": "Sesuaikan Radius",
+        "pnbp_pembanding_putusan_sela_pta": 10000,
+        "pemanggilan_terbanding_putusan_sela_pta": "Sesuaikan Radius",
+        "pnbp_terbanding_putusan_sela_pta": 10000,
+        "pnbp_pencabutan_banding": 10000,
+        "pemberitahuan_pencabutan_banding_terbanding": "Sesuaikan Radius",
+        "pnbp_pencabutan_banding_terbanding": 10000,
+        "pemberitahuan_putusan_pembanding": "Sesuaikan Radius",
+        "pnbp_pemberitahuan_putusan_pembanding": 10000,
+        "pemberitahuan_putusan_terbanding": "Sesuaikan Radius",
+        "pnbp_pemberitahuan_putusan_terbanding": 10000
+      },
+      "5_kasasi": {
+        "pnbp_pendaftaran": 50000,
+        "pnbp_akta_pernyataan_kasasi": 10000,
+        "pnbp_surat_kuasa": 10000,
+        "biaya_proses_disetor_ma": 500000,
+        "biaya_pemberitahuan_pernyataan_kasasi_termohon": "Sesuaikan Radius",
+        "pnbp_pemberitahuan_pernyataan_kasasi": 10000,
+        "biaya_memori_kasasi_termohon": "Sesuaikan Radius",
+        "pnbp_penyerahan_memori_kasasi": 10000,
+        "biaya_penyampaian_kontra_memori_kasasi": "Sesuaikan Radius",
+        "pnbp_penyerahan_kontra_kasasi": 10000,
+        "pnbp_pencabutan_kasasi": 10000,
+        "pemberitahuan_pencabutan_kasasi_termohon": "Sesuaikan Radius",
+        "pnbp_pemberitahuan_pencabutan_kasasi_termohon": 10000,
+        "pemberitahuan_putusan_kasasi_pemohon": "Sesuaikan Radius",
+        "pnbp_pemberitahuan_putusan_kasasi_pemohon": 10000,
+        "pemberitahuan_putusan_kasasi_termohon": "Sesuaikan Radius",
+        "pnbp_pemberitahuan_putusan_kasasi_termohon": 10000
+      },
+      "6_peninjauan_kembali_pk": {
+        "pnbp_pendaftaran_permohonan_pk": 200000,
+        "pnbp_akta_pernyataan_pk": 10000,
+        "pnbp_surat_kuasa": 10000,
+        "biaya_perkara_pk_disetor_ma": 2500000,
+        "biaya_pemberitahuan_pernyataan_pk_termohon": "Sesuaikan Radius",
+        "pnbp_pemberitahuan_pernyataan_pk": 10000,
+        "panggilan_sidang_novum_pemohon_pk": "Sesuaikan Radius",
+        "pnbp_penyumpahan_novum": 10000,
+        "biaya_penyerahan_memori_pk_termohon": "Sesuaikan Radius",
+        "pnbp_penyerahan_salinan_memori_pk": 10000,
+        "biaya_penyerahan_kontra_pk": "Sesuaikan Radius",
+        "pnbp_penyerahan_salinan_kontra_memori_pk": 10000,
+        "pnbp_pencabutan": 10000,
+        "pemberitahuan_pencabutan_pk_termohon": "Sesuaikan Radius",
+        "pnbp_pemberitahuan_pencabutan_pk_termohon": 10000,
+        "pemberitahuan_putusan_pk_pemohon": "Sesuaikan Radius",
+        "pnbp_pemberitahuan_putusan_pk_pemohon": 10000,
+        "pemberitahuan_putusan_pk_termohon": "Sesuaikan Radius",
+        "pnbp_pemberitahuan_putusan_pk_termohon": 10000
+      },
+      "7_teguran_aanmaning": {
+        "pnbp_pendaftaran": 10000,
+        "pnbp_penetapan_aanmaning_redaksi": 10000,
+        "materai_penetapan": 10000,
+        "biaya_proses_atk": 75000,
+        "biaya_panggilan_aanmaning_3x": "Sesuaikan Radius",
+        "berita_acara_teguran": 10000,
+        "pnbp_pendaftaran_permohonan_eksekusi": 10000,
+        "pnbp_penetapan_teguran": 10000,
+        "pnbp_relaas_panggilan_teguran_termohon": 10000,
+        "pnbp_berita_acara_teguran": 10000
+      },
+      "8_sita": {
+        "deskripsi": "Sita Jaminan/Sita Eksekusi/Sita Revindikasi/Sita Marital/Pengangkatan Sita",
+        "pnbp_pendaftaran_permohonan_sita": 25000,
+        "pnbp_penetapan_sita": 25000,
+        "pnbp_berita_acara_penyitaan": 25000,
+        "redaksi_penetapan": 10000,
+        "biaya_meterai": 10000,
+        "fotokopi_berita_acara": "Disesuaikan (5 set atau lebih)",
+        "biaya_transportasi": 1100000,
+        "biaya_pelaksanaan_juru_sita": 650000,
+        "biaya_pelaksanaan_2_saksi": 1000000,
+        "biaya_pendaftaran_bpn_kelurahan_samsat": "Disesuaikan"
+      },
+      "9_konstatering": {
+        "pnbp_pemeriksaan_setempat": 10000,
+        "biaya_transportasi": 1100000,
+        "pemberitahuan_ps_ke_bpn": "Sesuai resi Pos",
+        "pemberitahuan_ps_ke_desa": "Sesuai resi Pos",
+        "pemberitahuan_ps_ke_polsek": "Sesuai resi Pos"
+      },
+      "10_eksekusi_riil_pengosongan": {
+        "penetapan_eksekusi_riil_redaksi": 10000,
+        "materai_penetapan": 10000,
+        "transportasi": 1100000,
+        "biaya_jurusita": 650000,
+        "biaya_2_saksi": 1000000,
+        "pnbp_pelaksanaan_sita_eksekusi": 10000
+      },
+      "11_eksekusi_lelang_membayar_uang": {
+        "penetapan_eksekusi_redaksi": 10000,
+        "materai_penetapan": 10000,
+        "biaya_pejabat_penjual": 650000,
+        "biaya_iklan_surat_kabar": "Sesuai Media",
+        "transportasi": 1100000,
+        "pnbp_pelaksanaan_sita_eksekusi": 10000
+      },
+      "12_eksekusi_melakukan_perbuatan": {
+        "penetapan_eksekusi_redaksi": 10000,
+        "aanmaning": "Sesuai SK Panjar",
+        "penetapan_konversi_perbuatan_pembayaran_uang": 10000,
+        "sita_eksekusi": "Sesuai SK Panjar",
+        "biaya_pejabat_penjual": 650000,
+        "biaya_iklan_surat_kabar": "Sesuai Media",
+        "transportasi": 1100000,
+        "pnbp_pelaksanaan_sita_eksekusi": 10000
+      },
+      "13_pencabutan_perkara_eksekusi": {
+        "materai_penetapan_pencabutan": 10000,
+        "redaksi_surat_penetapan": 10000
+      },
+      "14_konsinyasi": {
+        "biaya_pendaftaran": 30000,
+        "biaya_proses": 75000,
+        "pnbp_penetapan_penawaran": 10000,
+        "redaksi": 10000,
+        "materai": 10000,
+        "biaya_pelaksanaan_penawaran_jurusita": 650000,
+        "biaya_pelaksanaan_2_saksi": 1000000,
+        "biaya_transport": 1100000,
+        "pnbp_berita_acara_penawaran_pembayaran_konsinyasi": 10000,
+        "pnbp_berita_acara_konsinyasi": 10000,
+        "panggilan_pemohon": "Sesuai resi Pos",
+        "pnbp_panggilan_pemohon": 10000,
+        "panggilan_termohon": "Sesuai resi Pos",
+        "pnbp_panggilan_termohon": 10000,
+        "pnbp_pengesahan_konsinyasi": 10000,
+        "redaksi_pengesahan": 10000,
+        "materai_pengesahan": 10000,
+        "pemberitahuan_penetapan_pengesahan_termohon": "Sesuai resi Pos",
+        "pnbp_pemberitahuan_penetapan": 10000
+      },
+      "15_pemeriksaan_setempat": {
+        "pnbp_pemeriksaan_setempat": 10000,
+        "biaya_transportasi": 1100000,
+        "pemberitahuan_ps_ke_bpn": "Sesuai resi Pos",
+        "pemberitahuan_ps_ke_desa": "Sesuai resi Pos",
+        "pemberitahuan_ps_ke_polsek": "Sesuai resi Pos"
+      },
+      "ketentuan_khusus": [
+        "Biaya pengamanan pelaksanaan Eksekusi: Pemohon Eksekusi langsung berkoordinasi dengan pihak keamanan",
+        "Biaya Pengosongan pelaksanaan Eksekusi sepenuhnya disiapkan oleh Pemohon"
+      ]
+    },
+    "B_panjar_elektronik_e_court": {
+      "1_permohonan_voluntair": {
+        "pnbp_pendaftaran": 30000,
+        "biaya_proses_atk": 75000,
+        "pnbp_surat_kuasa": 10000,
+        "biaya_panggilan_pemohon_2x": 0,
+        "pnbp_panggilan_pertama": 10000,
+        "redaksi": 10000,
+        "materai": 10000,
+        "pnbp_pencabutan": 10000
+      },
+      "2_gugatan_contentius_perceraian": {
+        "pnbp_pendaftaran": 30000,
+        "biaya_proses_atk": 75000,
+        "pnbp_surat_kuasa": 10000,
+        "biaya_panggilan_penggugat_2x": 0,
+        "biaya_panggilan_tergugat_3x": "Sesuai resi Pos",
+        "pnbp_panggilan_pertama_penggugat": 10000,
+        "pnbp_panggilan_pertama_tergugat": 10000,
+        "redaksi": 10000,
+        "materai": 10000,
+        "biaya_pemberitahuan_putusan_penggugat_tergugat": "Sesuai resi Pos",
+        "pnbp_pemberitahuan_putusan_penggugat": 10000,
+        "pnbp_pemberitahuan_putusan_tergugat": 10000,
+        "pnbp_pencabutan": 10000,
+        "tambahan_cerai_talak": {
+          "biaya_panggilan_ikrar_pemohon": 0,
+          "biaya_panggilan_ikrar_termohon": "Sesuai resi Pos"
+        }
+      },
+      "3_gugatan_non_perceraian_sederhana_perlawanan": {
+        "pnbp_pendaftaran": 30000,
+        "biaya_proses_atk": 75000,
+        "pnbp_surat_kuasa": 10000,
+        "biaya_panggilan_penggugat_2x": 0,
+        "biaya_panggilan_tergugat_3x": "Sesuai resi Pos",
+        "pnbp_panggilan_pertama_penggugat": 10000,
+        "pnbp_panggilan_pertama_tergugat": 10000,
+        "redaksi": 10000,
+        "materai": 10000,
+        "biaya_pemberitahuan_putusan_penggugat_tergugat": "Sesuai resi Pos",
+        "pnbp_pemberitahuan_putusan_penggugat": 10000,
+        "pnbp_pemberitahuan_putusan_tergugat": 10000,
+        "pnbp_pencabutan": 10000
+      },
+      "4_banding": {
+        "pnbp_pendaftaran": 50000,
+        "pnbp_akta_pernyataan_banding": 10000,
+        "biaya_proses_disetor_pta": 150000,
+        "pnbp_surat_kuasa": 10000,
+        "biaya_pemberitahuan_banding": "Sesuai resi Pos",
+        "pnbp_pemberitahuan_banding": 10000,
+        "biaya_pemberitahuan_memori_banding": "Sesuai resi Pos",
+        "pnbp_pemberitahuan_memori_banding": 10000,
+        "biaya_pemberitahuan_kontra_memori_banding": 0,
+        "pnbp_pemberitahuan_kontra_memori_banding": 10000,
+        "biaya_pemberitahuan_inzage_pembanding": 0,
+        "pnbp_pemberitahuan_inzage_pembanding": 10000,
+        "biaya_pemberitahuan_inzage_terbanding": "Sesuai resi Pos",
+        "pnbp_pemberitahuan_inzage_terbanding": 10000,
+        "biaya_pemberitahuan_putusan_sela_pembanding": 0,
+        "pnbp_putusan_sela_pembanding": 10000,
+        "biaya_pemberitahuan_putusan_sela_terbanding": "Sesuai resi Pos",
+        "pnbp_putusan_sela_terbanding": 10000,
+        "pemanggilan_pembanding_putusan_sela_pta": 0,
+        "pnbp_pembanding_putusan_sela_pta": 10000,
+        "pemanggilan_terbanding_putusan_sela_pta": "Sesuai resi Pos",
+        "pnbp_terbanding_putusan_sela_pta": 10000,
+        "pnbp_pencabutan_banding": 10000,
+        "pemberitahuan_pencabutan_banding_terbanding": "Sesuai resi Pos",
+        "pnbp_pencabutan_banding_terbanding": 10000,
+        "pemberitahuan_putusan_pembanding": 0,
+        "pnbp_pemberitahuan_putusan_pembanding": 10000,
+        "pemberitahuan_putusan_terbanding": "Sesuai resi Pos",
+        "pnbp_pemberitahuan_putusan_terbanding": 10000
+      },
+      "5_kasasi": {
+        "pnbp_pendaftaran": 50000,
+        "pnbp_akta_pernyataan_kasasi": 10000,
+        "pnbp_surat_kuasa": 10000,
+        "biaya_proses_disetor_ma": 400000,
+        "biaya_pemberitahuan_pernyataan_kasasi_termohon": "Sesuai resi Pos",
+        "pnbp_pemberitahuan_pernyataan_kasasi": 10000,
+        "biaya_memori_kasasi_termohon": "Sesuai resi Pos",
+        "pnbp_penyerahan_memori_kasasi": 10000,
+        "biaya_penyampaian_kontra_memori_kasasi": 0,
+        "pnbp_penyerahan_kontra_kasasi": 10000,
+        "pemberitahuan_putusan_sela_kasasi_pemohon": 0,
+        "pnbp_pemberitahuan_putusan_sela_kasasi_pemohon": 10000,
+        "pemberitahuan_putusan_sela_kasasi_termohon": "Sesuai resi Pos",
+        "pnbp_pemberitahuan_putusan_sela_kasasi_termohon": 10000,
+        "pnbp_pencabutan_kasasi": 10000,
+        "pemberitahuan_pencabutan_kasasi_termohon": "Sesuai resi Pos",
+        "pnbp_pemberitahuan_pencabutan_kasasi_termohon": 10000,
+        "pemberitahuan_putusan_kasasi_pemohon": 0,
+        "pnbp_pemberitahuan_putusan_kasasi_pemohon": 10000,
+        "pemberitahuan_putusan_kasasi_termohon": "Sesuai resi Pos",
+        "pnbp_pemberitahuan_putusan_kasasi_termohon": 10000
+      },
+      "6_peninjauan_kembali_pk": {
+        "pnbp_pendaftaran_permohonan_pk": 200000,
+        "pnbp_akta_pernyataan_pk": 10000,
+        "pnbp_surat_kuasa": 10000,
+        "biaya_perkara_pk_disetor_ma": 2000000,
+        "biaya_pemberitahuan_pernyataan_pk_termohon": "Sesuai resi Pos",
+        "pnbp_pemberitahuan_pernyataan_pk": 10000,
+        "panggilan_sidang_novum_pemohon_pk": 0,
+        "pnbp_penyumpahan_novum": 10000,
+        "biaya_penyerahan_memori_pk_termohon": "Sesuai resi Pos",
+        "pnbp_penyerahan_salinan_memori_pk": 10000,
+        "biaya_penyerahan_kontra_pk": 0,
+        "pnbp_penyerahan_salinan_kontra_memori_pk": 10000,
+        "biaya_pemberitahuan_putusan_sela_pk_pemohon": 0,
+        "pnbp_pemberitahuan_putusan_sela_pk_pemohon": 10000,
+        "biaya_pemberitahuan_putusan_sela_pk_termohon": "Sesuai resi Pos",
+        "pnbp_pemberitahuan_putusan_sela_pk_termohon": 10000,
+        "pnbp_pencabutan": 10000,
+        "pemberitahuan_pencabutan_pk_termohon": "Sesuai resi Pos",
+        "pnbp_pemberitahuan_pencabutan_pk_termohon": 10000,
+        "pemberitahuan_putusan_pk_pemohon": 0,
+        "pnbp_pemberitahuan_putusan_pk_pemohon": 10000,
+        "pemberitahuan_putusan_pk_termohon": "Sesuai resi Pos",
+        "pnbp_pemberitahuan_putusan_pk_termohon": 10000
+      },
+      "keterangan": [
+        "Biaya Panggilan dan Pemberitahuan kepada Penggugat/Pemohon/Pelawan adalah Rp 0,00 karena dilaksanakan melalui panggilan dan pemberitahuan elektronik",
+        "Biaya Panggilan dan Pemberitahuan kepada Tergugat/Termohon/Terlawan menyesuaikan dengan biaya resi pengiriman pos apabila tidak bersedia/tidak menggunakan E-Litigasi/E-Court"
+      ]
+    }
+  },
+  "tembusan": [
+    "Direktur Jenderal Badan Peradilan Agama Mahkamah Agung RI",
+    "Ketua Pengadilan Tinggi Agama Samarinda"
+  ]
+}
