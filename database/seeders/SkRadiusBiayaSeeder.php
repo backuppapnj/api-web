@@ -11,7 +11,7 @@ class SkRadiusBiayaSeeder extends Seeder
     public function run(): void
     {
         // Read JSON file
-        $jsonPath = base_path('../joomla-orig/sk_panjar_biaya_perkara_pa_penajam.json');
+        $jsonPath = base_path('docs/sk_panjar_biaya_perkara_pa_penajam.json');
 
         if (!file_exists($jsonPath)) {
             $this->command->warn('SkRadiusBiayaSeeder: JSON file not found at ' . $jsonPath);
