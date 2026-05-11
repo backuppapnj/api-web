@@ -1,23 +1,23 @@
-# SAKIP Revision History Implementation Plan
+# SAKIP Reviu History Implementation Plan
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Menambahkan history revisi dokumen SAKIP dengan checkbox revisi di admin-panel dan modal history di Joomla.
+**Goal:** Menambahkan history reviu dokumen SAKIP dengan checkbox reviu di admin-panel dan modal history di Joomla.
 
-**Architecture:** Backend Lumen menyimpan revisi pada tabel `sakip_revisions` dan mengirim relasi revisi pada API publik. Admin-panel memakai checkbox untuk memilih update dokumen awal atau membuat revisi baru. Joomla memakai data revisi dari API untuk menampilkan versi aktif dan modal history.
+**Architecture:** Backend Lumen menyimpan reviu pada tabel `sakip_revisions` dan mengirim relasi reviu pada API publik. Admin-panel memakai checkbox untuk memilih update dokumen awal atau membuat reviu baru. Joomla memakai data reviu dari API untuk menampilkan versi aktif dan modal history.
 
 **Tech Stack:** Lumen 11, Eloquent, MySQL migrations, Next.js App Router, TypeScript, Radix/shadcn dialog, Joomla HTML/JavaScript.
 
 ---
 
-### Task 1: Pengaman Penomoran Revisi
+### Task 1: Pengaman Penomoran Reviu
 
 **Files:**
 - Create: `tests/Unit/SakipRevisionSequenceTest.php`
 - Create: `app/Support/SakipRevisionSequence.php`
 
 **Steps:**
-1. Tulis test untuk nomor revisi berikutnya dari nilai maksimum saat ini.
+1. Tulis test untuk nomor reviu berikutnya dari nilai maksimum saat ini.
 2. Jalankan PHPUnit dan pastikan test gagal karena class belum ada.
 3. Implementasikan helper kecil `SakipRevisionSequence::next`.
 4. Jalankan PHPUnit dan pastikan test lulus.
@@ -33,10 +33,10 @@
 - Modify: `routes/web.php` bila endpoint tambahan diperlukan
 
 **Steps:**
-1. Tambahkan migration publish date dan tabel revision.
+1. Tambahkan migration publish date dan tabel reviu.
 2. Tambahkan relasi Eloquent.
 3. Update response API agar menyertakan `revisions`, `latest_revision`, dan `dokumen_aktif`.
-4. Update `update` agar `is_revisi=1` membuat revision baru setelah validasi dokumen awal dan dokumen revisi.
+4. Update `update` agar `is_revisi=1` membuat reviu baru setelah validasi dokumen awal dan dokumen reviu.
 
 ### Task 3: Admin Panel
 
@@ -47,9 +47,9 @@
 - Modify: `E:/project/admin-panel/app/sakip/[id]/edit/page.tsx`
 
 **Steps:**
-1. Tambahkan type revision dan field publish date.
+1. Tambahkan type reviu dan field publish date.
 2. Tambahkan input link/tanggal publish pada tambah dan edit.
-3. Tambahkan checkbox revisi pada edit dengan validasi dokumen awal.
+3. Tambahkan checkbox reviu pada edit dengan validasi dokumen awal.
 4. Tambahkan tombol/modal history pada list dan perbaiki filter jenis.
 
 ### Task 4: Joomla Integration
@@ -60,7 +60,7 @@
 **Steps:**
 1. Render versi aktif dari `latest_revision` jika ada.
 2. Tambahkan tombol history.
-3. Tambahkan modal history berisi revisi, tanggal publish, keterangan, dan link dokumen.
+3. Tambahkan modal history berisi reviu, tanggal publish, keterangan, dan link dokumen.
 
 ### Task 5: Verifikasi
 

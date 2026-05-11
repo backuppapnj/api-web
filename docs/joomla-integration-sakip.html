@@ -409,7 +409,7 @@
     modalEl.innerHTML = '' +
         '<div class="sakip-modal-panel" role="dialog" aria-modal="true">' +
         '<div class="sakip-modal-header">' +
-        '<div><h3 id="sakipModalTitle">History Dokumen SAKIP</h3><p id="sakipModalSubtitle"></p></div>' +
+        '<div><h3 id="sakipModalTitle">History Reviu Dokumen SAKIP</h3><p id="sakipModalSubtitle"></p></div>' +
         '<button type="button" class="sakip-modal-close" aria-label="Tutup">&times;</button>' +
         '</div>' +
         '<div class="sakip-modal-body" id="sakipModalBody"></div>' +
@@ -509,7 +509,7 @@
 
     function getActiveLabel(row) {
         var latest = getLatestRevision(row);
-        return latest ? 'Revisi ' + latest.revisi_ke : 'Dokumen Awal';
+        return latest ? 'Reviu ' + latest.revisi_ke : 'Dokumen Awal';
     }
 
     function getActiveDate(row) {
@@ -551,7 +551,7 @@
         var row = historyStore[key];
         if (!row) return;
 
-        modalTitleEl.textContent = 'History Dokumen SAKIP';
+        modalTitleEl.textContent = 'History Reviu Dokumen SAKIP';
         modalSubtitleEl.textContent = row.jenis_dokumen + ' Tahun ' + row.tahun;
 
         var html = renderHistoryItem('Dokumen Awal', row.tanggal_publish, row.uraian, row.link_dokumen);
@@ -559,14 +559,14 @@
         if (revisions.length > 0) {
             revisions.forEach(function (revision) {
                 html += renderHistoryItem(
-                    'Revisi ' + revision.revisi_ke,
+                    'Reviu ' + revision.revisi_ke,
                     revision.tanggal_publish,
                     revision.keterangan,
                     revision.link_dokumen
                 );
             });
         } else {
-            html += '<div class="sakip-loading" style="padding:1rem 0;">Belum ada history revisi.</div>';
+            html += '<div class="sakip-loading" style="padding:1rem 0;">Belum ada history reviu.</div>';
         }
 
         modalBodyEl.innerHTML = html;

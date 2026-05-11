@@ -197,7 +197,7 @@ class SakipController extends Controller
             'file_dokumen' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:20480',
         ];
         $this->validate($request, $rules, [
-            'tanggal_publish.required' => 'Tanggal publish revisi wajib diisi.',
+            'tanggal_publish.required' => 'Tanggal publish reviu wajib diisi.',
             'tanggal_publish.date' => 'Tanggal publish harus berupa tanggal yang valid.',
         ]);
 
@@ -278,7 +278,7 @@ class SakipController extends Controller
         if ($this->isEmptyText($item->link_dokumen)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Belum ada dokumen awal. Simpan dokumen awal terlebih dahulu sebelum membuat revisi.',
+                'message' => 'Belum ada dokumen awal. Simpan dokumen awal terlebih dahulu sebelum membuat reviu.',
             ], 422);
         }
 
@@ -293,7 +293,7 @@ class SakipController extends Controller
         if ($this->isEmptyText($revisionLink)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Dokumen revisi wajib diisi melalui link atau file.',
+                'message' => 'Dokumen reviu wajib diisi melalui link atau file.',
             ], 422);
         }
 
@@ -311,7 +311,7 @@ class SakipController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Revisi berhasil ditambahkan',
+            'message' => 'Reviu berhasil ditambahkan',
             'data' => $this->formatSakip($item->fresh()),
             'revision' => $this->formatRevision($revision),
         ], 201);
