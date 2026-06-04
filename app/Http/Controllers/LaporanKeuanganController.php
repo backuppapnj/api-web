@@ -56,7 +56,7 @@ class LaporanKeuanganController extends Controller
         // Filter berdasarkan periode
         if ($request->has('periode')) {
             $periode = trim(strip_tags((string) $request->input('periode')));
-            if (in_array($periode, ['semester_1', 'semester_2', 'tahunan'], true)) {
+            if (in_array($periode, ['semester_1', 'semester_2', 'unaudited', 'audited'], true)) {
                 $query->where('periode', $periode);
             }
         }
@@ -123,7 +123,7 @@ class LaporanKeuanganController extends Controller
         $this->validate($request, [
             'tahun' => 'required|integer|min:2000|max:2100',
             'jenis_satker' => 'required|in:401877,401983',
-            'periode' => 'required|in:semester_1,semester_2,tahunan',
+            'periode' => 'required|in:semester_1,semester_2,unaudited,audited',
             'judul' => 'required|string|max:255',
             'file_upload' => 'required|file|mimes:pdf|max:10240',
             'cover_upload' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:5120',
@@ -184,7 +184,7 @@ class LaporanKeuanganController extends Controller
         $this->validate($request, [
             'tahun' => 'required|integer|min:2000|max:2100',
             'jenis_satker' => 'required|in:401877,401983',
-            'periode' => 'required|in:semester_1,semester_2,tahunan',
+            'periode' => 'required|in:semester_1,semester_2,unaudited,audited',
             'judul' => 'required|string|max:255',
             'file_upload' => 'nullable|file|mimes:pdf|max:10240',
             'cover_upload' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:5120',

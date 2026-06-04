@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->integer('tahun')->comment('Tahun laporan keuangan');
             $table->enum('jenis_satker', ['401877', '401983'])->comment('Kode satker');
-            $table->enum('periode', ['semester_1', 'semester_2', 'tahunan'])->comment('Periode laporan');
+            $table->enum('periode', ['semester_1', 'semester_2', 'unaudited', 'audited'])->comment('Periode laporan');
             $table->string('judul', 255)->comment('Judul laporan keuangan');
             $table->string('file_url', 500)->comment('URL file PDF di Google Drive');
             $table->string('cover_url', 500)->nullable()->comment('URL gambar cover di Google Drive');
