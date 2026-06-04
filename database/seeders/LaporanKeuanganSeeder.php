@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\LaporanKeuangan;
 
 class LaporanKeuanganSeeder extends Seeder
 {
@@ -72,15 +73,13 @@ class LaporanKeuanganSeeder extends Seeder
         ];
 
         foreach ($data as $item) {
-            DB::table('laporan_keuangan')->insert([
+            LaporanKeuangan::create([
                 'tahun' => $item['tahun'],
                 'jenis_satker' => $item['jenis_satker'],
                 'periode' => $item['periode'],
                 'judul' => $item['judul'],
                 'file_url' => $item['file_url'],
                 'cover_url' => $item['cover_url'],
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
             ]);
         }
 
