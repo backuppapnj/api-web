@@ -9,14 +9,17 @@ return new class extends Migration
 {
     /**
      * Fix kolom periode di tabel laporan_keuangan.
-     * Migration ini akan drop dan recreate kolom dengan enum yang benar.
+     * Migration ini akan add/recreate kolom dengan enum yang benar.
      */
     public function up(): void
     {
-        // Drop kolom periode yang lama
-        Schema::table('laporan_keuangan', function (Blueprint $table) {
-            $table->dropColumn('periode');
-        });
+        // Cek apakah kolom periode sudah ada
+        if (Schema::hasColumn('laporan_keuangan', 'periode')) {
+            // Drop kolom periode yang lama
+            Schema::table('laporan_keuangan', function (Blueprint $table) {
+                $table->dropColumn('periode');
+            });
+        }
 
         // Tambah kolom periode dengan enum yang benar
         Schema::table('laporan_keuangan', function (Blueprint $table) {
