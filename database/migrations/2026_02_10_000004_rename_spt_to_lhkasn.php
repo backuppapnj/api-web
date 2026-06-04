@@ -17,7 +17,12 @@ return new class extends Migration
     public function up(): void
     {
         DB::table('lhkpn_reports')->where('jenis_laporan', 'LHKASN')->update(['jenis_laporan' => 'SPT Tahunan']);
-        DB::statement("ALTER TABLE lhkpn_reports MODIFY COLUMN jenis_laporan ENUM('LHKPN', 'SPT Tahunan') NOT NULL");
+
+        // MODIFY COLUMN ... ENUM hanya valid di MySQL. Di SQLite (development)
+        // kolom enum sudah berupa varchar sehingga statement ini dilewati.
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE lhkpn_reports MODIFY COLUMN jenis_laporan ENUM('LHKPN', 'SPT Tahunan') NOT NULL");
+        }
     }
 
     /**
@@ -25,7 +30,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement("ALTER TABLE lhkpn_reports MODIFY COLUMN jenis_laporan ENUM('LHKPN', 'LHKASN') NOT NULL");
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE lhkpn_reports MODIFY COLUMN jenis_laporan ENUM('LHKPN', 'LHKASN') NOT NULL");
+        }
+
         DB::table('lhkpn_reports')->where('jenis_laporan', 'SPT Tahunan')->update(['jenis_laporan' => 'LHKASN']);
     }
 };

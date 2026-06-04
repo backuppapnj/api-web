@@ -14,3 +14,7 @@ pentest.sh
 *.swp
 *.swo
 .DS_Store
+
+# Database SQLite untuk development lokal (jangan di-commit)
+database/database.sqlite
+*.sqlite

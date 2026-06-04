@@ -19,6 +19,7 @@ class Panggilan extends Model
         'tanggal_sidang',
         'pip',
         'link_surat',
+        'link_pbt',
         'keterangan'
     ];
 

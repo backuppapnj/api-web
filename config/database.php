@@ -6,6 +6,16 @@ return [
 
     'connections' => [
 
+        // Koneksi SQLite untuk lingkungan development/testing.
+        // Set DB_CONNECTION=sqlite dan DB_DATABASE ke path file .sqlite,
+        // atau gunakan ':memory:' untuk database sementara saat testing.
+        'sqlite' => [
+            'driver' => 'sqlite',
+            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+            'prefix' => '',
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+        ],
+
         'mysql' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),

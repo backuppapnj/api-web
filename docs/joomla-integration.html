@@ -290,12 +290,14 @@
                     <th>Panggilan Ikrar</th>
                     <th>Tanggal Sidang</th>
                     <th>PIP</th>
+                    <th>Surat</th>
+                    <th>PBT</th>
                     <th>Ket</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td colspan="10" class="loading-message">Memuat data...</td>
+                    <td colspan="12" class="loading-message">Memuat data...</td>
                 </tr>
             </tbody>
         </table>
@@ -384,7 +386,7 @@
                     console.error('Error loading data:', error);
                     document.getElementById('dataInfo').textContent = 'Error memuat data';
                     $('#tabelPanggilan tbody').html(
-                        '<tr><td colspan="10" class="error-message">Gagal memuat data. Pastikan API terhubung.</td></tr>'
+                        '<tr><td colspan="12" class="error-message">Gagal memuat data. Pastikan API terhubung.</td></tr>'
                     );
                 }
             },
@@ -457,6 +459,21 @@
                             return '<a href="' + data + '" target="_blank" rel="noopener" class="link-surat">&#128196; Lihat</a>';
                         }
                         return '-';
+                    }
+                },
+                {
+                    data: 'link_pbt',
+                    render: function(data) {
+                        if (data && data !== '#') {
+                            return '<a href="' + data + '" target="_blank" rel="noopener" class="link-surat">&#128196; Lihat</a>';
+                        }
+                        return '-';
+                    }
+                },
+                {
+                    data: 'keterangan',
+                    render: function(data) {
+                        return data || '-';
                     }
                 }
             ],

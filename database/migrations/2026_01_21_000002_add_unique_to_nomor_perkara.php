@@ -11,11 +11,17 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        // 1. Hapus duplikat (simpan 1 dengan ID terbesar)
+        // 1. Hapus duplikat (simpan 1 dengan ID terbesar).
+        //    Memakai subquery standar agar kompatibel dengan MySQL dan SQLite.
         DB::statement("
-            DELETE t1 FROM panggilan_ghaib t1
-            INNER JOIN panggilan_ghaib t2 
-            WHERE t1.id < t2.id AND t1.nomor_perkara = t2.nomor_perkara
+            DELETE FROM panggilan_ghaib
+            WHERE id NOT IN (
+                SELECT keep_id FROM (
+                    SELECT MAX(id) AS keep_id
+                    FROM panggilan_ghaib
+                    GROUP BY nomor_perkara
+                ) AS keep_rows
+            )
         ");
 
         // 2. Tambahkan UNIQUE constraint

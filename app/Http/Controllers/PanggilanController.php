@@ -22,6 +22,7 @@ class PanggilanController extends Controller
         'tanggal_sidang',
         'pip',
         'link_surat',
+        'link_pbt',
         'keterangan'
     ];
 
@@ -129,6 +130,7 @@ class PanggilanController extends Controller
             'tanggal_sidang' => 'nullable|date',
             'pip' => 'nullable|string|max:100',
             'file_upload' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120', // Max 5MB
+            'file_upload_pbt' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120', // Max 5MB
             'keterangan' => 'nullable|string|max:1000',
         ]);
 
@@ -136,59 +138,31 @@ class PanggilanController extends Controller
         $data = $request->only($this->allowedFields);
 
         // SECURITY: Sanitasi input teks (skip strip_tags untuk link_surat dan nomor_perkara)
-        $data = $this->sanitizeInput($data, ['link_surat', 'nomor_perkara']);
+        $data = $this->sanitizeInput($data, ['link_surat', 'link_pbt', 'nomor_perkara']);
 
-        // Handle File Upload
-        if ($request->hasFile('file_upload')) {
-            try {
-                // Cek apakah class GoogleDriveService ada sebelum instansiasi
-                if (!class_exists('\App\Services\GoogleDriveService')) {
-                    throw new \Exception('Class GoogleDriveService not found');
-                }
-
-                $driveService = new \App\Services\GoogleDriveService();
-                $link = $driveService->upload($request->file('file_upload'));
-                $data['link_surat'] = $link;
-
-                \Illuminate\Support\Facades\Log::info('File Panggilan berhasil diupload ke Google Drive', [
-                    'nomor_perkara' => $request->nomor_perkara,
-                    'link' => $link
-                ]);
-            } catch (\Throwable $e) {
-                // FALLBACK: Simpan ke Local Storage jika Google Drive gagal
-                \Illuminate\Support\Facades\Log::error('Google Drive gagal. Menggunakan penyimpanan lokal.', [
-                    'nomor_perkara' => $request->nomor_perkara,
-                    'error' => $e->getMessage()
-                ]);
-
-                try {
-                    $file = $request->file('file_upload');
-                    $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9.]/', '_', $file->getClientOriginalName());
-                    $destinationPath = app()->basePath('public/uploads/panggilan');
-
-                    if (!file_exists($destinationPath)) {
-                        mkdir($destinationPath, 0755, true);
-                    }
-
-                    $file->move($destinationPath, $filename);
-
-                    // Generate URL (sesuaikan dengan domain server)
-                    // Menggunakan env('APP_URL') atau request()->root()
-                    $baseUrl = $request->root();
-                    $link = $baseUrl . '/uploads/panggilan/' . $filename;
-
-                    $data['link_surat'] = $link;
-
-                    \Illuminate\Support\Facades\Log::info('File disimpan di lokal (Fallback)', ['link' => $link]);
-                } catch (\Throwable $localEx) {
-                    // Jika local storage juga gagal, baru return error
-                    \Illuminate\Support\Facades\Log::error('Gagal simpan lokal', ['error' => $localEx->getMessage()]);
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Gagal upload file (Drive & Local): ' . $e->getMessage()
-                    ], 500);
-                }
+        foreach ([
+            ['field' => 'file_upload', 'target' => 'link_surat', 'folder' => 'panggilan'],
+            ['field' => 'file_upload_pbt', 'target' => 'link_pbt', 'folder' => 'panggilan/pbt'],
+        ] as $uploadConfig) {
+            if (!$request->hasFile($uploadConfig['field'])) {
+                continue;
             }
+
+            $link = $this->uploadPanggilanAttachment(
+                $request,
+                $uploadConfig['field'],
+                $uploadConfig['folder'],
+                $request->nomor_perkara
+            );
+
+            if (!$link) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal upload file ' . $uploadConfig['field'],
+                ], 500);
+            }
+
+            $data[$uploadConfig['target']] = $link;
         }
 
         $panggilan = Panggilan::create($data);
@@ -234,6 +208,7 @@ class PanggilanController extends Controller
             'tanggal_sidang' => 'nullable|date',
             'pip' => 'nullable|string|max:100',
             'file_upload' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120', // Max 5MB
+            'file_upload_pbt' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120', // Max 5MB
             'keterangan' => 'nullable|string|max:1000',
         ]);
 
@@ -241,56 +216,31 @@ class PanggilanController extends Controller
         $data = $request->only($this->allowedFields);
 
         // SECURITY: Sanitasi input (skip strip_tags untuk link_surat dan nomor_perkara)
-        $data = $this->sanitizeInput($data, ['link_surat', 'nomor_perkara']);
+        $data = $this->sanitizeInput($data, ['link_surat', 'link_pbt', 'nomor_perkara']);
 
-        // Handle File Upload
-        if ($request->hasFile('file_upload')) {
-            try {
-                if (!class_exists('\App\Services\GoogleDriveService')) {
-                    throw new \Exception('Class GoogleDriveService not found');
-                }
-
-                $driveService = new \App\Services\GoogleDriveService();
-                $link = $driveService->upload($request->file('file_upload'));
-                $data['link_surat'] = $link;
-
-                \Illuminate\Support\Facades\Log::info('File Update Panggilan berhasil diupload ke Google Drive', [
-                    'id' => $id,
-                    'nomor_perkara' => $request->nomor_perkara ?? $panggilan->nomor_perkara,
-                    'link' => $link
-                ]);
-            } catch (\Throwable $e) {
-                // FALLBACK: Simpan ke Local Storage jika Google Drive gagal
-                \Illuminate\Support\Facades\Log::error('Google Drive gagal. Menggunakan penyimpanan lokal.', [
-                    'nomor_perkara' => $request->nomor_perkara,
-                    'error' => $e->getMessage()
-                ]);
-
-                try {
-                    $file = $request->file('file_upload');
-                    $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9.]/', '_', $file->getClientOriginalName());
-                    $destinationPath = app()->basePath('public/uploads/panggilan');
-
-                    if (!file_exists($destinationPath)) {
-                        mkdir($destinationPath, 0755, true);
-                    }
-
-                    $file->move($destinationPath, $filename);
-
-                    $baseUrl = $request->root();
-                    $link = $baseUrl . '/uploads/panggilan/' . $filename;
-
-                    $data['link_surat'] = $link;
-
-                    \Illuminate\Support\Facades\Log::info('File disimpan di lokal (Fallback)', ['link' => $link]);
-                } catch (\Throwable $localEx) {
-                    \Illuminate\Support\Facades\Log::error('Gagal simpan lokal', ['error' => $localEx->getMessage()]);
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Gagal upload file (Drive & Local): ' . $e->getMessage()
-                    ], 500);
-                }
+        foreach ([
+            ['field' => 'file_upload', 'target' => 'link_surat', 'folder' => 'panggilan'],
+            ['field' => 'file_upload_pbt', 'target' => 'link_pbt', 'folder' => 'panggilan/pbt'],
+        ] as $uploadConfig) {
+            if (!$request->hasFile($uploadConfig['field'])) {
+                continue;
             }
+
+            $link = $this->uploadPanggilanAttachment(
+                $request,
+                $uploadConfig['field'],
+                $uploadConfig['folder'],
+                $request->nomor_perkara ?? $panggilan->nomor_perkara
+            );
+
+            if (!$link) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal upload file ' . $uploadConfig['field'],
+                ], 500);
+            }
+
+            $data[$uploadConfig['target']] = $link;
         }
 
         $panggilan->update($data);
@@ -330,6 +280,60 @@ class PanggilanController extends Controller
             'success' => true,
             'message' => 'Data berhasil dihapus'
         ]);
+    }
+
+    private function uploadPanggilanAttachment(Request $request, string $fieldName, string $folder, string $nomorPerkara): ?string
+    {
+        try {
+            if (!class_exists('\App\Services\GoogleDriveService')) {
+                throw new \Exception('Class GoogleDriveService not found');
+            }
+
+            $driveService = new \App\Services\GoogleDriveService();
+            $link = $driveService->upload($request->file($fieldName));
+
+            \Illuminate\Support\Facades\Log::info('File Panggilan berhasil diupload ke Google Drive', [
+                'field' => $fieldName,
+                'nomor_perkara' => $nomorPerkara,
+                'link' => $link,
+            ]);
+
+            return $link;
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Google Drive gagal. Menggunakan penyimpanan lokal.', [
+                'field' => $fieldName,
+                'nomor_perkara' => $nomorPerkara,
+                'error' => $e->getMessage()
+            ]);
+
+            try {
+                $file = $request->file($fieldName);
+                $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9.]/', '_', $file->getClientOriginalName());
+                $destinationPath = app()->basePath('public/uploads/' . $folder);
+
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0755, true);
+                }
+
+                $file->move($destinationPath, $filename);
+
+                $link = $request->root() . '/uploads/' . $folder . '/' . $filename;
+
+                \Illuminate\Support\Facades\Log::info('File disimpan di lokal (Fallback)', [
+                    'field' => $fieldName,
+                    'link' => $link,
+                ]);
+
+                return $link;
+            } catch (\Throwable $localEx) {
+                \Illuminate\Support\Facades\Log::error('Gagal simpan lokal', [
+                    'field' => $fieldName,
+                    'error' => $localEx->getMessage()
+                ]);
+
+                return null;
+            }
+        }
     }
 
 }
