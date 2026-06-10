@@ -13,6 +13,7 @@ class SurveyLaporanController extends Controller
      */
     const KATEGORI = [
         'IKM',           // Survei Kepuasan Masyarakat
+        'IPKP',          // Indeks Persepsi Kualitas Pelayanan
         'IPAK',          // Indeks Persepsi Anti Korupsi
         'TINDAK_LANJUT', // Tindak Lanjut Hasil Survei
     ];
